@@ -8,25 +8,24 @@ class Login extends Component {
         super(props)
         let loggedIn = false
         this.state = {
-            credentials: {username: '', password: ''},
+            credentials: {email: ''},
             loggedIn
         }
     }
 
   login = event => {
-      event.preventDefault()// to stop submit form from immedeatly moving on without waiting for result
-      console.log(this.state.credentials)
-    fetch('http://127.0.0.1:8000/auth/', {
-      method: 'POST',
+    event.preventDefault()// to stop submit form from immedeatly moving on without waiting for result
+    let email = this.state.credentials.email
+    console.log(email)
+    fetch(`http://127.0.0.1:8000/authorise/login/?email=${email}`, {
+      method: 'GET',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(this.state.credentials)
     })
     .then(
-        data => data.json()
-        )
+        data => data.json(),        )
     .then(
       data => {
-        this.props.userLogin(data.token);
+        // this.props.userLogin(data.token);
         this.setState({loggedIn: true})
         console.log(this.state.loggedIn)
         // this.props.navigate('/reportlist')
@@ -37,6 +36,7 @@ class Login extends Component {
   }
   
   inputChanged = event => {
+    console.log('InputChange')
     const cred = this.state.credentials;
     cred[event.target.name] = event.target.value;
     this.setState({credentials: cred});
@@ -45,7 +45,7 @@ class Login extends Component {
 
   render() {
         if(this.state.loggedIn){
-            return <Navigate to = "/reportlist"/>
+            return <Navigate to = "/otp"/>
         }
     return (
       <div className="App1">
@@ -64,7 +64,7 @@ class Login extends Component {
                 <div className="form-group">
                     <label>Email</label>
                     {/* <input type="text" className="form-control" placeholder="Enter Username" value={this.state.credentials.username} onChange={this.inputChanged}/> */}
-                    <input type = 'text' name = 'Email' id='Email' className="form-control" value={this.state.credentials.username} onChange={this.inputChanged}/>
+                    <input type = 'text' name = 'email' id='email' className="form-control" value={this.state.credentials.email} onChange={this.inputChanged}/>
                 </div>
                 {/* <div className="form-group">
                     <label>Password</label>
