@@ -20,6 +20,7 @@ function Report(props) {
   // runs on first render
 
   useEffect(()=>{
+    console.log('loginToken=', props.Token)
     fetch(`http://127.0.0.1:8000/MSAccessToken/`, {
     method: 'GET',
     headers: {

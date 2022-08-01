@@ -39,9 +39,8 @@ const FigmaOtp = (props) => {
         console.log('otp')
         console.log('otp = ', otp)
         console.log('email=', props.email)
-        let email = 'shahzmaalif@gmail.com'
         const uploadData = new FormData();
-        uploadData.append('email', email);
+        uploadData.append('email', props.email);
         uploadData.append('OTP', otp);
         fetch('http://127.0.0.1:8000/authorise/login/', {
             method: 'POST',

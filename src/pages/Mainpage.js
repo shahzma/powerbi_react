@@ -45,6 +45,7 @@ let handleSignOut = ()=>{
 
   let gotoReport = ()=>{
     window.location.href='/report'
+    // return <Navigate to = "/report"/>
   }
   let goBuyReport = () =>{
     alert('You need to buy this report first')
@@ -81,7 +82,8 @@ let handleSignOut = ()=>{
               <UpperRow>Online Retail</UpperRow>
               <MidRow>Amazon, Flipkart, Myntra</MidRow>
               <EndRow>
-                <StyledButton onClick = {gotoReport}>View Report</StyledButton>
+                {/* <StyledButton onClick = {gotoReport}>View Report</StyledButton> */}
+                <Link to="/report" style={{float:'right', marginRight:'2vw', backgroundColor:'#Ff6961', border:'None'}} className="btn btn-primary">View Report</Link>
               </EndRow>
             </Wrap>
       </Content>
@@ -99,14 +101,14 @@ let handleSignOut = ()=>{
               <UpperRow>Shortform Video</UpperRow>
               <MidRow>Josh, Moj, Roposo</MidRow>
               <EndRow>
-                <StyledButton onClick = {goBuyReport}>Buy Report</StyledButton>
+                <StyledButton onClick = {goBuyReport}>Buy</StyledButton>
               </EndRow>
             </Wrap>
             <Wrap>
               <UpperRow>OTT Video</UpperRow>
               <MidRow> Youtube, NetFlix, AmazonPrime</MidRow>
               <EndRow>
-                <StyledButton onClick = {gotoReport}>Buy Report</StyledButton>
+                <StyledButton onClick = {gotoReport}>Buy</StyledButton>
               </EndRow>
             </Wrap>
       </Content>
