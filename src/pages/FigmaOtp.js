@@ -4,11 +4,13 @@ import { useState } from 'react'
 import {Navigate} from 'react-router-dom';
 import { useEffect } from 'react';
 
-const FigmaOtp = () => {
+const FigmaOtp = (props) => {
 
     const [ otp, setotp ] = useState("");
     const [signIn, setSignIn] = useState(false);
     const [width, setWidth] = useState(window.innerWidth);
+
+
 
     function handleWindowSizeChange() {
         setWidth(window.innerWidth);
@@ -16,6 +18,7 @@ const FigmaOtp = () => {
   
     useEffect(() => {
         window.addEventListener('resize', handleWindowSizeChange);
+        // console.log(props.email)
         return () => {
             window.removeEventListener('resize', handleWindowSizeChange);
         }
@@ -31,8 +34,38 @@ const FigmaOtp = () => {
         setSignIn(true)
     }
 
+    let submitOTP = (e) => {
+        e.preventDefault()
+        console.log('otp')
+        console.log('otp = ', otp)
+        console.log('email=', props.email)
+        let email = 'shahzmaalif@gmail.com'
+        const uploadData = new FormData();
+        uploadData.append('email', email);
+        uploadData.append('OTP', otp);
+        fetch('http://127.0.0.1:8000/authorise/login/', {
+            method: 'POST',
+            body: uploadData
+          }).then(data => data.json())
+          .then( data => {
+            console.log(data.token);
+            props.setTokenVal(data.token)
+            setSignIn(true);
+            })
+          .catch(error => {
+            alert('Wrong OTP')
+            console.log(error)
+        })
+        // signIn() .below alwasy is false
+        console.log('signIn = ', signIn)
+    //     if(signIn){
+    //       window.location.href='/mainpage'
+    //   }
+      }
+
     if(signIn){
-        console.log(signIn)
+        // below is always true
+        console.log('signIn=',signIn)
         return <Navigate to = "/Mainpage"/>
     }
 
@@ -42,7 +75,7 @@ const FigmaOtp = () => {
     <Login>
         <LoginInner>
             <img src = '/Images/RedseerLogo.svg' alt=''/>
-        <form onSubmit={(e)=>login(e)}>
+        <form onSubmit={(e)=>submitOTP(e)}>
             <h4>Please Enter OTP</h4>
             <div className="form-group">
                 <label></label>
@@ -62,7 +95,7 @@ const FigmaOtp = () => {
     <Login>
         <LoginInner>
             <img src = '/Images/RedseerLogo.svg' alt=''/>
-        <form onSubmit={(e)=>login(e)}>
+        <form onSubmit={(e)=>submitOTP(e)}>
             <h4>Please Enter OTP</h4>
             <div className="form-group">
                 <label></label>

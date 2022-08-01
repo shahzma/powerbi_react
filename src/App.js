@@ -10,6 +10,7 @@ import FigmaOtp from './pages/FigmaOtp';
 
 function App() {
 
+  let [Email, setEmail] = useState('');
   let [Token, setToken] = useState('');
   let [IsAdmin, setIsAdmin] = useState(false)
   let [IsSignedIn, setIsSignedIn] = useState(false)
@@ -17,8 +18,9 @@ function App() {
   let [Reportname, setReportname] = useState('')
   let [ReportVersionID, setReportVersionID] = useState('')
 
-  let userLogin = (tok) => {
+  let userLogin = (email) => {
     setIsLoggedIn(true);
+    setEmail(email)
   }
 
   let getReportName = (repname, is_admin) =>{
@@ -31,6 +33,14 @@ function App() {
   let getReportVersionID = (id) => {
     setReportVersionID(id)
   }
+
+  let SignedInStatus = (status) => {
+    setIsSignedIn(status)
+  }
+
+  let setTokenVal = (Token)=>{
+    setToken(Token)
+  }
   
 
   return (
@@ -39,10 +49,10 @@ function App() {
         {/* <Route path = "/" element = {<Login userLogin={userLogin}/>}></Route> */}
         <Route path = "/" element = {<FigmaLogin userLogin={userLogin}/>}></Route>
         {/* <Route path = "/otp" element = {<Otp Token={Token} getReportName={getReportName}/>}/> */}
-        <Route path = "/FigmaOtp" element = {<FigmaOtp IsLoggedIn={IsLoggedIn} getReportName={getReportName}/>}/>
+        <Route path = "/FigmaOtp" element = {<FigmaOtp email = {Email} IsLoggedIn={IsLoggedIn} SignedInStatus={SignedInStatus} setTokenVal = {setTokenVal}/>}/>
         {/* <Route path = "/mainpage" element = {<Mainpage Email = {'maruti@redseerconsulting.com'} Token={Token} Reportname={Reportname} IsAdmin = {IsAdmin} getReportVersionID = {getReportVersionID}/>}/> */}
-        <Route path = "/mainpage" element = {<Mainpage Email = {'maruti@redseerconsulting.com'} IsLoggedIn={IsLoggedIn}/>}/>
-        <Route path = "/report" element = {<Report IsLoggedIn={IsLoggedIn} Reportname={Reportname} IsAdmin = {IsAdmin}/>}/>
+        <Route path = "/mainpage" element = {<Mainpage Email = {'maruti@redseerconsulting.com'} IsSignedIn={IsSignedIn} Token = {Token}/>}/>
+        <Route path = "/report" element = {<Report IsSignedIn={IsSignedIn} Reportname={Reportname} IsAdmin = {IsAdmin} Token = {Token}/>}/>
       </Routes>
     </Router>
 

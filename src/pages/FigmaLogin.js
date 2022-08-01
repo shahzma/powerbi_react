@@ -4,7 +4,7 @@ import { useState } from 'react'
 import {Navigate} from 'react-router-dom';
 import { useEffect } from 'react';
 
-const FigmaLogin = () => {
+const FigmaLogin = (props) => {
     const [ email, setEmail ] = useState('');
     const [loggedIn, setLoggedIn] = useState(false);
     const [isMobile, setisMobile] = useState(false);
@@ -30,6 +30,7 @@ const FigmaLogin = () => {
         // console.log(email)
         // setLoggedIn(true)
       console.log(email)
+      props.userLogin(email)
       fetch(`http://127.0.0.1:8000/authorise/login/?email=${email}`, {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},

@@ -35,7 +35,8 @@ function Report(props) {
         setPages(data['pages'])
         setReportId(data['report_id'])
         setNewUrl(data['report_url'])
-        console.log(reportUrl+'&pageName=ReportSection19fe81eb665f9dc58332&w=2')
+        console.log(data['pages'])
+        // console.log(reportUrl+'&pageName=ReportSection7446fb261ebfdaa647fa')
     }
     )
     .catch( error => console.error(error))
@@ -43,6 +44,7 @@ function Report(props) {
 },[]);
 
 let handleClick = (Name)=>{
+  console.log('name=',Name)
   setNewUrl(reportUrl+'&pageName='+Name)
 }
 
@@ -51,9 +53,9 @@ let handleSignOut = ()=>{
   window.location.href='/'
 }
 
-// if(!props.IsLoggedIn){
-//   return <Navigate to = "/"/>
-// }
+if(!props.Token){
+  return <Navigate to = "/"/>
+}
 
   return (
         <PageContainer>
@@ -68,8 +70,8 @@ let handleSignOut = ()=>{
                 <SubMenu title="Pages">
                   {pages.map(repver => {
                     return(
-                      <MenuItem key = {repver.order} onClick={()=>handleClick(repver.Name)}>
-                        {repver.order+1}. {repver.displayName}
+                      <MenuItem key = {repver.order} onClick={()=>handleClick(repver.name)}>
+                        <div style = {{fontFamily:'Arial'}}>{repver.order+1}. {repver.displayName}</div>
                       </MenuItem>
                     )
                   })}

@@ -10,6 +10,7 @@ function Mainpage(props) {
   const [ ReportData, setReportData ] = useState([]);
 
   useEffect(() => {
+    console.log('token=',props.token)
     console.log(props.Email)
     fetch(`http://127.0.0.1:8000/report_access/?email=${props.Email}`, {
     method: 'GET',
@@ -27,7 +28,7 @@ function Mainpage(props) {
     }
     )
     .catch( error => console.error(error))
-}, [props.Email]);
+}, [props.Email, props.token]);
 
 let handleSignOut = ()=>{
   console.log('signout')
@@ -48,6 +49,10 @@ let handleSignOut = ()=>{
   let goBuyReport = () =>{
     alert('You need to buy this report first')
   }
+
+  if(!props.Token){
+    return <Navigate to = "/"/>
+}
 
   return (
     <PageContainer>
@@ -72,16 +77,9 @@ let handleSignOut = ()=>{
                 )
             }
             )} */}
-            <Wrap>
-              <UpperRow>OTT Audio</UpperRow>
-              <MidRow> Gaana, Saavn, Youtube Music</MidRow>
-              <EndRow>
-                <StyledButton onClick = {gotoReport}>View Report</StyledButton>
-              </EndRow>
-            </Wrap>
-            <Wrap>
-              <UpperRow>OTT Video</UpperRow>
-              <MidRow> Youtube, NetFlix, AmazonPrime</MidRow>
+              <Wrap>
+              <UpperRow>Online Retail</UpperRow>
+              <MidRow>Amazon, Flipkart, Myntra</MidRow>
               <EndRow>
                 <StyledButton onClick = {gotoReport}>View Report</StyledButton>
               </EndRow>
@@ -102,6 +100,13 @@ let handleSignOut = ()=>{
               <MidRow>Josh, Moj, Roposo</MidRow>
               <EndRow>
                 <StyledButton onClick = {goBuyReport}>Buy Report</StyledButton>
+              </EndRow>
+            </Wrap>
+            <Wrap>
+              <UpperRow>OTT Video</UpperRow>
+              <MidRow> Youtube, NetFlix, AmazonPrime</MidRow>
+              <EndRow>
+                <StyledButton onClick = {gotoReport}>Buy Report</StyledButton>
               </EndRow>
             </Wrap>
       </Content>
