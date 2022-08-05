@@ -8,11 +8,38 @@ import Button from 'react-bootstrap/Button';
 
 function Mainpage(props) {
   const [ ReportData, setReportData ] = useState([]);
+  const [UserReports, setUserReports] = useState([]);
+  const [AllReports, setAllReports] = useState([])
+  const [OtherReports, setOtherReports] = useState([]);
+  const [ReportPlayer, setReportPlayer] = useState([]);
+  // const [email, setEmail] = useState('');
+  // const [token, setToken] = useState('')
 
   useEffect(() => {
-    console.log('token=',props.token)
-    console.log(props.Email)
-    fetch(`http://127.0.0.1:8000/report_access/?email=${props.Email}`, {
+    if(props.email){
+      window.sessionStorage.setItem("email", props.email);
+    }
+    if(props.Token){
+      window.sessionStorage.setItem("token", props.Token);
+    }
+  }, [props.email, props.Token]);
+
+  // useEffect(() => {
+  //   console.log('session_email=', window.sessionStorage.getItem("email"))
+  //   setEmail(window.sessionStorage.getItem("email"));
+  //   setToken(window.sessionStorage.getItem("token"))
+  // }, []);
+
+  useEffect(() => {
+    // let email = 'shahzmaalif@gmail.com'
+    let curr_email = ''
+    if (props.email){
+      curr_email = props.email
+    }else{
+      curr_email = window.sessionStorage.getItem("email")
+    }
+    console.log('curr_email=', curr_email)
+    fetch(`http://127.0.0.1:8000/report_access/?email=${curr_email}`, {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
@@ -23,15 +50,53 @@ function Mainpage(props) {
     .then( data => data.json())
     .then(
     data => {
-        console.log('data = ',data)
+        console.log('userrep = ', data)
         setReportData(data)
+        setUserReports(data.map(a=>a.report_name))
     }
     )
     .catch( error => console.error(error))
-}, [props.Email, props.token]);
+
+    fetch(`http://127.0.0.1:8000/report/`,{
+      method:'GET',
+      headers:{
+        'Content-Type': 'application/json',
+      }
+    }).then(res => res.json())
+    .then(
+      res=>{
+        console.log('res=', res)
+        setAllReports(res.map(a=>a.report_name))
+        // let rem_reports = AllReports.filter(x => !UserReports.includes(x));
+        // setOtherReports(rem_reports)
+        // console.log('rem_reports=',rem_reports)
+      }
+    ).catch(error => console.error(error))
+
+    // fetch(`http://127.0.0.1:8000/ReportPlayers/`,{
+    //   method:'GET',
+    //   headers:{
+    //     'Content-Type': 'application/json',
+    //   }
+    //   }).then(val=>val.json())
+    //   .then(
+    //       val =>{
+    //         setReportPlayer(val)
+    //         console.log('val=',val)
+    //       }
+    //   ).catch(error => console.error(error))
+
+}, [props.email, props.token,]);
+
+useEffect(()=>{
+        let rem_reports = AllReports.filter(x => !UserReports.includes(x));
+        setOtherReports(rem_reports)
+        console.log('rem_reports=',rem_reports)
+},[AllReports, UserReports])
 
 let handleSignOut = ()=>{
   console.log('signout')
+  sessionStorage.clear();
   window.location.href='/'
 }
 
@@ -51,8 +116,15 @@ let handleSignOut = ()=>{
     alert('You need to buy this report first')
   }
 
+  let handleOnClick=(rep)=>{
+// if youu pass wrong prop then link will act like window.location.href. use e.preventDefault() to check
+    console.log('rep=', rep)
+    props.getReportName(rep)
+  }
+
   if(!props.Token){
-    return <Navigate to = "/"/>
+    if(!window.sessionStorage.getItem("token"))
+    {return <Navigate to = "/"/>}
 }
 
   return (
@@ -70,47 +142,37 @@ let handleSignOut = ()=>{
       </NavBar>
       <Title>Available Reports</Title>
       <Content>
-          {/* {ReportData.map( repver=>{
+          {ReportData.map( repver=>{
                 return (
-                <Wrap key={repver.id} onClick = {()=>handleReportDetail()}>
-                  {repver.report_name}
+                <Wrap key={repver.id}>
+                  <UpperRow>{repver.report_name}</UpperRow>
+                  <MidRow>
+                    {(repver.players.slice(0, 3)).join(',  ')}
+                    {/* {ReportPlayer.find(element=> element.report_name === repver.report_name)?.player_name} */}
+                    {/* {console.log('rep_player=',(ReportPlayer.find(element=> element.report_name === repver.report_name)).player_name)} */}
+                  </MidRow>
+                  <EndRow>
+                  <Link to="/report" style={{float:'right', marginRight:'2vw', backgroundColor:'#FF6471', border:'None'}} className="btn btn-primary" onClick = {()=>handleOnClick(repver.report_name)}>View Report</Link>
+                  </EndRow>
                 </Wrap>
                 )
             }
-            )} */}
-              <Wrap>
-              <UpperRow>Online Retail</UpperRow>
-              <MidRow>Amazon, Flipkart, Myntra</MidRow>
-              <EndRow>
-                {/* <StyledButton onClick = {gotoReport}>View Report</StyledButton> */}
-                <Link to="/report" style={{float:'right', marginRight:'2vw', backgroundColor:'#Ff6961', border:'None'}} className="btn btn-primary">View Report</Link>
-              </EndRow>
-            </Wrap>
+            )}
       </Content>
       <Title>Other Buyable Reports</Title>
       <Content>
-            {/* {ReportData.map( repver=>{
+            {OtherReports.map( rep=>{
                 return (
-                <Wrap key={repver.id} onClick = {()=>handleReportBuy()}>
-                  {repver.report_name}
+                <Wrap>
+                  <UpperRow>{rep}</UpperRow>
+                  <MidRow>Hidden Players</MidRow>
+                  <EndRow>
+                  <StyledButton onClick = {goBuyReport}>Buy</StyledButton>
+                  </EndRow>
                 </Wrap>
                 )
             }
-            )} */}
-            <Wrap>
-              <UpperRow>Shortform Video</UpperRow>
-              <MidRow>Josh, Moj, Roposo</MidRow>
-              <EndRow>
-                <StyledButton onClick = {goBuyReport}>Buy</StyledButton>
-              </EndRow>
-            </Wrap>
-            <Wrap>
-              <UpperRow>OTT Video</UpperRow>
-              <MidRow> Youtube, NetFlix, AmazonPrime</MidRow>
-              <EndRow>
-                <StyledButton onClick = {gotoReport}>Buy</StyledButton>
-              </EndRow>
-            </Wrap>
+            )}
       </Content>
     </PageContainer>
   )

@@ -124,7 +124,7 @@ const LoginInner = styled.div`
     position:absolute;
     width: 176px;
     height: 45px;
-    left: 317px;
+    left: 22.5vw;
     top: 160px;
   }
     
@@ -138,7 +138,7 @@ const LoginInner = styled.div`
       position:absolute;
       width: 176px;
       height: 45px;
-      left: 260px;
+      left: 38vw;
       top: 160px;
     }
 }

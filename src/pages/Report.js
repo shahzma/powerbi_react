@@ -15,13 +15,30 @@ function Report(props) {
   const [ EmbedToken, setEmbedToken ] = useState('');
   const [ reportUrl, setReportUrl ] = useState('');
   const [ pages, setPages ] = useState([]);
+  const [myPages, setMyPages] = useState([]);
   const [ reportId, setReportId ] = useState('');
   const [ newUrl, setNewUrl ] = useState('');
   // runs on first render
 
+  useEffect(() => {
+    if(props.Token){
+      window.sessionStorage.setItem("token", props.Token);
+    }
+    if(props.ReportName){
+      window.sessionStorage.setItem("ReportName", props.ReportName);
+    }
+  }, [props.Token, props.ReportName]);
+
   useEffect(()=>{
-    console.log('loginToken=', props.Token)
-    fetch(`http://127.0.0.1:8000/MSAccessToken/`, {
+    console.log('props=', props)
+    let propsrep = ''
+    if (props.ReportName){
+      propsrep = props.ReportName
+    }else{
+      propsrep = window.sessionStorage.getItem("ReportName")
+    }
+    console.log('propsrep=', propsrep)
+    fetch(`http://127.0.0.1:8000/MSAccessToken/?rep=${propsrep}`, {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
@@ -36,12 +53,25 @@ function Report(props) {
         setPages(data['pages'])
         setReportId(data['report_id'])
         setNewUrl(data['report_url'])
-        console.log(data['pages'])
         // console.log(reportUrl+'&pageName=ReportSection7446fb261ebfdaa647fa')
     }
     )
     .catch( error => console.error(error))
     
+    // replace ott audio below with propsrep
+    fetch(`http://127.0.0.1:8000/PageReports/?rep=OTT_Audio`, {
+      method:'GET',
+      headers:{
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(res=>res.json())
+    .then(
+      res=>{
+        console.log('tree=',res)
+        setMyPages(res)
+      }
+    )
 },[]);
 
 let handleClick = (Name)=>{
@@ -51,11 +81,13 @@ let handleClick = (Name)=>{
 
 let handleSignOut = ()=>{
   console.log('signout')
+  sessionStorage.clear();
   window.location.href='/'
 }
 
 if(!props.Token){
-  return <Navigate to = "/"/>
+  if(!window.sessionStorage.getItem("token"))
+  {return <Navigate to = "/"/>}
 }
 
   return (
@@ -77,6 +109,22 @@ if(!props.Token){
                     )
                   })}
                 </SubMenu>
+                {/* <MenuItem></MenuItem>
+                <MenuItem></MenuItem>
+                {myPages.map(repver=>{
+                  return (
+                    <SubMenu title={repver.page_name}>
+                        {repver.children_page_name.map(i=>{
+                          return(
+                            <MenuItem key={i.id}>
+                                <div style = {{fontFamily:'Arial'}}>{i.page_name}</div>
+                            </MenuItem>
+                          )
+                        })}
+                    </SubMenu>
+                  )
+                })} */}
+
               </Menu>
             </ProSidebar>
           </SidebarContainer>

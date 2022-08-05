@@ -9,7 +9,7 @@ const FigmaOtp = (props) => {
     const [ otp, setotp ] = useState("");
     const [signIn, setSignIn] = useState(false);
     const [width, setWidth] = useState(window.innerWidth);
-
+    const [wrongOTP, setWrongOTP] = useState(false);
 
 
     function handleWindowSizeChange() {
@@ -47,21 +47,32 @@ const FigmaOtp = (props) => {
             body: uploadData
           }).then(data => data.json())
           .then( data => {
-            console.log(data.token);
             props.setTokenVal(data.token)
-            setSignIn(true);
+            if (data.token){
+                setSignIn(true);
+                setWrongOTP(false)
+            }
+            else{
+                setSignIn(false);
+                setWrongOTP(true)
+                // alert('Wrong OTP')
+            }
             })
           .catch(error => {
-            alert('Wrong OTP')
+            setSignIn(false);
+            alert('System Error.Contact Admin')
             console.log(error)
         })
         // signIn() .below alwasy is false
-        console.log('signIn = ', signIn)
     //     if(signIn){
     //       window.location.href='/mainpage'
     //   }
       }
 
+    let handleGoBack = ()=>{
+        window.location.href = '/'
+    }
+    
     if(signIn){
         // below is always true
         console.log('signIn=',signIn)
@@ -76,12 +87,13 @@ const FigmaOtp = (props) => {
             <img src = '/Images/RedseerLogo.svg' alt=''/>
         <form onSubmit={(e)=>submitOTP(e)}>
             <h4>Please Enter OTP</h4>
+            {wrongOTP?<div style={{color:'red'}}>Wrong OTP</div>:<div></div>}
             <div className="form-group">
                 <label></label>
                 <input type = 'text' name = 'otp' id='otp' placeholder='Enter the code' className="form-control" value={otp}  onChange={(e) => inputChanged(e)}/>
             </div>
             <button type="submit" className="btn btn-primary btn-block" style={{backgroundColor:'#EE2D31' , border:'None'}} >Verify</button>
-            <button type="button" className="btn btn-primary btn-block" style={{backgroundColor:'White' , border:'1px solid #E3E3E3', color:'black'}} >Resend OTP</button>
+            <button type="button" className="btn btn-primary btn-block" style={{backgroundColor:'White' , border:'1px solid #E3E3E3', color:'black'}} onClick={handleGoBack}>Go Back !</button>
         </form>
         </LoginInner>
     </Login>
@@ -101,7 +113,7 @@ const FigmaOtp = (props) => {
                 <input type = 'text' name = 'otp' id='otp' placeholder='Enter the code' className="form-control" value={otp}  onChange={(e) => inputChanged(e)}/>
             </div>
             <button type="submit" className="btn btn-primary btn-block" style={{backgroundColor:'#EE2D31' , border:'None'}} >Verify</button>
-            <button type="button" className="btn btn-primary btn-block" style={{backgroundColor:'White' , border:'1px solid #E3E3E3', color:'black'}} >Resend OTP</button>
+            <button type="button" className="btn btn-primary btn-block" style={{backgroundColor:'White' , border:'1px solid #E3E3E3', color:'black'}} onClick={handleGoBack}>Go Back !</button>
         </form>
         </LoginInner>
     </Login>
@@ -139,7 +151,7 @@ const LoginInner = styled.div`
     position:absolute;
     width: 176px;
     height: 45px;
-    left: 317px;
+    left: 22.5vw;
     top: 160px;
   }
     
@@ -153,7 +165,7 @@ const LoginInner = styled.div`
       position:absolute;
       width: 176px;
       height: 45px;
-      left: 260px;
+      left: 38vw;
       top: 160px;
     }
   }

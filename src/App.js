@@ -8,6 +8,7 @@ import Report from './pages/Report';
 import FigmaLogin from './pages/FigmaLogin';
 import FigmaOtp from './pages/FigmaOtp';
 
+
 function App() {
 
   let [Email, setEmail] = useState('');
@@ -23,11 +24,9 @@ function App() {
     setEmail(email)
   }
 
-  let getReportName = (repname, is_admin) =>{
+  let getReportName = (repname) =>{
     setReportname(repname);
-    setIsAdmin(is_admin)
     console.log('reportnameapp = ', Reportname )
-    console.log('isadminmain=', IsAdmin)
   }
 
   let getReportVersionID = (id) => {
@@ -51,8 +50,8 @@ function App() {
         {/* <Route path = "/otp" element = {<Otp Token={Token} getReportName={getReportName}/>}/> */}
         <Route path = "/FigmaOtp" element = {<FigmaOtp email = {Email} IsLoggedIn={IsLoggedIn} SignedInStatus={SignedInStatus} setTokenVal = {setTokenVal}/>}/>
         {/* <Route path = "/mainpage" element = {<Mainpage Email = {'maruti@redseerconsulting.com'} Token={Token} Reportname={Reportname} IsAdmin = {IsAdmin} getReportVersionID = {getReportVersionID}/>}/> */}
-        <Route path = "/mainpage" element = {<Mainpage Email = {'maruti@redseerconsulting.com'} IsSignedIn={IsSignedIn} Token = {Token}/>}/>
-        <Route path = "/report" element = {<Report IsSignedIn={IsSignedIn} Reportname={Reportname} IsAdmin = {IsAdmin} Token = {Token}/>}/>
+        <Route path = "/mainpage" element = {<Mainpage email = {Email} IsSignedIn={IsSignedIn} Token = {Token} getReportName={getReportName}/>}/>
+        <Route path = "/report" element = {<Report Token={Token} ReportName = {Reportname}/>}/>
       </Routes>
     </Router>
 
