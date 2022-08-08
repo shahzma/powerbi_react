@@ -96,9 +96,67 @@ useEffect(()=>{
 
 let handleSignOut = ()=>{
   console.log('signout')
+  let prop_email = window.sessionStorage.getItem("email")
+  let prop_token = window.sessionStorage.getItem("token")
+  fetch(`http://127.0.0.1:8000/logout/?email=${prop_email}`,{
+      method:'GET',
+      headers:{
+        'Content-Type': 'application/json',
+        Authorization: `Token ${prop_token}`
+      }
+    }).then((res) => res.json())
+    .then(
+      res => {
+          console.log('logout= ', res)
+      }
+      )
+      .catch( error => {
+        console.error(error)
+      })
   sessionStorage.clear();
   window.location.href='/'
 }
+
+useEffect(()=>{
+  console.log('will sign out in 30 min')
+  const interval = setTimeout(() => {
+    console.log('Logs every minute');
+    handleSignOut()
+  }, 1000*60*30);
+
+  return () => clearInterval(interval);
+},[])
+
+useEffect(()=>{
+  setInterval(function () {
+    console.log("check token");
+    let prop_token = window.sessionStorage.getItem("token")
+    let prop_email = window.sessionStorage.getItem("email")
+    fetch(`http://127.0.0.1:8000/validateToken/?email=${prop_email}`,{
+      method:'GET',
+      headers:{
+        'Content-Type': 'application/json',
+        Authorization: `Token ${prop_token}`
+      }
+    }).then((res) => {
+      if (res.ok) {
+        return res.json();
+      }else{
+        sessionStorage.clear();
+        window.location.href='/'
+      }
+    })
+    .then(
+      res => {
+          console.log('tokenValidation= ', res)
+      }
+      )
+      .catch( error => {
+        console.error(error)
+      })
+  }, 1000*60*5);
+},[])
+
 
   let handleReportDetail = ()=>{
     console.log('ott');
@@ -134,7 +192,7 @@ let handleSignOut = ()=>{
             <img src = '/Images/redseer_strategy.svg'/>
           </Logo>
           <User>
-              <a><img src = "/images/user.svg" alt = ""/></a>
+              <a><img src = "/Images/user.svg" alt = ""/></a>
               <SignOut onClick={handleSignOut}>
                   <a>Sign Out</a>
               </SignOut>

@@ -30,14 +30,14 @@ function Report(props) {
   }, [props.Token, props.ReportName]);
 
   useEffect(()=>{
-    console.log('props=', props)
+    // console.log('props=', props)
     let propsrep = ''
     if (props.ReportName){
       propsrep = props.ReportName
     }else{
       propsrep = window.sessionStorage.getItem("ReportName")
     }
-    console.log('propsrep=', propsrep)
+    // console.log('propsrep=', propsrep)
     fetch(`http://127.0.0.1:8000/MSAccessToken/?rep=${propsrep}`, {
     method: 'GET',
     headers: {
@@ -59,7 +59,7 @@ function Report(props) {
     .catch( error => console.error(error))
     
     // replace ott audio below with propsrep
-    fetch(`http://127.0.0.1:8000/PageReports/?rep=OTT_Audio`, {
+    fetch(`http://127.0.0.1:8000/PageReports/?rep=${propsrep}`, {
       method:'GET',
       headers:{
         'Content-Type': 'application/json',
@@ -81,9 +81,66 @@ let handleClick = (Name)=>{
 
 let handleSignOut = ()=>{
   console.log('signout')
+  let prop_email = window.sessionStorage.getItem("email")
+  let prop_token = window.sessionStorage.getItem("token")
+  fetch(`http://127.0.0.1:8000/logout/?email=${prop_email}`,{
+      method:'GET',
+      headers:{
+        'Content-Type': 'application/json',
+        Authorization: `Token ${prop_token}`
+      }
+    }).then((res) => res.json())
+    .then(
+      res => {
+          console.log('logout= ', res)
+      }
+      )
+      .catch( error => {
+        console.error(error)
+      })
   sessionStorage.clear();
   window.location.href='/'
 }
+
+useEffect(()=>{
+  console.log('will sign out in 30 min')
+  const interval = setTimeout(() => {
+    console.log('Logs every minute');
+    handleSignOut()
+  }, 1000*60*30);
+
+  return () => clearInterval(interval);
+},[])
+
+useEffect(()=>{
+  setInterval(function () {
+    console.log("check token");
+    let prop_token = window.sessionStorage.getItem("token")
+    let prop_email = window.sessionStorage.getItem("email")
+    fetch(`http://127.0.0.1:8000/validateToken/?email=${prop_email}`,{
+      method:'GET',
+      headers:{
+        'Content-Type': 'application/json',
+        Authorization: `Token ${prop_token}`
+      }
+    }).then((res) => {
+      if (res.ok) {
+        return res.json();
+      }else{
+        sessionStorage.clear();
+        window.location.href='/'
+      }
+    })
+    .then(
+      res => {
+          console.log('tokenValidation= ', res)
+      }
+      )
+      .catch( error => {
+        console.error(error)
+      })
+  }, 1000*60*5);
+},[])
 
 if(!props.Token){
   if(!window.sessionStorage.getItem("token"))
@@ -98,7 +155,7 @@ if(!props.Token){
               <img src= '/Images/redseer_strategy.svg' alt= ''/>
             </SideBarHeader>
               <Menu>
-                <MenuItem></MenuItem>
+                {/* <MenuItem></MenuItem>
                 <MenuItem></MenuItem>
                 <SubMenu title="Pages">
                   {pages.map(repver => {
@@ -108,23 +165,29 @@ if(!props.Token){
                       </MenuItem>
                     )
                   })}
-                </SubMenu>
-                {/* <MenuItem></MenuItem>
+                </SubMenu> */}
                 <MenuItem></MenuItem>
-                {myPages.map(repver=>{
-                  return (
+                <MenuItem></MenuItem>
+                {myPages.map((repver)=>{
+                  return repver.children_page_name.length===0?(
+                    <MenuItem onClick={()=>handleClick(repver.link)}>
+                      {repver.page_name}
+                    </MenuItem>
+                  ):(
                     <SubMenu title={repver.page_name}>
-                        {repver.children_page_name.map(i=>{
+                      {repver.children_page_name.map(i=>{
                           return(
-                            <MenuItem key={i.id}>
-                                <div style = {{fontFamily:'Arial'}}>{i.page_name}</div>
+                            <MenuItem key={i.id} onClick={()=>handleClick(i.link)}>
+                                <div style = {{fontFamily:'Arial'}}>{'\u2022'}&nbsp;{i.page_name}</div>
+                                {/* <ol style={{ listStyleType: 'disc' }}>
+                                  <li style = {{fontFamily:'Arial'}}>{i.page_name}</li>
+                                </ol> */}
                             </MenuItem>
                           )
                         })}
                     </SubMenu>
                   )
-                })} */}
-
+                })}
               </Menu>
             </ProSidebar>
           </SidebarContainer>
