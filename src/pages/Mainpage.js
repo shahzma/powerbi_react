@@ -22,7 +22,10 @@ function Mainpage(props) {
     if(props.Token){
       window.sessionStorage.setItem("token", props.Token);
     }
-  }, [props.email, props.Token]);
+    if(props.pseudo_email){
+      window.sessionStorage.setItem("pseudo_email", props.pseudo_email);
+    }
+  }, [props.email, props.Token, props.pseudo_email]);
 
   // useEffect(() => {
   //   console.log('session_email=', window.sessionStorage.getItem("email"))
@@ -33,11 +36,12 @@ function Mainpage(props) {
   useEffect(() => {
     // let email = 'shahzmaalif@gmail.com'
     let curr_email = ''
-    if (props.email){
-      curr_email = props.email
+    if (props.pseudo_email){
+      curr_email = props.pseudo_email
     }else{
-      curr_email = window.sessionStorage.getItem("email")
+      curr_email = window.sessionStorage.getItem("pseudo_email")
     }
+    console.log('real_email=', window.sessionStorage.getItem("email"))
     console.log('curr_email=', curr_email)
     fetch(`http://127.0.0.1:8000/report_access/?email=${curr_email}`, {
     method: 'GET',
@@ -225,7 +229,7 @@ useEffect(()=>{
                   <UpperRow>{rep}</UpperRow>
                   <MidRow>Hidden Players</MidRow>
                   <EndRow>
-                  <StyledButton onClick = {goBuyReport}>Buy</StyledButton>
+                  <StyledButton onClick = {goBuyReport}>Buy Report</StyledButton>
                   </EndRow>
                 </Wrap>
                 )
@@ -241,6 +245,7 @@ export default Mainpage
 const PageContainer = styled.div`
   background-color:#F4F4F4;
   min-height:100vh;
+  overflow:hidden;
 `
 const Title = styled.h4`
   margin:15px 60px;
@@ -254,12 +259,13 @@ const Content = styled.div`
   grid-template-columns: 50% 50%;
   @media (max-width:768px){
     grid-template-columns:100%;
+    margin:20px 40px;
 }
 `
 
 const Wrap = styled.div`
   border-radius:10px;
-  overflow:hidden;
+  /* overflow:hidden; */
   height:22vh;
   /* display:flex;
   justify-content:center;
@@ -271,6 +277,10 @@ const Wrap = styled.div`
       /* transform: scale(1.05); */
       border-color:#FF6270;
   }
+  @media (max-width:768px){
+    width: 80vw;
+    height:26vh;
+}
 `
 const UpperRow = styled.h4`
 margin:2.5vh;
@@ -336,11 +346,11 @@ img{
 
 const StyledButton = styled(Button)`
  background-color:#FF6471;
- width: 9vw;
+ /* width: 9vw; */
  float:right;
  margin-right: 2vw;
  border:none;
- height:5vh;
+ /* height:5vh; */
  &:hover{
   background-color:#FF6471;
  }

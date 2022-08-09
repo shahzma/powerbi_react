@@ -12,6 +12,7 @@ import FigmaOtp from './pages/FigmaOtp';
 function App() {
 
   let [Email, setEmail] = useState('');
+  let [RealEmail, setRealEmail] = useState('');
   let [Token, setToken] = useState('');
   let [IsAdmin, setIsAdmin] = useState(false)
   let [IsSignedIn, setIsSignedIn] = useState(false)
@@ -22,6 +23,11 @@ function App() {
   let userLogin = (email) => {
     setIsLoggedIn(true);
     setEmail(email)
+    // setPseudoEmail(pseudo_email)
+  }
+
+  let getRealEmail=(real_email)=>{
+    setRealEmail(real_email);
   }
 
   let getReportName = (repname) =>{
@@ -46,12 +52,12 @@ function App() {
     <Router>
       <Routes>
         {/* <Route path = "/" element = {<Login userLogin={userLogin}/>}></Route> */}
-        <Route path = "/" element = {<FigmaLogin userLogin={userLogin}/>}></Route>
+        <Route path = "/" element = {<FigmaLogin userLogin={userLogin} getRealEmail={getRealEmail}/>}></Route>
         {/* <Route path = "/otp" element = {<Otp Token={Token} getReportName={getReportName}/>}/> */}
-        <Route path = "/FigmaOtp" element = {<FigmaOtp email = {Email} IsLoggedIn={IsLoggedIn} SignedInStatus={SignedInStatus} setTokenVal = {setTokenVal}/>}/>
+        <Route path = "/FigmaOtp" element = {<FigmaOtp email = {RealEmail} IsLoggedIn={IsLoggedIn} SignedInStatus={SignedInStatus} setTokenVal = {setTokenVal}/>}/>
         {/* <Route path = "/mainpage" element = {<Mainpage Email = {'maruti@redseerconsulting.com'} Token={Token} Reportname={Reportname} IsAdmin = {IsAdmin} getReportVersionID = {getReportVersionID}/>}/> */}
-        <Route path = "/mainpage" element = {<Mainpage email = {Email} IsSignedIn={IsSignedIn} Token = {Token} getReportName={getReportName}/>}/>
-        <Route path = "/report" element = {<Report Token={Token} ReportName = {Reportname}/>}/>
+        <Route path = "/mainpage" element = {<Mainpage email = {RealEmail} pseudo_email={Email} IsSignedIn={IsSignedIn} Token = {Token} getReportName={getReportName}/>}/>
+        <Route path = "/report" element = {<Report Token={Token} email = {RealEmail} ReportName = {Reportname}/>}/>
       </Routes>
     </Router>
 

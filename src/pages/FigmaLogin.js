@@ -30,7 +30,7 @@ const FigmaLogin = (props) => {
         // console.log(email)
         // setLoggedIn(true)
       console.log(email)
-      props.userLogin(email)
+      props.getRealEmail(email)
       fetch(`http://127.0.0.1:8000/authorise/login/?email=${email}`, {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
@@ -42,6 +42,8 @@ const FigmaLogin = (props) => {
           // this.props.userLogin(data.token);
           setLoggedIn(true)
           console.log(loggedIn)
+          console.log('data=',data['pseudo_email'])
+          props.userLogin(data['pseudo_email'])
           // this.props.navigate('/reportlist')
         }
       )
@@ -100,6 +102,9 @@ export default FigmaLogin
 const PageContainer = styled.div`
 height:100vh;
 display:flex;
+@media (max-width:768px){
+    overflow-x:hidden
+}
 `
 
 const Login = styled.div`
@@ -118,7 +123,6 @@ const LoginInner = styled.div`
   width: 450px;
   margin: auto;
   background: #ffffff;
-  /* box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2); */
   padding: 40px 55px 45px 55px;
   img{
     position:absolute;
@@ -134,11 +138,14 @@ const LoginInner = styled.div`
       color:red;
     }
   @media (max-width:768px){
+    width: 400px;
+    margin: auto;
+    padding: 40px 55px 45px 55px;
     img{
       position:absolute;
       width: 176px;
       height: 45px;
-      left: 38vw;
+      left: 30vw;
       top: 160px;
     }
 }

@@ -36,7 +36,6 @@ const FigmaOtp = (props) => {
 
     let submitOTP = (e) => {
         e.preventDefault()
-        console.log('otp')
         console.log('otp = ', otp)
         console.log('email=', props.email)
         const uploadData = new FormData();
@@ -145,7 +144,6 @@ const LoginInner = styled.div`
   width: 450px;
   margin: auto;
   background: #ffffff;
-  /* box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2); */
   padding: 40px 55px 45px 55px;
   img{
     position:absolute;
@@ -161,11 +159,14 @@ const LoginInner = styled.div`
       color:red;
     }
   @media (max-width:768px) {
+    width: 400px;
+    margin: auto;
+    padding: 40px 55px 45px 55px;
     img{
       position:absolute;
       width: 176px;
       height: 45px;
-      left: 38vw;
+      left: 30vw;
       top: 160px;
     }
   }

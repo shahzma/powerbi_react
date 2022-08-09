@@ -6,6 +6,7 @@ import './Report.scss';
 import React, { useState, useEffect } from 'react';
 import { ProSidebar, Menu, MenuItem, SubMenu} from 'react-pro-sidebar';
 import {Link, Navigate} from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 // import 'react-pro-sidebar/dist/css/styles.css';
 
 
@@ -18,7 +19,20 @@ function Report(props) {
   const [myPages, setMyPages] = useState([]);
   const [ reportId, setReportId ] = useState('');
   const [ newUrl, setNewUrl ] = useState('');
+  const [width, setWidth] = useState(window.innerWidth);
+  const [ toggle, setToggle ] = useState(false);
   // runs on first render
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+        window.removeEventListener('resize', handleWindowSizeChange);
+    }
+}, []);
 
   useEffect(() => {
     if(props.Token){
@@ -102,6 +116,10 @@ let handleSignOut = ()=>{
   window.location.href='/'
 }
 
+let handleToggle = ()=>{
+  setToggle(!toggle)
+}
+
 useEffect(()=>{
   console.log('will sign out in 30 min')
   const interval = setTimeout(() => {
@@ -148,9 +166,10 @@ if(!props.Token){
 }
 
   return (
+    width>768 ?
+        (
         <PageContainer>
-          <SidebarContainer>
-            <ProSidebar>
+            <ProSidebarContainer collapsed={false}>
             <SideBarHeader>
               <img src= '/Images/redseer_strategy.svg' alt= ''/>
             </SideBarHeader>
@@ -179,9 +198,6 @@ if(!props.Token){
                           return(
                             <MenuItem key={i.id} onClick={()=>handleClick(i.link)}>
                                 <div style = {{fontFamily:'Arial'}}>{'\u2022'}&nbsp;{i.page_name}</div>
-                                {/* <ol style={{ listStyleType: 'disc' }}>
-                                  <li style = {{fontFamily:'Arial'}}>{i.page_name}</li>
-                                </ol> */}
                             </MenuItem>
                           )
                         })}
@@ -189,8 +205,7 @@ if(!props.Token){
                   )
                 })}
               </Menu>
-            </ProSidebar>
-          </SidebarContainer>
+            </ProSidebarContainer>
           <ReportContainer>
                     <User>
                     <a><img src = "/images/user.svg" alt = ""/></a>
@@ -231,6 +246,75 @@ if(!props.Token){
                   />
           </ReportContainer>
         </PageContainer>
+        ):(
+          <PageContainer>
+            <ProSidebarContainer collapsed={toggle}>
+            <SideBarHeader>
+              <Button onClick={()=>handleToggle()}/>
+            </SideBarHeader>
+              <Menu>
+                <MenuItem></MenuItem>
+                <MenuItem></MenuItem>
+                {myPages.map((repver)=>{
+                  return repver.children_page_name.length===0?(
+                    <MenuItem onClick={()=>handleClick(repver.link)}>
+                      {repver.page_name}
+                    </MenuItem>
+                  ):(
+                    <SubMenu title={repver.page_name}>
+                      {repver.children_page_name.map(i=>{
+                          return(
+                            <MenuItem key={i.id} onClick={()=>handleClick(i.link)}>
+                                <div style = {{fontFamily:'Arial'}}>{'\u2022'}&nbsp;{i.page_name}</div>
+                            </MenuItem>
+                          )
+                        })}
+                    </SubMenu>
+                  )
+                })}
+              </Menu>
+            </ProSidebarContainer>
+          <ReportContainer>
+                    <User>
+                    <a><img src = "/images/user.svg" alt = ""/></a>
+                        <SignOut onClick={handleSignOut}>
+                            <a>Sign Out</a>
+                        </SignOut>
+                    </User>
+            <PowerBIEmbed
+              embedConfig = {{
+                type: 'report',   // Supported types: report, dashboard, tile, visual and qna
+                id: reportId,
+                //get from props
+                // embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=f87ed8df-7267-4a8a-835f-6a786edf57ed&groupId=d786d974-91ce-43e8-a52c-c0e6b402f74f&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLUlORElBLUNFTlRSQUwtQS1QUklNQVJZLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0IiwiZW1iZWRGZWF0dXJlcyI6eyJtb2Rlcm5FbWJlZCI6dHJ1ZSwiYW5ndWxhck9ubHlSZXBvcnRFbWJlZCI6dHJ1ZSwiY2VydGlmaWVkVGVsZW1ldHJ5RW1iZWQiOnRydWUsInVzYWdlTWV0cmljc1ZOZXh0Ijp0cnVlLCJza2lwWm9uZVBhdGNoIjp0cnVlfX0%3d&pageName=ReportSection19fe81eb665f9dc58332&w=2',
+                embedUrl:newUrl,
+                accessToken: EmbedToken,
+                tokenType: models.TokenType.Embed,
+                settings: {
+                  panes: {
+                    filters: {
+                      expanded: false,
+                      visible: false
+                    }
+                  },
+                }
+              }}
+              eventHandlers = {
+                new Map([
+                  ['loaded', function () {console.log('Report loaded');}],
+                  ['rendered', function () {console.log('Report rendered');}],
+                  ['error', function (event) {console.log(event.detail);}]
+                ])
+              }
+            
+              cssClassName = { "report-style-class" }
+              getEmbeddedComponent = { (embeddedReport) => {
+                window.report = embeddedReport ;
+              }}
+                  />
+          </ReportContainer>
+          </PageContainer>
+        )
   )
 }
 
@@ -241,10 +325,13 @@ display:flex;
 `
 
 const ReportContainer = styled.div`
-width:82%
+width:79%
+`
+const ProSidebarContainer = styled(ProSidebar)`
+width:21%
 `
 const SidebarContainer = styled.div`
-width:18%
+width:21%
 `
 const SideBarHeader = styled.div`
 padding-left:20px;
@@ -277,7 +364,7 @@ img{
     height:48px;
     border-radius:50%;
     padding:5px;
-    margin-right:40px;
+    margin-right:20px;
 }
 
 &:hover{
