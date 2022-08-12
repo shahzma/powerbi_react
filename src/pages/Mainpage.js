@@ -25,7 +25,10 @@ function Mainpage(props) {
     if(props.pseudo_email){
       window.sessionStorage.setItem("pseudo_email", props.pseudo_email);
     }
-  }, [props.email, props.Token, props.pseudo_email]);
+    if(props.clientID){
+      window.sessionStorage.setItem("clientID", props.clientID);
+    }
+  }, [props.email, props.Token, props.pseudo_email, props.clientID]);
 
   // useEffect(() => {
   //   console.log('session_email=', window.sessionStorage.getItem("email"))
@@ -35,15 +38,15 @@ function Mainpage(props) {
 
   useEffect(() => {
     // let email = 'shahzmaalif@gmail.com'
-    let curr_email = ''
-    if (props.pseudo_email){
-      curr_email = props.pseudo_email
+    let curr_id = ''
+    if (props.clientID){
+      curr_id = props.clientID
     }else{
-      curr_email = window.sessionStorage.getItem("pseudo_email")
+      curr_id = window.sessionStorage.getItem("clientID")
     }
     console.log('real_email=', window.sessionStorage.getItem("email"))
-    console.log('curr_email=', curr_email)
-    fetch(`http://127.0.0.1:8000/report_access/?email=${curr_email}`, {
+    console.log('curr_id=', curr_id)
+    fetch(`http://127.0.0.1:8000/report_access/?email=${curr_id}`, {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
@@ -90,7 +93,7 @@ function Mainpage(props) {
     //       }
     //   ).catch(error => console.error(error))
 
-}, [props.email, props.token,]);
+}, [props.email, props.token, props.clientID]);
 
 useEffect(()=>{
         let rem_reports = AllReports.filter(x => !UserReports.includes(x));

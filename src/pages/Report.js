@@ -7,6 +7,12 @@ import React, { useState, useEffect } from 'react';
 import { ProSidebar, Menu, MenuItem, SubMenu} from 'react-pro-sidebar';
 import {Link, Navigate} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
+import { FaBeer } from 'react-icons/fa';
+import{MdOutlineSummarize} from 'react-icons/md';
+// import { ImProfile } from "react-icons/im";
+import { GiHamburgerMenu } from "react-icons/gi";
+
+
 // import 'react-pro-sidebar/dist/css/styles.css';
 
 
@@ -21,6 +27,7 @@ function Report(props) {
   const [ newUrl, setNewUrl ] = useState('');
   const [width, setWidth] = useState(window.innerWidth);
   const [ toggle, setToggle ] = useState(false);
+
   // runs on first render
 
   function handleWindowSizeChange() {
@@ -51,11 +58,13 @@ function Report(props) {
     }else{
       propsrep = window.sessionStorage.getItem("ReportName")
     }
+    let prop_token = window.sessionStorage.getItem("token")
     // console.log('propsrep=', propsrep)
     fetch(`http://127.0.0.1:8000/MSAccessToken/?rep=${propsrep}`, {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
+        Authorization: `Token ${prop_token}`
     },
     })
     .then( data => data.json())
@@ -120,6 +129,10 @@ let handleToggle = ()=>{
   setToggle(!toggle)
 }
 
+let gotoMainPage = ()=>{
+  window.location.href='/mainpage'
+}
+
 useEffect(()=>{
   console.log('will sign out in 30 min')
   const interval = setTimeout(() => {
@@ -170,7 +183,7 @@ if(!props.Token){
         (
         <PageContainer>
             <ProSidebarContainer collapsed={false}>
-            <SideBarHeader>
+            <SideBarHeader onClick={()=>gotoMainPage()}>
               <img src= '/Images/redseer_strategy.svg' alt= ''/>
             </SideBarHeader>
               <Menu>
@@ -186,18 +199,18 @@ if(!props.Token){
                   })}
                 </SubMenu> */}
                 <MenuItem></MenuItem>
-                <MenuItem></MenuItem>
+                <MenuItem><h5>{window.sessionStorage.getItem("ReportName")}</h5></MenuItem>
                 {myPages.map((repver)=>{
                   return repver.children_page_name.length===0?(
                     <MenuItem onClick={()=>handleClick(repver.link)}>
                       {repver.page_name}
                     </MenuItem>
                   ):(
-                    <SubMenu title={repver.page_name}>
+                    <SubMenu title={repver.page_name} >
                       {repver.children_page_name.map(i=>{
                           return(
                             <MenuItem key={i.id} onClick={()=>handleClick(i.link)}>
-                                <div style = {{fontFamily:'Arial'}}>{'\u2022'}&nbsp;{i.page_name}</div>
+                                <div style = {{fontFamily:'Arial'}}>{'\u2022'}&nbsp;&nbsp;{i.page_name}</div>
                             </MenuItem>
                           )
                         })}
@@ -248,12 +261,13 @@ if(!props.Token){
         </PageContainer>
         ):(
           <PageContainer>
-            <ProSidebarContainer collapsed={toggle}>
-            <SideBarHeader>
-              <Button onClick={()=>handleToggle()}/>
+            <ProSidebarContainer collapsed={toggle} width={200}>
+            <SideBarHeader onClick={()=>gotoMainPage()}>
+              <img src= '/Images/redseer_strategy.svg' alt= ''/>
             </SideBarHeader>
               <Menu>
                 <MenuItem></MenuItem>
+                <MenuItem>{window.sessionStorage.getItem("ReportName")}</MenuItem>
                 <MenuItem></MenuItem>
                 {myPages.map((repver)=>{
                   return repver.children_page_name.length===0?(
@@ -275,12 +289,13 @@ if(!props.Token){
               </Menu>
             </ProSidebarContainer>
           <ReportContainer>
-                    <User>
-                    <a><img src = "/images/user.svg" alt = ""/></a>
-                        <SignOut onClick={handleSignOut}>
-                            <a>Sign Out</a>
-                        </SignOut>
-                    </User>
+            <User>
+              <ToggleButton onClick={()=>handleToggle()}><img src = "/Images/menu.png"/></ToggleButton>
+              <a><img src = "/Images/user.svg" alt = ""/></a>
+                  <SignOut onClick={handleSignOut}>
+                      <a>Sign Out</a>
+                  </SignOut>
+            </User>
             <PowerBIEmbed
               embedConfig = {{
                 type: 'report',   // Supported types: report, dashboard, tile, visual and qna
@@ -323,12 +338,22 @@ export default Report;
 const PageContainer =styled.div`
 display:flex;
 `
+const ToggleButton = styled.button`
+/* height:20px; */
+/* width:70px; */
+border:none;
+background-color:white;
+
+`
 
 const ReportContainer = styled.div`
-width:79%
+width:80%;
+@media (max-width:768px){
+    width:100%
+}
 `
 const ProSidebarContainer = styled(ProSidebar)`
-width:21%
+width:20%
 `
 const SidebarContainer = styled.div`
 width:21%
@@ -354,10 +379,20 @@ text-align:center;
 &:hover{
   background-color: #ddd;
 }
+
+@media (max-width:768px){
+  display:none;
+  position:absolute;
+  top:48px;
+  right:23px
+}
 `
 
 const User = styled.div`
-background-color:#F6F6F6;
+/* background-color:#F6F6F6; */
+/* display:flex;
+align-items:center; */
+/* justify-content:center; */
 img{
     float:right;
     width:48px;
