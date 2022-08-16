@@ -208,7 +208,7 @@ if(!props.Token){
         <PageContainer>
             <ProSidebarContainer collapsed={false}>
             <SideBarHeader onClick={()=>gotoMainPage()}>
-              <img src= '/Images/redseer_strategy.svg' alt= ''/>
+              <img src= '/Images/Benchmarks_logo_strategy.svg' alt= ''/>
             </SideBarHeader>
               <Menu>
                 {/* <MenuItem></MenuItem>
@@ -287,7 +287,7 @@ if(!props.Token){
           <PageContainer>
             <ProSidebarContainer collapsed={toggle} width={200}>
             <SideBarHeader onClick={()=>gotoMainPage()}>
-              <img src= '/Images/redseer_strategy.svg' alt= ''/>
+              <img src= '/Images/Benchmarks_logo_strategy.svg' alt= ''/>
             </SideBarHeader>
               <Menu>
                 <MenuItem></MenuItem>

@@ -46,11 +46,12 @@ function Mainpage(props) {
     }
     console.log('real_email=', window.sessionStorage.getItem("email"))
     console.log('curr_id=', curr_id)
-    fetch(`http://127.0.0.1:8000/report_access/?email=${curr_id}`, {
+    let prop_token = window.sessionStorage.getItem("token")
+    fetch(`http://127.0.0.1:8000/report_access/?client_id=${curr_id}`, {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
-        // Authorization: `Token ${props.Token}`
+        Authorization: `Token ${prop_token}`
     },
     // body: JSON.stringify({})
     })
@@ -196,7 +197,7 @@ useEffect(()=>{
     <PageContainer>
       <NavBar>
           <Logo>
-            <img src = '/Images/redseer_strategy.svg'/>
+            <img src = '/Images/Benchmarks_logo_strategy.svg'/>
           </Logo>
           <User>
               <a><img src = "/Images/user.svg" alt = ""/></a>

@@ -62,7 +62,7 @@ const FigmaLogin = (props) => {
         <Login>
             <LoginInner>
                 {/* <h3>redseer</h3> */}
-                <img src = '/Images/RedseerLogo.svg' alt=''/>
+                <img src = '/Images/BenchMarks_logo.svg' alt=''/>
             <form onSubmit={(e)=>login(e)}>
                 <h4>Sign In!</h4>
                 <div className="form-group">
@@ -82,7 +82,7 @@ const FigmaLogin = (props) => {
         <Login>
             <LoginInner>
                 {/* <h3>redseer</h3> */}
-                <img src = '/Images/RedseerLogo.svg' alt=''/>
+                <img src = '/Images/BenchMarks_logo.svg' alt=''/>
             <form onSubmit={(e)=>login(e)}>
                 <h4>Sign In!</h4>
                 <div className="form-group">

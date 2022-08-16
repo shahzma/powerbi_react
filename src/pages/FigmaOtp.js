@@ -83,7 +83,7 @@ const FigmaOtp = (props) => {
     <PageContainer>
     <Login>
         <LoginInner>
-            <img src = '/Images/RedseerLogo.svg' alt=''/>
+            <img src = '/Images/BenchMarks_logo.svg' alt=''/>
         <form onSubmit={(e)=>submitOTP(e)}>
             <h4>Please Enter OTP</h4>
             {wrongOTP?<div style={{color:'red'}}>Wrong OTP</div>:<div></div>}
@@ -104,7 +104,7 @@ const FigmaOtp = (props) => {
     <PageContainer>
     <Login>
         <LoginInner>
-            <img src = '/Images/RedseerLogo.svg' alt=''/>
+            <img src = '/Images/BenchMarks_logo.svg' alt=''/>
         <form onSubmit={(e)=>submitOTP(e)}>
             <h4>Please Enter OTP</h4>
             <div className="form-group">
