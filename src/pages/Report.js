@@ -245,7 +245,7 @@ if(!props.Token){
             </ProSidebarContainer>
           <ReportContainer>
                     <User>
-                    <a><img src = "/images/user.svg" alt = ""/></a>
+                    <a><img src = "/Images/user.svg" alt = ""/></a>
                         <SignOut onClick={handleSignOut}>
                             <a>Sign Out</a>
                         </SignOut>
