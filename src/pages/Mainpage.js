@@ -47,7 +47,7 @@ function Mainpage(props) {
     console.log('real_email=', window.sessionStorage.getItem("email"))
     console.log('curr_id=', curr_id)
     let prop_token = window.sessionStorage.getItem("token")
-    fetch(`http://127.0.0.1:8000/report_access/?client_id=${curr_id}`, {
+    fetch(`${process.env.REACT_APP_API_ENDPOINT}report_access/?client_id=${curr_id}`, {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ function Mainpage(props) {
     )
     .catch( error => console.error(error))
 
-    fetch(`http://127.0.0.1:8000/report/`,{
+    fetch(`${process.env.REACT_APP_API_ENDPOINT}report/`,{
       method:'GET',
       headers:{
         'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ let handleSignOut = ()=>{
   console.log('signout')
   let prop_email = window.sessionStorage.getItem("email")
   let prop_token = window.sessionStorage.getItem("token")
-  fetch(`http://127.0.0.1:8000/logout/?email=${prop_email}`,{
+  fetch(`${process.env.REACT_APP_API_ENDPOINT}logout/?email=${prop_email}`,{
       method:'GET',
       headers:{
         'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ useEffect(()=>{
     console.log("check token");
     let prop_token = window.sessionStorage.getItem("token")
     let prop_email = window.sessionStorage.getItem("email")
-    fetch(`http://127.0.0.1:8000/validateToken/?email=${prop_email}`,{
+    fetch(`${process.env.REACT_APP_API_ENDPOINT}validateToken/?email=${prop_email}`,{
       method:'GET',
       headers:{
         'Content-Type': 'application/json',

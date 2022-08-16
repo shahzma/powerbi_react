@@ -41,7 +41,7 @@ const FigmaOtp = (props) => {
         const uploadData = new FormData();
         uploadData.append('email', props.email);
         uploadData.append('OTP', otp);
-        fetch('http://127.0.0.1:8000/authorise/login/', {
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}authorise/login/`, {
             method: 'POST',
             body: uploadData
           }).then(data => data.json())

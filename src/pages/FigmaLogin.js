@@ -31,7 +31,7 @@ const FigmaLogin = (props) => {
         // setLoggedIn(true)
       console.log(email)
       props.getRealEmail(email)
-      fetch(`http://127.0.0.1:8000/authorise/login/?email=${email}`, {
+      fetch(`${process.env.REACT_APP_API_ENDPOINT}authorise/login/?email=${email}`, {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
       })
