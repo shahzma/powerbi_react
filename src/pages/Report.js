@@ -7,10 +7,14 @@ import React, { useState, useEffect } from 'react';
 import { ProSidebar, Menu, MenuItem, SubMenu} from 'react-pro-sidebar';
 import {Link, Navigate} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
-import { FaBeer } from 'react-icons/fa';
-import{MdOutlineSummarize} from 'react-icons/md';
-// import { ImProfile } from "react-icons/im";
+import { FaAmazon, FaTrafficLight,FaUsers, FaDeezer,FaAlignLeft, FaKeyboard } from 'react-icons/fa';
+import{MdOutlineSummarize, MdMonetizationOn, MdInsights, MdDashboard} from 'react-icons/md';
+import { ImProfile } from "react-icons/im";
+import {SiCoveralls, SiSimpleanalytics} from "react-icons/si"
+import {FiUsers} from "react-icons/fi"
+import {AiOutlineFileSearch} from 'react-icons/ai'
 import { GiHamburgerMenu } from "react-icons/gi";
+import { BiCategory, BiBookContent } from "react-icons/bi";
 
 
 // import 'react-pro-sidebar/dist/css/styles.css';
@@ -27,6 +31,26 @@ function Report(props) {
   const [ newUrl, setNewUrl ] = useState('');
   const [width, setWidth] = useState(window.innerWidth);
   const [ toggle, setToggle ] = useState(false);
+  let [iconDict, setIconDict] = useState({
+    'Sector Summary':<MdOutlineSummarize/>,
+    'Company Profile':<ImProfile />,
+    'Overall':<SiCoveralls/>,
+    'Category':<BiCategory/>,
+    'Amazon Specific':<FaAmazon />,
+    'Traffic':<FaTrafficLight/>,
+    'Engagement':<FaUsers/>,
+    'Streams Analysis':<SiSimpleanalytics/>,
+    'Monetization':<MdMonetizationOn/>,
+    'User Profile':<FiUsers/>,
+    'Engagement Profile':<AiOutlineFileSearch/>,
+    'Sector Insights':<MdInsights/>,
+    'Content':<BiBookContent/>,
+    'Top Line Estimates':<FaDeezer/>,
+    'Fulfilment Metrics':<FaAlignLeft/>,
+    'Unit Economics':<MdMonetizationOn/>,
+    'Keyboard':<FaKeyboard/>,
+    'Dashboard':<MdDashboard/>
+  })
 
   // runs on first render
 
@@ -200,13 +224,13 @@ if(!props.Token){
                 </SubMenu> */}
                 <MenuItem></MenuItem>
                 <MenuItem><h5>{window.sessionStorage.getItem("ReportName")}</h5></MenuItem>
-                {myPages.map((repver)=>{
+                {myPages.map((repver,index)=>{
                   return repver.children_page_name.length===0?(
-                    <MenuItem onClick={()=>handleClick(repver.link)}>
+                    <MenuItem  icon={iconDict[repver.page_name]} onClick={()=>handleClick(repver.link)}>
                       {repver.page_name}
                     </MenuItem>
                   ):(
-                    <SubMenu title={repver.page_name} >
+                    <SubMenu title={repver.page_name} icon={iconDict[repver.page_name]}>
                       {repver.children_page_name.map(i=>{
                           return(
                             <MenuItem key={i.id} onClick={()=>handleClick(i.link)}>
@@ -271,11 +295,11 @@ if(!props.Token){
                 <MenuItem></MenuItem>
                 {myPages.map((repver)=>{
                   return repver.children_page_name.length===0?(
-                    <MenuItem onClick={()=>handleClick(repver.link)}>
+                    <MenuItem icon={iconDict[repver.page_name]} onClick={()=>handleClick(repver.link)}>
                       {repver.page_name}
                     </MenuItem>
                   ):(
-                    <SubMenu title={repver.page_name}>
+                    <SubMenu title={repver.page_name} icon={iconDict[repver.page_name]}>
                       {repver.children_page_name.map(i=>{
                           return(
                             <MenuItem key={i.id} onClick={()=>handleClick(i.link)}>
