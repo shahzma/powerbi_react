@@ -84,7 +84,7 @@ function Report(props) {
     }
     let prop_token = window.sessionStorage.getItem("token")
     // console.log('propsrep=', propsrep)
-    fetch(`${process.env.REACT_APP_API_ENDPOINT}MSAccessToken/?rep=${propsrep}`, {
+    fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}`, {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ function Report(props) {
     .catch( error => console.error(error))
     
     // replace ott audio below with propsrep
-    fetch(`${process.env.REACT_APP_API_ENDPOINT}PageReports/?rep=${propsrep}`, {
+    fetch(`${process.env.REACT_APP_API_ENDPOINT}/PageReports/?rep=${propsrep}`, {
       method:'GET',
       headers:{
         'Content-Type': 'application/json',
@@ -157,6 +157,10 @@ let gotoMainPage = ()=>{
   window.location.href='/mainpage'
 }
 
+let gauravfn = () =>{
+  alert('Hello')
+}
+
 useEffect(()=>{
   console.log('will sign out in 30 min')
   const interval = setTimeout(() => {
@@ -172,7 +176,7 @@ useEffect(()=>{
     console.log("check token");
     let prop_token = window.sessionStorage.getItem("token")
     let prop_email = window.sessionStorage.getItem("email")
-    fetch(`${process.env.REACT_APP_API_ENDPOINT}validateToken/?email=${prop_email}`,{
+    fetch(`${process.env.REACT_APP_API_ENDPOINT}/validateToken/?email=${prop_email}`,{
       method:'GET',
       headers:{
         'Content-Type': 'application/json',
@@ -208,20 +212,9 @@ if(!props.Token){
         <PageContainer>
             <ProSidebarContainer collapsed={false}>
             <SideBarHeader onClick={()=>gotoMainPage()}>
-              <img src= '/Images/Benchmarks_logo_strategy.svg' alt= ''/>
+              <img src= '/Images/bold_strategy.svg' alt= ''/>
             </SideBarHeader>
               <Menu>
-                {/* <MenuItem></MenuItem>
-                <MenuItem></MenuItem>
-                <SubMenu title="Pages">
-                  {pages.map(repver => {
-                    return(
-                      <MenuItem key = {repver.order} onClick={()=>handleClick(repver.name)}>
-                        <div style = {{fontFamily:'Arial'}}>{repver.order+1}. {repver.displayName}</div>
-                      </MenuItem>
-                    )
-                  })}
-                </SubMenu> */}
                 <MenuItem></MenuItem>
                 <MenuItem><h5>{window.sessionStorage.getItem("ReportName")}</h5></MenuItem>
                 {myPages.map((repver,index)=>{
@@ -287,7 +280,7 @@ if(!props.Token){
           <PageContainer>
             <ProSidebarContainer collapsed={toggle} width={200}>
             <SideBarHeader onClick={()=>gotoMainPage()}>
-              <img src= '/Images/Benchmarks_logo_strategy.svg' alt= ''/>
+              <img src= '/Images/bold_strategy.svg' alt= ''/>
             </SideBarHeader>
               <Menu>
                 <MenuItem></MenuItem>

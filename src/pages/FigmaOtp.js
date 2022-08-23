@@ -41,7 +41,7 @@ const FigmaOtp = (props) => {
         const uploadData = new FormData();
         uploadData.append('email', props.email);
         uploadData.append('OTP', otp);
-        fetch(`${process.env.REACT_APP_API_ENDPOINT}authorise/login/`, {
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/authorise/login/`, {
             method: 'POST',
             body: uploadData
           }).then(data => data.json())
@@ -83,7 +83,7 @@ const FigmaOtp = (props) => {
     <PageContainer>
     <Login>
         <LoginInner>
-            <img src = '/Images/BenchMarks_logo.svg' alt=''/>
+            <img src = '/Images/new_bold_logo.svg' alt=''/>
         <form onSubmit={(e)=>submitOTP(e)}>
             <h4>Please Enter OTP</h4>
             {wrongOTP?<div style={{color:'red'}}>Wrong OTP</div>:<div></div>}
@@ -104,7 +104,7 @@ const FigmaOtp = (props) => {
     <PageContainer>
     <Login>
         <LoginInner>
-            <img src = '/Images/BenchMarks_logo.svg' alt=''/>
+            <img src = '/Images/bold_logo.svg' alt=''/>
         <form onSubmit={(e)=>submitOTP(e)}>
             <h4>Please Enter OTP</h4>
             <div className="form-group">
@@ -147,9 +147,9 @@ const LoginInner = styled.div`
   padding: 40px 55px 45px 55px;
   img{
     position:absolute;
-    width: 176px;
-    height: 45px;
-    left: 22.5vw;
+    width: 210px;
+    height: 90px;
+    left: 21vw;
     top: 160px;
   }
     

@@ -31,7 +31,7 @@ const FigmaLogin = (props) => {
         // setLoggedIn(true)
       console.log(email)
       props.getRealEmail(email)
-      fetch(`${process.env.REACT_APP_API_ENDPOINT}authorise/login/?email=${email}`, {
+      fetch(`${process.env.REACT_APP_API_ENDPOINT}/authorise/login/?email=${email}`, {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
       })
@@ -62,7 +62,7 @@ const FigmaLogin = (props) => {
         <Login>
             <LoginInner>
                 {/* <h3>redseer</h3> */}
-                <img src = '/Images/BenchMarks_logo.svg' alt=''/>
+                <img src = '/Images/new_bold_logo.svg' alt=''/>
             <form onSubmit={(e)=>login(e)}>
                 <h4>Sign In!</h4>
                 <div className="form-group">
@@ -82,7 +82,7 @@ const FigmaLogin = (props) => {
         <Login>
             <LoginInner>
                 {/* <h3>redseer</h3> */}
-                <img src = '/Images/BenchMarks_logo.svg' alt=''/>
+                <img src = '/Images/bold_logo.svg' alt=''/>
             <form onSubmit={(e)=>login(e)}>
                 <h4>Sign In!</h4>
                 <div className="form-group">
@@ -127,9 +127,9 @@ const LoginInner = styled.div`
   padding: 40px 55px 45px 55px;
   img{
     position:absolute;
-    width: 176px;
-    height: 45px;
-    left: 22.5vw;
+    width: 210px;
+    height: 90px;
+    left: 21vw;
     top: 160px;
   }
     
