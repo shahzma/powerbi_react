@@ -15,10 +15,21 @@ import {FiUsers} from "react-icons/fi"
 import {AiOutlineFileSearch} from 'react-icons/ai'
 import { GiHamburgerMenu } from "react-icons/gi";
 import { BiCategory, BiBookContent } from "react-icons/bi";
+import $ from 'jquery';
+import Modal from 'react-modal';
+import { firestore, database } from "../utils/auth/firebase";
+import { v4 as uuid } from "uuid";
 
-
-// import 'react-pro-sidebar/dist/css/styles.css';
-
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
 
 function Report(props) {
 //get id and reporturl and accesstoken from click
@@ -31,8 +42,11 @@ function Report(props) {
   const [ newUrl, setNewUrl ] = useState('');
   const [width, setWidth] = useState(window.innerWidth);
   const [ toggle, setToggle ] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [comments, setComments] = useState({});
   let [iconDict, setIconDict] = useState({
     'Sector Summary':<MdOutlineSummarize/>,
+    'Sector Summary 2.0':<MdOutlineSummarize/>,
     'Company Profile':<ImProfile />,
     'Overall':<SiCoveralls/>,
     'Category':<BiCategory/>,
@@ -52,10 +66,22 @@ function Report(props) {
     'Dashboard':<MdDashboard/>
   })
 
+  let subtitle;
+
   // runs on first render
 
   function handleWindowSizeChange() {
     setWidth(window.innerWidth);
+  }
+  function openModal() {
+    setIsOpen(true);
+  }
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    subtitle.style.color = '#f00';
+  }
+  function closeModal() {
+    setIsOpen(false);
   }
 
   useEffect(() => {
@@ -161,6 +187,84 @@ let gauravfn = () =>{
   alert('Hello')
 }
 
+const postCommentOnQuestion = async (
+  comment,
+  formId,
+  instanceId,
+  questionId,
+  callback
+) => {
+  // console.log("Came Inside", { comment });
+  if (comment?.message?.length) {
+  let { author, author_email, author_display_picture, message } = comment;
+  author_display_picture = "https://lh3.googleusercontent.com/a/AATXAJx2Vaf3laKf8D7hz6W6c9YgjOK8rEqLsZEk9mzS=s96-c"
+  const commentObj = {
+      id: `RC_${uuid()?.replace(/-/g, "_")}`,
+      author,
+      author_email,
+      author_display_picture,
+      created_at: new Date().toUTCString(),
+      comment: message,
+      replies: [],
+  };
+
+  // console.log({ commentObj });
+
+  const commentsRef = database.ref(
+      `comments/${formId}/${instanceId}/${questionId}`
+  );
+
+  if (comments[formId] && comments[formId][questionId]) {
+      try {
+      commentsRef.set([...comments[formId][questionId], commentObj]);
+      if (callback) callback(null);
+      } catch (error) {
+      if (callback) callback(error);
+      }
+  } else {
+      try {
+      commentsRef.set([commentObj]);
+      if (callback) callback(null);
+      } catch (error) {
+      if (callback) callback(error);
+      }
+  }
+  } else {
+  throw new Error("Invalid comment!");
+  }
+};
+
+const postComment = async(comment, formId, instanceId, questionId)=>{
+  if (comment?.message?.length){
+    let { author, author_email, author_display_picture, message } = comment;
+    author_display_picture = "https://lh3.googleusercontent.com/a/AATXAJx2Vaf3laKf8D7hz6W6c9YgjOK8rEqLsZEk9mzS=s96-c"
+    const commentObj = {
+        id: `RC_${uuid()?.replace(/-/g, "_")}`,
+        author,
+        author_email,
+        author_display_picture,
+        created_at: new Date().toUTCString(),
+        comment: message,
+        replies: [],
+    };
+
+  // console.log({ commentObj });
+
+  const commentsRef = database.ref(
+      `comments/${formId}/${instanceId}/${questionId}`
+  );
+
+  if (comments[formId] && comments[formId][questionId]){
+    commentsRef.set([...comments[formId][questionId], commentObj]);
+  }
+
+  }
+  else
+  {
+    throw new Error("Invalid comment!");
+  }
+};
+
 useEffect(()=>{
   console.log('will sign out in 30 min')
   const interval = setTimeout(() => {
@@ -237,43 +341,59 @@ if(!props.Token){
               </Menu>
             </ProSidebarContainer>
           <ReportContainer>
-                    <User>
+                <User>
+                    {/* <Button onClick={openModal}>Comment</Button> */}
+                    <Modal
+                      isOpen={modalIsOpen}
+                      onAfterOpen={afterOpenModal}
+                      onRequestClose={closeModal}
+                      style={customStyles}
+                      contentLabel="Example Modal"
+                    >
+                      <h4 ref={(_subtitle) => (subtitle = _subtitle)}>Add comment</h4>
+                      <div></div>
+                      <form>
+                        <input />
+                        <button>Submit</button>
+                      </form>
+                    </Modal>
                     <a><img src = "/Images/user.svg" alt = ""/></a>
                         <SignOut onClick={handleSignOut}>
                             <a>Sign Out</a>
                         </SignOut>
-                    </User>
-            <PowerBIEmbed
-              embedConfig = {{
-                type: 'report',   // Supported types: report, dashboard, tile, visual and qna
-                id: reportId,
-                //get from props
-                // embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=f87ed8df-7267-4a8a-835f-6a786edf57ed&groupId=d786d974-91ce-43e8-a52c-c0e6b402f74f&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLUlORElBLUNFTlRSQUwtQS1QUklNQVJZLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0IiwiZW1iZWRGZWF0dXJlcyI6eyJtb2Rlcm5FbWJlZCI6dHJ1ZSwiYW5ndWxhck9ubHlSZXBvcnRFbWJlZCI6dHJ1ZSwiY2VydGlmaWVkVGVsZW1ldHJ5RW1iZWQiOnRydWUsInVzYWdlTWV0cmljc1ZOZXh0Ijp0cnVlLCJza2lwWm9uZVBhdGNoIjp0cnVlfX0%3d&pageName=ReportSection19fe81eb665f9dc58332&w=2',
-                embedUrl:newUrl,
-                accessToken: EmbedToken,
-                tokenType: models.TokenType.Embed,
-                settings: {
-                  panes: {
-                    filters: {
-                      expanded: false,
-                      visible: false
-                    }
-                  },
+              </User>
+              <PowerBIEmbed
+                embedConfig = {{
+                  type: 'report',   // Supported types: report, dashboard, tile, visual and qna
+                  id: reportId,
+                  //get from props
+                  // embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=f87ed8df-7267-4a8a-835f-6a786edf57ed&groupId=d786d974-91ce-43e8-a52c-c0e6b402f74f&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLUlORElBLUNFTlRSQUwtQS1QUklNQVJZLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0IiwiZW1iZWRGZWF0dXJlcyI6eyJtb2Rlcm5FbWJlZCI6dHJ1ZSwiYW5ndWxhck9ubHlSZXBvcnRFbWJlZCI6dHJ1ZSwiY2VydGlmaWVkVGVsZW1ldHJ5RW1iZWQiOnRydWUsInVzYWdlTWV0cmljc1ZOZXh0Ijp0cnVlLCJza2lwWm9uZVBhdGNoIjp0cnVlfX0%3d&pageName=ReportSection19fe81eb665f9dc58332&w=2',
+                  embedUrl:newUrl,
+                  accessToken: EmbedToken,
+                  tokenType: models.TokenType.Embed,
+                  settings: {
+                    panes: {
+                      filters: {
+                        expanded: false,
+                        visible: false,
+                      },
+                    },
+                    navContentPaneEnabled:false
+                  }
+                }}
+                eventHandlers = {
+                  new Map([
+                    ['loaded', function () {console.log('Report loaded');}],
+                    ['rendered', function () {console.log('Report rendered');}],
+                    ['error', function (event) {console.log(event.detail);}]
+                  ])
                 }
-              }}
-              eventHandlers = {
-                new Map([
-                  ['loaded', function () {console.log('Report loaded');}],
-                  ['rendered', function () {console.log('Report rendered');}],
-                  ['error', function (event) {console.log(event.detail);}]
-                ])
-              }
-            
-              cssClassName = { "report-style-class" }
-              getEmbeddedComponent = { (embeddedReport) => {
-                window.report = embeddedReport ;
-              }}
-                  />
+              
+                cssClassName = { "report-style-class" }
+                getEmbeddedComponent = { (embeddedReport) => {
+                  window.report = embeddedReport ;
+                }}
+                    />
           </ReportContainer>
         </PageContainer>
         ):(
