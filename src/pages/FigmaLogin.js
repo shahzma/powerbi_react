@@ -74,7 +74,7 @@ const FigmaLogin = (props) => {
             </LoginInner>
         </Login>
         <SideImg>
-            <img src = '/Images/sidegraph.svg' alt = ''/>
+            <img src = '/Images/sidegraph_be.svg' alt = ''/>
         </SideImg>
     </PageContainer>
     ):(
