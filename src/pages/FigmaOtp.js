@@ -83,7 +83,7 @@ const FigmaOtp = (props) => {
     <PageContainer>
     <Login>
         <LoginInner>
-            <img src = '/Images/new_bold_logo.svg' alt=''/>
+            <img src = '/Images/benchmark.svg' alt=''/>
         <form onSubmit={(e)=>submitOTP(e)}>
             <h4>Please Enter OTP</h4>
             {wrongOTP?<div style={{color:'red'}}>Wrong OTP</div>:<div></div>}

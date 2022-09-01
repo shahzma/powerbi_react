@@ -62,7 +62,7 @@ const FigmaLogin = (props) => {
         <Login>
             <LoginInner>
                 {/* <h3>redseer</h3> */}
-                <img src = '/Images/new_bold_logo.svg' alt=''/>
+                <img src = '/Images/benchmark.svg' alt=''/>
             <form onSubmit={(e)=>login(e)}>
                 <h4>Sign In!</h4>
                 <div className="form-group">

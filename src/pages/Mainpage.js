@@ -197,7 +197,7 @@ useEffect(()=>{
     <PageContainer>
       <NavBar>
           <Logo>
-            <img src = '/Images/bold_strategy.svg'/>
+            <img src = '/Images/benchmark_side.svg'/>
           </Logo>
           <User>
               <a><img src = "/Images/user.svg" alt = ""/></a>
@@ -213,7 +213,7 @@ useEffect(()=>{
                 <Wrap key={repver.id}>
                   <UpperRow>{repver.report_name}</UpperRow>
                   <MidRow>
-                    {(repver.players.slice(0, 3)).join(',  ')}
+                    {(repver.players.slice(0, 3)).join(',  ')} & more
                     {/* {ReportPlayer.find(element=> element.report_name === repver.report_name)?.player_name} */}
                     {/* {console.log('rep_player=',(ReportPlayer.find(element=> element.report_name === repver.report_name)).player_name)} */}
                   </MidRow>
@@ -312,6 +312,9 @@ height:70px;
 
 const Logo = styled.div`
 margin-left:4.5vw;
+img{
+  height:50px;
+}
 `
 const SignOut = styled.div`
 display:none;

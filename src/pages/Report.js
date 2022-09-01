@@ -19,6 +19,7 @@ import $ from 'jquery';
 import Modal from 'react-modal';
 import { firestore, database } from "../utils/auth/firebase";
 import { v4 as uuid } from "uuid";
+import { useParams, withRouter } from "react-router";
 
 const customStyles = {
   content: {
@@ -44,6 +45,14 @@ function Report(props) {
   const [ toggle, setToggle ] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [comments, setComments] = useState({});
+  const [form, setForm] = useState({});
+  // const { form_id, instanceId, question_id } = useParams();
+  const [ form_id, setForm_id ] = useState('689');
+  const [commentsData, setCommentsData] = useState({
+    currentQuestion: 1,
+    currentQuestionId: "",
+    comments: [],
+  });
   let [iconDict, setIconDict] = useState({
     'Sector Summary':<MdOutlineSummarize/>,
     'Sector Summary 2.0':<MdOutlineSummarize/>,
@@ -75,6 +84,7 @@ function Report(props) {
   }
   function openModal() {
     setIsOpen(true);
+    onClickComments(1, 55);
   }
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
@@ -265,6 +275,77 @@ const postComment = async(comment, formId, instanceId, questionId)=>{
   }
 };
 
+const getFormQuestionComments = async (
+  formId,
+  questionId,
+  instanceId,
+  callback
+) => {
+  console.log('formId_call=', formId.length)
+  if (formId?.length && questionId?.toString().length) {
+    const prevFormComments = comments[formId];
+    if (false) {
+      if (prevFormComments[questionId]?.length) {
+        console.log("Yes found");
+        callback(prevFormComments[questionId]);
+      }
+    } else {
+      const formRef = database.ref(
+        `/comments/${formId}/${instanceId}/${questionId}`
+      );
+      formRef.on("value", async (snap) => {
+        const commentsData = (await snap.val()) ?? [];
+        // console.log({ commentsData });
+        // console.log("Not found");
+        if (prevFormComments) {
+          setComments((curr) => ({
+            ...curr,
+            [formId]: { ...curr[formId], [questionId]: commentsData },
+          }));
+        } else {
+          setComments((curr) => ({
+            ...curr,
+            [formId]: { [questionId]: commentsData },
+          }));
+        }
+        callback(commentsData);
+      });
+    }
+  } else {
+    throw new Error("Invalid questionId or FormId");
+  }
+};
+
+const onClickComments = async (questionNo, questionId) => {
+  setCommentsData({
+    // currentQuestion: questionNo,
+    currentQuestionId: questionId,
+    comments: [],
+  });
+  let form_curr_instance_id = 689
+  console.log('commetns = ', questionId)
+  console.log('form_id = ', form_id)
+  console.log('curr_instance_id = ', form_curr_instance_id)
+  // if (!commentsOpen) {
+  await getFormQuestionComments(
+    form_id,
+    questionId,
+    form_curr_instance_id,
+    (comments) => {
+      setCommentsData((curr) => ({
+        ...curr,
+        // currentQuestion: questionNo,
+        currentQuestionId: questionId,
+        comments,
+      }));
+    }
+  );
+  console.log('commentsData = ',commentsData)
+  // console.log({ questionId, form_id });
+  // }
+};
+
+
 useEffect(()=>{
   console.log('will sign out in 30 min')
   const interval = setTimeout(() => {
@@ -316,7 +397,7 @@ if(!props.Token){
         <PageContainer>
             <ProSidebarContainer collapsed={false}>
             <SideBarHeader onClick={()=>gotoMainPage()}>
-              <img src= '/Images/bold_strategy.svg' alt= ''/>
+              <img src= '/Images/benchmark_side.svg' alt= ''/>
             </SideBarHeader>
               <Menu>
                 <MenuItem></MenuItem>
@@ -497,7 +578,10 @@ width:21%
 `
 const SideBarHeader = styled.div`
 padding-left:20px;
-padding-top:20px;
+padding-top:10px;
+img{
+  height:50px;
+}
 `
 
 const SignOut = styled.div`
