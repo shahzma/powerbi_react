@@ -1,0 +1,340 @@
+@import "../../utils/common.scss";
+
+.shareContainer {
+  @extend .flexRow;
+
+  .modal {
+    background: #fffffe;
+
+    border: 2.75292px solid #ececec;
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: 1.2rem 1.6rem;
+    @media screen and (max-width: 400px) {
+      width: 100%;
+    }
+    .header {
+      @extend .flexRow;
+      margin-bottom: 10px;
+      justify-content: flex-start;
+
+      > h4 {
+        font-style: normal;
+        font-weight: bold;
+        font-size: 1rem;
+        text-transform: uppercase;
+        color: #474747;
+      }
+      > :last-child {
+        margin-left: auto;
+        color: #969799;
+      }
+    }
+    .hLine {
+      height: 1px;
+      background-color: #ececec;
+      margin: 1rem 0;
+      width: 100%;
+    }
+    .inputContainer {
+      @extend .flexRow;
+      justify-content: space-between;
+      margin: 5px 0px;
+      input[type="email"] {
+        border-radius: 10px 0px 0px 10px;
+        width: 300px;
+        background-color: #f5f5f5;
+        border-style: none;
+        padding: 10px 15px;
+        outline: none;
+        flex: 1;
+      }
+      Button {
+        background-color: var(--clr-primary);
+        color: white;
+        font-weight: 700;
+        text-transform: capitalize;
+        border-radius: 0px 10px 10px 0px;
+      }
+    }
+    .suggestionsContainer {
+      height: 180px;
+      overflow-y: auto;
+      .suggestion {
+        @extend .flexRow;
+        justify-content: flex-start;
+        > * {
+          margin: 10px 5px;
+        }
+        .imageContainer {
+          height: 35px;
+          width: 35px;
+          border-radius: 50%;
+          border: 1px solid rgb(128, 125, 125);
+          overflow: hidden;
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+        h4 {
+          font-size: 0.9rem;
+        }
+        p {
+          font-size: 0.9rem;
+          color: #969799;
+        }
+      }
+
+      .suggestionWrapper {
+        @extend .flexRow;
+        justify-content: space-between;
+        cursor: pointer;
+        padding-right: 10px;
+        border-radius: 10px;
+      }
+      .suggestionWrapper:hover {
+        background: rgb(240, 238, 238);
+      }
+    }
+    .otherSuggestions {
+      @extend .flexRow;
+      cursor: pointer;
+      justify-content: flex-start;
+      color: #969799;
+      > * {
+        margin: 10px 5px;
+      }
+      p {
+        color: #969799;
+      }
+    }
+    .footer {
+      @extend .flexRow;
+      justify-content: space-between;
+      align-content: space-between;
+      @media screen and (max-width: 400px) {
+        flex-direction: column;
+        align-items: flex-start;
+        .textContainer {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          :nth-child(1) {
+            margin: 5px 10px 5px 0px;
+          }
+        }
+      }
+      .fillingAccess {
+        padding: 10px;
+      }
+      .textContainer {
+        // @extend .flexRow;
+        // justify-content: space-between;
+
+        // width: 100%;
+        // > * {
+        //   padding: 10px;
+        // }
+        // h4 {
+        //   @extend .flexRow;
+        //   justify-content: space-between;
+        // }
+
+        .copyLinkContainer {
+          @extend .flexRow;
+          cursor: pointer;
+          justify-content: flex-start;
+          border-radius: 5px;
+        }
+        .copyLinkContainer:hover {
+          background-color: rgb(240, 238, 238);
+        }
+      }
+      select {
+        cursor: pointer;
+        width: 170px;
+        padding: 5px;
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        border: 2px solid black;
+      }
+    }
+    .assignedUsers {
+      @extend .flexRow;
+      justify-content: flex-start;
+      align-items: center;
+      margin: 1rem 0;
+      padding: 0.4rem 0;
+      width: 380px;
+      overflow-y: hidden;
+      overflow-x: auto;
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba($color: #000000, $alpha: 0.1) !important;
+      }
+
+      &::-webkit-scrollbar {
+        height: 5px !important;
+        width: 5px !important;
+      }
+
+      span {
+        // border: 2px solid var(--clr-primary);
+        background: var(--clr-primary);
+        border-radius: 20px;
+        padding: 0.4rem 8px;
+        font-size: 0.7rem;
+        color: white;
+        margin-left: 5px;
+
+        &:nth-child(1) {
+          margin-left: 0px;
+        }
+      }
+    }
+    .manageAssignedToContainer {
+      background: #fffffe;
+
+      .inputContainer {
+        input[type="email"] {
+          border-radius: 10px;
+          width: 300px;
+          background-color: #f5f5f5;
+          border-style: none;
+          padding: 10px 15px;
+          outline: none;
+          flex: 1;
+        }
+        input[type="email"]:focus {
+          background-color: #eeebeb;
+        }
+      }
+      .header {
+        @extend .flexRow;
+        margin-bottom: 10px;
+        justify-content: flex-start;
+
+        > h4 {
+          font-style: normal;
+          font-weight: bold;
+          font-size: 1rem;
+          text-transform: uppercase;
+          color: #474747;
+        }
+        > :last-child {
+          margin-left: auto;
+          color: #969799;
+        }
+      }
+      @media screen and (max-width: 400px) {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.historyContainer {
+  @extend .flexRow;
+  .modal {
+    padding: 25px;
+    padding-bottom: 50px;
+    border-radius: 15px;
+    background: white;
+    .title {
+      @extend .flexRow;
+      justify-content: flex-start;
+      font-weight: bold;
+      font-size: 0.9rem;
+      line-height: 27px;
+      text-transform: uppercase;
+      color: #474747;
+      // > * {
+      //   margin: 5px;
+      // }
+      margin-bottom: 0.5rem;
+      svg {
+        margin-right: 10px;
+      }
+    }
+    .attemptDate {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: #474747;
+      padding: 10px 0px;
+    }
+    .description {
+      font-weight: bold;
+      font-size: 0.9rem;
+      line-height: 25px;
+
+      color: #969799;
+    }
+    .list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-column-gap: 40px;
+      .item {
+        padding: 15px 0px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        p {
+          color: #969799;
+        }
+      }
+    }
+    .moreQuestions {
+      width: fit-content;
+      @extend .flexRow;
+      align-items: flex-end;
+      cursor: pointer;
+      p {
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: #ff5f72;
+      }
+      color: #ff5f72;
+    }
+    .hLine {
+      background: #ececec;
+    }
+  }
+}
+.submitConfirmContainer {
+  @extend .flexCol;
+
+  .submitConfirm {
+    background: white;
+    padding: 1rem 1.5rem;
+    max-width: 90%;
+    border-radius: 0.3rem;
+    h3 {
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+    .disclaimer {
+      font-size: 0.8rem;
+      color: rgb(128, 125, 125);
+      // margin-top: 0.8rem !important; // not working for some reason so have to add margin-bottom to h3
+    }
+
+    .actionBtns {
+      @extend .flexRow;
+      margin-top: 2rem;
+      justify-content: flex-end;
+
+      .actionBtn {
+        button {
+          text-transform: capitalize !important;
+        }
+        font-weight: 600;
+        font-size: 0.8rem;
+      }
+      .confirm {
+        background: var(--clr-primary);
+        color: white;
+      }
+    }
+  }
+}

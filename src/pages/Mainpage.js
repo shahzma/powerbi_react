@@ -45,6 +45,7 @@ function Mainpage(props) {
       curr_id = window.sessionStorage.getItem("clientID")
     }
     console.log('real_email=', window.sessionStorage.getItem("email"))
+    console.log('pseudo_email=', window.sessionStorage.getItem("pseudo_email"))
     console.log('curr_id=', curr_id)
     let prop_token = window.sessionStorage.getItem("token")
     fetch(`${process.env.REACT_APP_API_ENDPOINT}/report_access/?client_id=${curr_id}`, {

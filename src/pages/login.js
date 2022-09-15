@@ -17,7 +17,7 @@ class Login extends Component {
     event.preventDefault()// to stop submit form from immedeatly moving on without waiting for result
     let email = this.state.credentials.email
     console.log(email)
-    fetch(`http://127.0.0.1:8000/authorise/login/?email=${email}`, {
+    fetch(`http://127.0.0.1:8001/authorise/login/?email=${email}`, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
     })

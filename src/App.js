@@ -61,7 +61,7 @@ function App() {
         <Route path = "/FigmaOtp" element = {<FigmaOtp email = {RealEmail} IsLoggedIn={IsLoggedIn} SignedInStatus={SignedInStatus} setTokenVal = {setTokenVal}/>}/>
         {/* <Route path = "/mainpage" element = {<Mainpage Email = {'maruti@redseerconsulting.com'} Token={Token} Reportname={Reportname} IsAdmin = {IsAdmin} getReportVersionID = {getReportVersionID}/>}/> */}
         <Route path = "/mainpage" element = {<Mainpage email = {RealEmail} pseudo_email={Email} IsSignedIn={IsSignedIn} Token = {Token} getReportName={getReportName} clientID={clientID}/>}/>
-        <Route path = "/report" element = {<Report Token={Token} email = {RealEmail} ReportName = {Reportname}/>}/>
+        <Route path = "/report" element = {<Report Token={Token} email = {RealEmail} pseudo_email={Email} ReportName = {Reportname}/>}/>
       </Routes>
     </Router>
 
