@@ -41,12 +41,14 @@ function Report(props) {
   const [ toggle, setToggle ] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [comments, setComments] = useState({});
+  const [bdata, setBdata] = useState({});
   const [comment, setComment] = useState("Hello");
   const [commentsOpen, setCommentsOpen] = useState(false);
   // const { form_id, instanceId, question_id } = useParams();
   // const [ form_id, setForm_id ] = useState('851');
-  const [ form_id, setFormId ] = useState('851');
-  const [ ques_id, setQuesId ] = useState(107);
+  let [ formId, setFormId ] = useState('851');
+  let [ quesId, setQuesId ] = useState(108);
+  let [ selectedMonth, setselectedMonth] = useState('August');
   const [commentsData, setCommentsData] = useState({
     currentQuestion: 1,
     currentQuestionId: "",
@@ -75,12 +77,28 @@ function Report(props) {
   })
 
   let subtitle;
-
+  let form_id=0;
+  let ques_id=0;
   // runs on first render
 
   function handleWindowSizeChange() {
     setWidth(window.innerWidth);
   }
+  function lastSiXMonths(){
+    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var today = new Date();
+    var d;
+    var month;
+    var monthArray = [];
+    for(var i = 6; i > 0; i -= 1) {
+      d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      month = monthNames[d.getMonth()];
+      monthArray.push(month)
+    }
+    return monthArray
+  }
+
+  useEffect(()=>{console.log('bdata=',bdata)}, [bdata])
   function openModal(company_name, ques_name) {
     console.log('company=', company_name)
     console.log('ques=', ques_name)
@@ -111,14 +129,26 @@ function Report(props) {
       body: uploadData
     }).then(data => data.json())
     .then((data) => {
-      console.log('data=',data.report_version_id)
+      console.log('data=',data)
+      setBdata(data)
+      console.log('back_data=', bdata)
       // setFormId(data.report_version_id,()=>{console.log(form_id)})
-      setFormId(data.report_version_id)
-      setQuesId(data.question_id)
-      console.log('back_rep_ver_id=', form_id)
-      console.log('back_ques_id=', ques_id)
+      const temp_ques_id = data.question_id
+      console.log('temp_ques_id=',temp_ques_id)
+      setFormId('851')
+      setQuesId(temp_ques_id)
+    //   function sleep(ms) {
+    //     return new Promise(resolve => setTimeout(resolve, ms));
+    // }
+    // sleep(5000)
+      console.log('back_rep_ver_id=', formId)
+      console.log('back_ques_id=', quesId)
       setIsOpen(true);
-      onClickComments(1, ques_id);
+      ques_id = data.question_id
+      form_id = data.report_version_id
+      console.log('ques_id=', ques_id)
+      console.log('new_form_id=', form_id)
+      onClickComments(1, ques_id,form_id);
       })
     .catch(error => {
       // setSignIn(false);
@@ -284,11 +314,13 @@ const addComment = (e) => {
   e.preventDefault();
   let form_curr_instance_id = 851
   let curr_ques_id = 107
+  console.log('sub_form_id=', bdata.report_version_id)
+  console.log('sub_ques_id=', bdata.question_id)
   postComment(
     comment,
-    form_id,
-    form_id,
-    curr_ques_id
+    bdata.report_version_id,
+    bdata.report_version_id,
+    bdata.question_id
   );
 };
 const getFormQuestionComments = async (
@@ -336,7 +368,7 @@ const getFormQuestionComments = async (
   }
 };
 
-const onClickComments = async (questionNo, questionId) => {
+const onClickComments = async (questionNo, questionId, formId) => {
   setCommentsOpen(!commentsOpen);
   setCommentsData({
     // currentQuestion: questionNo,
@@ -344,14 +376,14 @@ const onClickComments = async (questionNo, questionId) => {
     comments: [],
   });
   let form_curr_instance_id = 851
-  console.log('commetns = ', questionId)
-  console.log('form_id = ', form_id)
+  console.log('commetns = ',  questionId)
+  console.log('form_id = ',  formId)
   console.log('curr_instance_id = ', form_curr_instance_id)
   // if (!commentsOpen) {
   await getFormQuestionComments(
-    form_id,
+    formId.toString(),
     questionId,
-    form_id,
+    formId,
     (comments) => {
       setCommentsData((curr) => ({
         ...curr,
@@ -374,7 +406,9 @@ let inputChanged = (e) => {
   setComment(e.target.value);
 }
 let setDropDownValue = (e)=>{
-  console.log('value change')
+  console.log('value=', e.value)
+  setselectedMonth(e.value)
+  // console.log('selectedMonth=', selectedMonth)
 }
 
 
@@ -418,6 +452,9 @@ useEffect(()=>{
   }, 1000*60*5);
 },[])
 
+// sets filter
+
+
 // useEffect(()=>{
 //   window.report.on('buttonClicked',function(event){
 //     // console.log('target=',event.detail['title'])
@@ -450,10 +487,11 @@ useEffect(()=>{
 //   });
 // })
 
-const options = [
-  'august', 'july', 'june','may', 'april'
-];
-const defaultOption = options[0];
+// const options = [
+//   'August', 'July', 'June','May', 'April'
+// ];
+const options = lastSiXMonths()
+const defaultOption = options.at(-1);
 
 if(!props.Token){
   if(!window.sessionStorage.getItem("token"))
@@ -554,12 +592,55 @@ if(!props.Token){
                 }}
                 eventHandlers = {
                   new Map([
-                    ['loaded', function (event, report) {console.log('Report loaded');}],
+                    ['loaded', function (event, report) {
+                      console.log('Report loaded');
+                      console.log('player_name=',window.sessionStorage.getItem("player_name"))
+                      const filter = {
+                        $schema: "http://powerbi.com/product/schema#advanced",
+                        target: {
+                            table: "content_data player",
+                            column: "player_name"
+                        },
+                        filterType: models.FilterType.Advanced,
+                        logicalOperator: "Is",
+                        conditions: [
+                            {
+                                operator: "Is",
+                                value: window.sessionStorage.getItem("player_name")
+                            }
+                        ]  
+                    };
+                      let company_name = ''
+                      window.report.getActivePage().then(
+                        (activePage=>{
+                          activePage.getVisuals().then(
+                            (visuals=>{
+                              let slicers = visuals.filter(function (visual) {
+                                return visual.type === "slicer";
+                            });
+                              slicers.forEach(async (slicer) => {
+                              const state = await slicer.getSlicerState();    
+                              console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+                              if(state.targets[0].column==="player_name"){
+                                console.log('slicer_name=',slicer.name)
+                                let target_slicer = visuals.filter(function (visual) {
+                                  return visual.type === "slicer" && visual.name === slicer.name;             
+                              })[0];
+                                await target_slicer.setSlicerState({ filters: [filter] });
+                                // company_name=state.filters[0].values[0]
+                                // openModal(company_name, ques_name)
+                              }
+                              
+                      
+                          })      
+                              // console.log('slicer=', slicers)
+                            })
+                          )
+                        })
+                      )
+                    }],
                     ['rendered', function () {
-                        window.report.getActivePage().then(
-                          (activePage=>{console.log(activePage)})
-                        )
-
+                      console.log('report render')
                     }],
                     ['buttonClicked', function(event, report){
                       let ques_name = event.detail['title']
@@ -576,6 +657,7 @@ if(!props.Token){
                               // console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
                               if(state.targets[0].column==="player_name"){
                                 company_name=state.filters[0].values[0]
+                                // company_name=window.sessionStorage.getItem("player_name")
                                 openModal(company_name, ques_name)
                               }
                       

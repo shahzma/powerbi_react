@@ -3,12 +3,16 @@ import styled from 'styled-components'
 import { useState } from 'react'
 import {Navigate} from 'react-router-dom';
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const FigmaLogin = (props) => {
     const [ email, setEmail ] = useState('');
     const [loggedIn, setLoggedIn] = useState(false);
     const [isMobile, setisMobile] = useState(false);
     const [width, setWidth] = useState(window.innerWidth);
+
+    const search = useLocation().search;
+    const player_name = new URLSearchParams(search).get('name')
 
     function handleWindowSizeChange() {
       setWidth(window.innerWidth);
@@ -20,6 +24,11 @@ const FigmaLogin = (props) => {
           window.removeEventListener('resize', handleWindowSizeChange);
       }
   }, []);
+    useEffect(()=>{
+      console.log('company = ', player_name)
+      if(player_name)
+      {window.sessionStorage.setItem("player_name", player_name.split(' ')[0]);}
+    })
 
     let inputChanged = (e) => {
         setEmail(e.target.value);
