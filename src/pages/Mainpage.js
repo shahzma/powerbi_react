@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import styled, { StyleSheetManager } from 'styled-components'
 import {Link, Navigate} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
-
+import ReactGA from 'react-ga'
 
 function Mainpage(props) {
   const [ ReportData, setReportData ] = useState([]);
@@ -30,11 +30,9 @@ function Mainpage(props) {
     }
   }, [props.email, props.Token, props.pseudo_email, props.clientID]);
 
-  // useEffect(() => {
-  //   console.log('session_email=', window.sessionStorage.getItem("email"))
-  //   setEmail(window.sessionStorage.getItem("email"));
-  //   setToken(window.sessionStorage.getItem("token"))
-  // }, []);
+  useEffect(()=>{
+    ReactGA.pageview(window.location.pathname)
+  },[])
 
   useEffect(() => {
     // let email = 'shahzmaalif@gmail.com'

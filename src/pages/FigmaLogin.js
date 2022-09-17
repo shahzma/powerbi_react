@@ -53,6 +53,7 @@ const FigmaLogin = (props) => {
           console.log(loggedIn)
           console.log('data=',data['pseudo_email'])
           props.userLogin(data['pseudo_email'])
+          window.sessionStorage.setItem("pseudo_email", data['pseudo_email'])
           props.setClientID(data['client_id'])
           // this.props.navigate('/reportlist')
         }

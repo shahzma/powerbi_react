@@ -49,6 +49,7 @@ const FigmaOtp = (props) => {
             props.setTokenVal(data.token)
             if (data.token){
                 setSignIn(true);
+                window.sessionStorage.setItem("token", data.token)
                 setWrongOTP(false)
             }
             else{
@@ -75,7 +76,12 @@ const FigmaOtp = (props) => {
     if(signIn){
         // below is always true
         console.log('signIn=',signIn)
-        return <Navigate to = "/Mainpage"/>
+        if (window.sessionStorage.getItem("player_name")){
+          window.sessionStorage.setItem("ReportName", "Food Aggregators Beta")
+          return <Navigate to = "/report"/>
+        }else{
+          return <Navigate to = "/Mainpage"/>
+        }
     }
 
   return (

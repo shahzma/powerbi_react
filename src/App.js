@@ -7,6 +7,7 @@ import Mainpage from './pages/Mainpage';
 import Report from './pages/Report';
 import FigmaLogin from './pages/FigmaLogin';
 import FigmaOtp from './pages/FigmaOtp';
+import ReactGA from 'react-ga';
 
 
 function App() {
@@ -51,6 +52,9 @@ function App() {
   let setClientId = (clientID)=>{
     setClientID(clientID)
   }
+
+  const TRACKING_ID = 'UA-241614253-1'
+  ReactGA.initialize(TRACKING_ID)
 
   return (
     <Router>

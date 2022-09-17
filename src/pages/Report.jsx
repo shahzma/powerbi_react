@@ -23,7 +23,8 @@ import { useParams, withRouter } from "react-router";
 import { Hidden } from '@material-ui/core';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-
+import ReactGA from 'react-ga'
+import { useIsMount } from '../utils/custom_hooks/useIsMount';
 
 
 function Report(props) {
@@ -33,7 +34,6 @@ function Report(props) {
   const [ EmbedToken, setEmbedToken ] = useState('');
   const [ reportUrl, setReportUrl ] = useState('');
   const [ pages, setPages ] = useState([]);
-  const [ ReportPages, setReportPages ] = useState([]);
   const [myPages, setMyPages] = useState([]);
   const [ reportId, setReportId ] = useState('');
   const [ newUrl, setNewUrl ] = useState('');
@@ -77,10 +77,11 @@ function Report(props) {
   })
 
   let subtitle;
-  let form_id=0;
-  let ques_id=0;
-  // runs on first render
 
+  useEffect(()=>{
+    ReactGA.pageview(window.location.pathname)
+  },[])
+  
   function handleWindowSizeChange() {
     setWidth(window.innerWidth);
   }
@@ -90,7 +91,7 @@ function Report(props) {
     var d;
     var month;
     var monthArray = [];
-    for(var i = 6; i > 0; i -= 1) {
+    for(var i = 3; i > 0; i -= 1) {
       d = new Date(today.getFullYear(), today.getMonth() - i, 1);
       month = monthNames[d.getMonth()];
       monthArray.push(month)
@@ -137,15 +138,11 @@ function Report(props) {
       console.log('temp_ques_id=',temp_ques_id)
       setFormId('851')
       setQuesId(temp_ques_id)
-    //   function sleep(ms) {
-    //     return new Promise(resolve => setTimeout(resolve, ms));
-    // }
-    // sleep(5000)
       console.log('back_rep_ver_id=', formId)
       console.log('back_ques_id=', quesId)
       setIsOpen(true);
-      ques_id = data.question_id
-      form_id = data.report_version_id
+      let ques_id = data.question_id
+      let form_id = data.report_version_id
       console.log('ques_id=', ques_id)
       console.log('new_form_id=', form_id)
       onClickComments(1, ques_id,form_id);
@@ -407,10 +404,58 @@ let inputChanged = (e) => {
 }
 let setDropDownValue = (e)=>{
   console.log('value=', e.value)
-  setselectedMonth(e.value)
-  // console.log('selectedMonth=', selectedMonth)
+  let val  = e.value
+  // setselectedMonth(val, ()=>{
+  //   console.log(selectedMonth)
+  // })
+  setselectedMonth(val)
+  console.log('month=', selectedMonth)
+  console.log('bdata=', bdata)
 }
-
+const isMount = useIsMount();
+useEffect(()=>{
+  if (isMount){
+    console.log('First Render')
+  }else{
+    console.log('selected_month=',selectedMonth)
+    let month = selectedMonth
+    var months = ['Zero',"January","February","March","April","May","June","July","August","September","October","November","December"];
+    for(var i in months){
+      if(months[i] === month){
+          month = ++i;
+      }
+    }
+    let firstDate = '1/'+month+'/22'
+    let lastDate = '30/'+month+'/22'
+    console.log('firstDate=', firstDate)
+    const uploadData = new FormData();
+    uploadData.append('company_name', 'Swiggy');
+    uploadData.append('question_name', "Business Metrics");
+    uploadData.append('start_date', firstDate);
+    uploadData.append('end_date', lastDate);
+    fetch(`https://coeus.redseerconsulting.com/formID/`, {
+      method: 'POST',
+      body: uploadData
+    }).then(data => data.json())
+    .then((data) => {
+      console.log('data=',data)
+      setBdata(data)
+      // setFormId(data.report_version_id,()=>{console.log(form_id)})
+      setIsOpen(true);
+      let ques_id = data.question_id
+      let form_id = data.report_version_id
+      console.log('ques_id=', ques_id)
+      console.log('new_form_id=', form_id)
+      onClickComments(1, ques_id,form_id);
+      })
+    .catch(error => {
+      // setSignIn(false);
+      alert('System Error.Contact Admin')
+      console.log(error)
+    })
+  }
+}
+,[selectedMonth])
 
 useEffect(()=>{
   console.log('will sign out in 30 min')
@@ -452,8 +497,6 @@ useEffect(()=>{
   }, 1000*60*5);
 },[])
 
-// sets filter
-
 
 // useEffect(()=>{
 //   window.report.on('buttonClicked',function(event){
@@ -487,9 +530,6 @@ useEffect(()=>{
 //   });
 // })
 
-// const options = [
-//   'August', 'July', 'June','May', 'April'
-// ];
 const options = lastSiXMonths()
 const defaultOption = options.at(-1);
 
@@ -530,7 +570,6 @@ if(!props.Token){
           </ProSidebarContainer>
           <ReportContainer>
               <User>
-                    <Button onClick={openModal}>Comment</Button>
                     <Modal
                       isOpen={modalIsOpen}
                       onAfterOpen={afterOpenModal}
