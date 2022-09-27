@@ -35,6 +35,7 @@ function Report(props) {
   const [ reportUrl, setReportUrl ] = useState('');
   const [ pages, setPages ] = useState([]);
   const [myPages, setMyPages] = useState([]);
+  const [pagename, setPageName] = useState([]);
   const [ reportId, setReportId ] = useState('');
   const [ newUrl, setNewUrl ] = useState('');
   const [width, setWidth] = useState(window.innerWidth);
@@ -104,17 +105,14 @@ function Report(props) {
     console.log('company=', company_name)
     console.log('ques=', ques_name)
     var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-    var month = "September";
+    const d = new Date();
+    let month_digit = d.getMonth();
+    var month = months[month_digit]
     for(var i in months){
         if(months[i] === month){
             month = ++i;
         }
     }
-    // const now = new Date();
-    // console.log('fy=',now.getFullYear())
-    // const firstDay = new Date(now.getFullYear(), month, 1);
-    // const lastDay = new Date(now.getFullYear(), month, 0);
-    // console.log(firstDay+"\n"+lastDay);
     let firstDate = '1/'+month+'/22'
     let lastDate = '30/'+month+'/22'
     // var s = new Date(2022, month, 1);
@@ -204,13 +202,34 @@ function Report(props) {
     .then( data => data.json())
     .then(
     data => {
+
         setAccessToken(data['access_token'])
         setEmbedToken(data['embed_token'])
         setReportUrl(data['report_url'])
         setPages(data['pages'])
         setReportId(data['report_id'])
-        setNewUrl(data['report_url'])
+        console.log('newUrl=', data['report_url'])
         // console.log(reportUrl+'&pageName=ReportSection7446fb261ebfdaa647fa')
+        if(window.sessionStorage.getItem("player_name")){
+          let player_name = window.sessionStorage.getItem("player_name")
+          fetch(`https://api.benchmarks.digital/player/?name=${player_name}`, {
+            method:'GET',
+            headers:{
+              'Content-Type': 'application/json',
+            },
+          })
+          .then(res=>res.json())
+          .then(
+            res=>{
+              console.log('reportUrl=', data['report_url'])
+              console.log('res=',res.powerbi_page)
+              setNewUrl(data['report_url']+'&pageName='+res.powerbi_page)
+              // window.sessionStorage.setItem('powerbi_page', res.powerbi_page)
+            }
+          )
+        }else{
+          setNewUrl(data['report_url'])
+        }
     }
     )
     .catch( error => console.error(error))
@@ -231,7 +250,9 @@ function Report(props) {
     )
 },[]);
 
+
 let handleClick = (Name)=>{
+  setPageName(Name)
   console.log('name=',Name)
   setNewUrl(reportUrl+'&pageName='+Name)
 }
@@ -272,7 +293,8 @@ const postComment = async(comment, formId, instanceId, questionId)=>{
   if (comment?.length){
     // let { author, author_email, author_display_picture, message } = comment;
     let author_display_picture = "https://lh3.googleusercontent.com/a/AATXAJx2Vaf3laKf8D7hz6W6c9YgjOK8rEqLsZEk9mzS=s96-c"
-    let author_email = 'shahzmaalif@gmail.com'
+    // let author_email = 'shahzmaalif@gmail.com'
+    let author_email = window.sessionStorage.getItem("email")
     let author = author_email.split('@')[0]
     console.log('author=', author)
     const commentObj = {
@@ -395,9 +417,6 @@ const onClickComments = async (questionNo, questionId, formId) => {
   // }
 };
 
-  const addReplyToQuestion = (reply, commentId) => {
-    console.log('hello')
-  };
 
 let inputChanged = (e) => {
   setComment(e.target.value);
@@ -465,7 +484,7 @@ useEffect(()=>{
   }, 1000*60*30);
 
   return () => clearInterval(interval);
-},[])
+},[pagename])
 
 useEffect(()=>{
   setInterval(function () {
@@ -633,7 +652,6 @@ if(!props.Token){
                   new Map([
                     ['loaded', function (event, report) {
                       console.log('Report loaded');
-                      console.log('player_name=',window.sessionStorage.getItem("player_name"))
                       const filter = {
                         $schema: "http://powerbi.com/product/schema#advanced",
                         target: {

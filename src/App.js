@@ -53,7 +53,8 @@ function App() {
     setClientID(clientID)
   }
 
-  const TRACKING_ID = 'UA-241614253-1'
+  const TRACKING_ID = 'UA-241888110-1'
+
   ReactGA.initialize(TRACKING_ID)
 
   return (

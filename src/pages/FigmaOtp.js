@@ -76,8 +76,9 @@ const FigmaOtp = (props) => {
     if(signIn){
         // below is always true
         console.log('signIn=',signIn)
-        if (window.sessionStorage.getItem("player_name")){
-          window.sessionStorage.setItem("ReportName", "Food Aggregators Beta")
+        let player_name = window.sessionStorage.getItem("player_name")
+        if (player_name){
+          window.sessionStorage.setItem("ReportName", "Sectors_Company_Profile")
           return <Navigate to = "/report"/>
         }else{
           return <Navigate to = "/Mainpage"/>
@@ -156,7 +157,8 @@ const LoginInner = styled.div`
     width: 210px;
     height: 90px;
     left: 21vw;
-    top: 160px;
+    /* top: 160px; */
+    top:22vh;
   }
     
   h3 {

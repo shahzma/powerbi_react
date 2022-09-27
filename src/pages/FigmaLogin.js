@@ -55,6 +55,7 @@ const FigmaLogin = (props) => {
           props.userLogin(data['pseudo_email'])
           window.sessionStorage.setItem("pseudo_email", data['pseudo_email'])
           props.setClientID(data['client_id'])
+          window.sessionStorage.setItem("clientID", data['client_id'])
           // this.props.navigate('/reportlist')
         }
       )
@@ -140,7 +141,8 @@ const LoginInner = styled.div`
     width: 210px;
     height: 90px;
     left: 21vw;
-    top: 160px;
+    /* top: 160px; */
+    top:22vh;
   }
     
   h3 {
