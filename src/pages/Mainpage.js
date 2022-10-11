@@ -5,6 +5,7 @@ import styled, { StyleSheetManager } from 'styled-components'
 import {Link, Navigate} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import ReactGA from 'react-ga'
+import { useLocation } from 'react-router-dom';
 
 function Mainpage(props) {
   const [ ReportData, setReportData ] = useState([]);
@@ -15,18 +16,43 @@ function Mainpage(props) {
   // const [email, setEmail] = useState('');
   // const [token, setToken] = useState('')
 
+  const search = useLocation().search;
+  const client_id = new URLSearchParams(search).get('client_id')
+  const backend_token = new URLSearchParams(search).get('backend_token')
+  const pseudo_email = new URLSearchParams(search).get('pseudo_email')
+  const email = new URLSearchParams(search).get('email')
+
+  useEffect(()=>{
+    if (client_id){
+      console.log('backend_client_id=', client_id)
+      window.localStorage.setItem("clientID", client_id);
+    }
+    if (backend_token){
+      console.log('backend_token=', backend_token)
+      window.localStorage.setItem("token", backend_token);
+    }
+    if (pseudo_email){
+      console.log(pseudo_email)
+      window.localStorage.setItem("pseudo_email", pseudo_email);
+    }
+    if (email){
+      console.log(email)
+      window.localStorage.setItem("email", email);
+    }
+  },[client_id, backend_token, pseudo_email, email])
+
   useEffect(() => {
     if(props.email){
-      window.sessionStorage.setItem("email", props.email);
+      window.localStorage.setItem("email", props.email);
     }
     if(props.Token){
-      window.sessionStorage.setItem("token", props.Token);
+      window.localStorage.setItem("token", props.Token);
     }
     if(props.pseudo_email){
-      window.sessionStorage.setItem("pseudo_email", props.pseudo_email);
+      window.localStorage.setItem("pseudo_email", props.pseudo_email);
     }
     if(props.clientID){
-      window.sessionStorage.setItem("clientID", props.clientID);
+      window.localStorage.setItem("clientID", props.clientID);
     }
   }, [props.email, props.Token, props.pseudo_email, props.clientID]);
 
@@ -40,12 +66,12 @@ function Mainpage(props) {
     if (props.clientID){
       curr_id = props.clientID
     }else{
-      curr_id = window.sessionStorage.getItem("clientID")
+      curr_id = window.localStorage.getItem("clientID")
     }
-    console.log('real_email=', window.sessionStorage.getItem("email"))
-    console.log('pseudo_email=', window.sessionStorage.getItem("pseudo_email"))
+    console.log('real_email=', window.localStorage.getItem("email"))
+    console.log('pseudo_email=', window.localStorage.getItem("pseudo_email"))
     console.log('curr_id=', curr_id)
-    let prop_token = window.sessionStorage.getItem("token")
+    let prop_token = window.localStorage.getItem("token")
     fetch(`${process.env.REACT_APP_API_ENDPOINT}/report_access/?client_id=${curr_id}`, {
     method: 'GET',
     headers: {
@@ -103,8 +129,8 @@ useEffect(()=>{
 
 let handleSignOut = ()=>{
   console.log('signout')
-  let prop_email = window.sessionStorage.getItem("email")
-  let prop_token = window.sessionStorage.getItem("token")
+  let prop_email = window.localStorage.getItem("email")
+  let prop_token = window.localStorage.getItem("token")
   fetch(`${process.env.REACT_APP_API_ENDPOINT}/logout/?email=${prop_email}`,{
       method:'GET',
       headers:{
@@ -120,7 +146,7 @@ let handleSignOut = ()=>{
       .catch( error => {
         console.error(error)
       })
-  sessionStorage.clear();
+  localStorage.clear();
   window.location.href='/'
 }
 
@@ -137,8 +163,8 @@ useEffect(()=>{
 useEffect(()=>{
   setInterval(function () {
     console.log("check token");
-    let prop_token = window.sessionStorage.getItem("token")
-    let prop_email = window.sessionStorage.getItem("email")
+    let prop_token = window.localStorage.getItem("token")
+    let prop_email = window.localStorage.getItem("email")
     fetch(`${process.env.REACT_APP_API_ENDPOINT}/validateToken/?email=${prop_email}`,{
       method:'GET',
       headers:{
@@ -149,7 +175,7 @@ useEffect(()=>{
       if (res.ok) {
         return res.json();
       }else{
-        sessionStorage.clear();
+        localStorage.clear();
         window.location.href='/'
       }
     })
@@ -188,8 +214,12 @@ useEffect(()=>{
   }
 
   if(!props.Token){
-    if(!window.sessionStorage.getItem("token"))
-    {return <Navigate to = "/"/>}
+    if(!window.localStorage.getItem("token")){
+      if(!backend_token){
+        return <Navigate to = "/"/>
+      }
+    }
+    // {return <Navigate to = "/"/>}
 }
 
   return (

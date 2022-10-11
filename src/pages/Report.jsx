@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { ProSidebar, Menu, MenuItem, SubMenu} from 'react-pro-sidebar';
 import {Link, Navigate} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
-import { FaAmazon, FaTrafficLight,FaUsers, FaDeezer,FaAlignLeft, FaKeyboard } from 'react-icons/fa';
+import { FaAmazon, FaTrafficLight,FaUsers, FaDeezer,FaAlignLeft, FaKeyboard, FaCity } from 'react-icons/fa';
 import{MdOutlineSummarize, MdMonetizationOn, MdInsights, MdDashboard} from 'react-icons/md';
 import { ImProfile } from "react-icons/im";
 import {SiCoveralls, SiSimpleanalytics} from "react-icons/si"
@@ -74,7 +74,8 @@ function Report(props) {
     'Fulfilment Metrics':<FaAlignLeft/>,
     'Unit Economics':<MdMonetizationOn/>,
     'Keyboard':<FaKeyboard/>,
-    'Dashboard':<MdDashboard/>
+    'Dashboard':<MdDashboard/>,
+    'City Split':<FaCity/>
   })
 
   let subtitle;
@@ -168,12 +169,12 @@ function Report(props) {
 
   useEffect(() => {
     if(props.Token){
-      window.sessionStorage.setItem("token", props.Token);
+      window.localStorage.setItem("token", props.Token);
     }
     if(props.ReportName){
-      window.sessionStorage.setItem("ReportName", props.ReportName);
+      window.localStorage.setItem("ReportName", props.ReportName);
     }
-    window.sessionStorage.setItem("events", 'buttonClicked');
+    window.localStorage.setItem("events", 'buttonClicked');
     // if(props.pseudo_email){
     //   window.sessionStorage.setItem("pseudo_email", props.pseudo_email);
     // }
@@ -185,13 +186,13 @@ function Report(props) {
     if (props.ReportName){
       propsrep = props.ReportName
     }else{
-      propsrep = window.sessionStorage.getItem("ReportName")
+      propsrep = window.localStorage.getItem("ReportName")
     }
-    let prop_token = window.sessionStorage.getItem("token")
-    let pseudo_email = window.sessionStorage.getItem("pseudo_email")
+    let prop_token = window.localStorage.getItem("token")
+    let pseudo_email = window.localStorage.getItem("pseudo_email")
     console.log('pseudo_email=', pseudo_email)
 
-    console.log('email=', window.sessionStorage.getItem("email"))
+    console.log('email=', window.localStorage.getItem("email"))
     fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}&email=${pseudo_email}`, {
     method: 'GET',
     headers: {
@@ -210,8 +211,8 @@ function Report(props) {
         setReportId(data['report_id'])
         console.log('newUrl=', data['report_url'])
         // console.log(reportUrl+'&pageName=ReportSection7446fb261ebfdaa647fa')
-        if(window.sessionStorage.getItem("player_name")){
-          let player_name = window.sessionStorage.getItem("player_name")
+        if(window.localStorage.getItem("player_name")){
+          let player_name = window.localStorage.getItem("player_name")
           fetch(`https://api.benchmarks.digital/player/?name=${player_name}`, {
             method:'GET',
             headers:{
@@ -259,8 +260,8 @@ let handleClick = (Name)=>{
 
 let handleSignOut = ()=>{
   console.log('signout')
-  let prop_email = window.sessionStorage.getItem("email")
-  let prop_token = window.sessionStorage.getItem("token")
+  let prop_email = window.localStorage.getItem("email")
+  let prop_token = window.localStorage.getItem("token")
   fetch(`${process.env.REACT_APP_API_ENDPOINT}/logout/?email=${prop_email}`,{
       method:'GET',
       headers:{
@@ -276,7 +277,7 @@ let handleSignOut = ()=>{
       .catch( error => {
         console.error(error)
       })
-  sessionStorage.clear();
+  localStorage.clear();
   window.location.href='/'
 }
 
@@ -294,7 +295,7 @@ const postComment = async(comment, formId, instanceId, questionId)=>{
     // let { author, author_email, author_display_picture, message } = comment;
     let author_display_picture = "https://lh3.googleusercontent.com/a/AATXAJx2Vaf3laKf8D7hz6W6c9YgjOK8rEqLsZEk9mzS=s96-c"
     // let author_email = 'shahzmaalif@gmail.com'
-    let author_email = window.sessionStorage.getItem("email")
+    let author_email = window.localStorage.getItem("email")
     let author = author_email.split('@')[0]
     console.log('author=', author)
     const commentObj = {
@@ -489,8 +490,8 @@ useEffect(()=>{
 useEffect(()=>{
   setInterval(function () {
     console.log("check token");
-    let prop_token = window.sessionStorage.getItem("token")
-    let prop_email = window.sessionStorage.getItem("email")
+    let prop_token = window.localStorage.getItem("token")
+    let prop_email = window.localStorage.getItem("email")
     fetch(`${process.env.REACT_APP_API_ENDPOINT}/validateToken/?email=${prop_email}`,{
       method:'GET',
       headers:{
@@ -501,7 +502,7 @@ useEffect(()=>{
       if (res.ok) {
         return res.json();
       }else{
-        sessionStorage.clear();
+        localStorage.clear();
         window.location.href='/'
       }
     })
@@ -553,7 +554,7 @@ const options = lastSiXMonths()
 const defaultOption = options.at(-1);
 
 if(!props.Token){
-  if(!window.sessionStorage.getItem("token"))
+  if(!window.localStorage.getItem("token"))
   {return <Navigate to = "/"/>}
 }
 
@@ -567,7 +568,7 @@ if(!props.Token){
           </SideBarHeader>
             <Menu>
               <MenuItem></MenuItem>
-              <MenuItem><h5>{window.sessionStorage.getItem("ReportName")}</h5></MenuItem>
+              <MenuItem><h5>{window.localStorage.getItem("ReportName")}</h5></MenuItem>
               {myPages.map((repver,index)=>{
                 return repver.children_page_name.length===0?(
                   <MenuItem key={1} icon={iconDict[repver.page_name]} onClick={()=>handleClick(repver.link)}>
@@ -663,7 +664,7 @@ if(!props.Token){
                         conditions: [
                             {
                                 operator: "Is",
-                                value: window.sessionStorage.getItem("player_name")
+                                value: window.localStorage.getItem("player_name")
                             }
                         ]  
                     };
@@ -766,7 +767,7 @@ if(!props.Token){
             </SideBarHeader>
               <Menu>
                 <MenuItem></MenuItem>
-                <MenuItem>{window.sessionStorage.getItem("ReportName")}</MenuItem>
+                <MenuItem>{window.localStorage.getItem("ReportName")}</MenuItem>
                 <MenuItem></MenuItem>
                 {myPages.map((repver)=>{
                   return repver.children_page_name.length===0?(
@@ -815,7 +816,7 @@ if(!props.Token){
               }}
               eventHandlers = {
                 new Map([
-                  [window.sessionStorage.getItem('events'), function(event){
+                  [window.localStorage.getItem('events'), function(event){
                     openModal();
                   }]
                 ])

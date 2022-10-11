@@ -4,6 +4,11 @@ import { useState } from 'react'
 import {Navigate} from 'react-router-dom';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import GoogleLogin from 'react-google-login';
+import MicrosoftLogin from "react-microsoft-login";
+import GoogleButton from 'react-google-button'
+import{ useCallback, useContext } from 'react';
+import './FigmaLogin.css'
 
 const FigmaLogin = (props) => {
     const [ email, setEmail ] = useState('');
@@ -13,6 +18,11 @@ const FigmaLogin = (props) => {
 
     const search = useLocation().search;
     const player_name = new URLSearchParams(search).get('name')
+    
+
+    const responseGoogle = (response) => {
+    console.log(response);
+    }
 
     function handleWindowSizeChange() {
       setWidth(window.innerWidth);
@@ -27,7 +37,7 @@ const FigmaLogin = (props) => {
     useEffect(()=>{
       console.log('company = ', player_name)
       if(player_name)
-      {window.sessionStorage.setItem("player_name", player_name.split(' ')[0]);}
+      {window.localStorage.setItem("player_name", player_name.split(' ')[0]);}
     })
 
     let inputChanged = (e) => {
@@ -39,6 +49,7 @@ const FigmaLogin = (props) => {
         // console.log(email)
         // setLoggedIn(true)
       console.log(email)
+      window.localStorage.setItem('email', email)
       props.getRealEmail(email)
       fetch(`${process.env.REACT_APP_API_ENDPOINT}/authorise/login/?email=${email}`, {
         method: 'GET',
@@ -53,14 +64,70 @@ const FigmaLogin = (props) => {
           console.log(loggedIn)
           console.log('data=',data['pseudo_email'])
           props.userLogin(data['pseudo_email'])
-          window.sessionStorage.setItem("pseudo_email", data['pseudo_email'])
+          window.localStorage.setItem("pseudo_email", data['pseudo_email'])
           props.setClientID(data['client_id'])
-          window.sessionStorage.setItem("clientID", data['client_id'])
+          window.localStorage.setItem("clientID", data['client_id'])
+          window.localStorage.setItem('unregistered',data['unregistered'])
           // this.props.navigate('/reportlist')
         }
       )
       .catch( error => console.error(error))
     }
+
+    const authHandler = useCallback((err, data) => {
+      window.sessionStorage.clear()
+      console.log(err, data);
+      if(data && !err){
+        console.log('acc=', data['account'].userName)
+        let email = data['account'].userName
+        const uploadData = new FormData();
+        uploadData.append('email', data['account'].userName);
+        uploadData.append('access_token', data['accessToken']);
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/login/ms/`, {
+            method: 'POST',
+            body: uploadData
+          }).then(data => data.json())
+          .then( data => {
+            if (data.token){
+                window.localStorage.setItem("token", data.token)
+                window.localStorage.setItem("pseudo_email", data.pseudo_email)
+                window.localStorage.setItem("clientID", data.client_id)
+                window.localStorage.setItem("email", email)
+                window.location.href='/mainpage'
+            }
+            else{
+            }
+            })
+          .catch(error => {
+            // setSignIn(false);
+            alert('System Error.Contact Admin')
+            console.log(error)
+        })
+        }
+    },[]);
+
+    const openGoogleLoginPage = useCallback(() => {
+      const googleAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
+      const redirectUri = 'api/v1/auth/login/google/';
+    
+      const scope = [
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile'
+      ].join(' ');
+    
+      const params = {
+        response_type: 'code',
+        client_id: '560541008989-k0er5bb7onv6dj7d46fh05cjes2qb9p5.apps.googleusercontent.com',
+        redirect_uri: `http://localhost:8001/api/v1/auth/login/google/`,
+        prompt: 'select_account',
+        access_type: 'offline',
+        scope
+      };
+    
+      const urlParams = new URLSearchParams(params).toString();
+    
+      window.location = `${googleAuthUrl}?${urlParams}`;
+    }, []);
 
     if(loggedIn){
         console.log(loggedIn)
@@ -83,6 +150,16 @@ const FigmaLogin = (props) => {
                 <button type="submit" className="btn btn-primary btn-block" style={{backgroundColor:'#EE2D31' , border:'None'}} >Log In</button>
             </form>
             </LoginInner>
+            {/* <GoogleLogin
+            clientId="560541008989-k0er5bb7onv6dj7d46fh05cjes2qb9p5.apps.googleusercontent.com"  // your Google app client ID
+            buttonText="Sign in with Google"
+            onSuccess={responseGoogle} // perform your user logic here
+            onFailure={responseGoogle} // handle errors here
+          /> */}
+          <MicrosoftLogin clientId='9a7ffe59-718e-40ee-b04e-d6f85b53f512' authCallback={authHandler} className = 'msLogin'/>
+          <GoogleButton
+            onClick={openGoogleLoginPage} style ={{'marginLeft':'20vw', 'marginTop':'20px', 'width':'15vw'}}
+          />
         </Login>
         <SideImg>
             <img src = '/Images/sidegraph_be.svg' alt = ''/>
