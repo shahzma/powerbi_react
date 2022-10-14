@@ -118,7 +118,8 @@ const FigmaLogin = (props) => {
       const params = {
         response_type: 'code',
         client_id: '560541008989-k0er5bb7onv6dj7d46fh05cjes2qb9p5.apps.googleusercontent.com',
-        redirect_uri: `http://localhost:8001/api/v1/auth/login/google/`,
+        // redirect_uri: `http://localhost:8001/api/v1/auth/login/google/`,
+        redirect_uri: `https://api.benchmarks.digital/api/v1/auth/login/google/`,
         prompt: 'select_account',
         access_type: 'offline',
         scope
