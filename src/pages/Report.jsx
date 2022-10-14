@@ -552,6 +552,81 @@ useEffect(()=>{
 
 const options = lastSiXMonths()
 const defaultOption = options.at(-1);
+const datefilter = {
+
+
+
+  $schema: "http://powerbi.com/product/schema#basic",
+
+
+
+target: {
+
+
+
+      table: "date_table",
+
+
+
+      column: "date"
+
+
+
+  },
+
+
+
+  filterType: models.FilterType.Advanced,
+
+
+
+  logicalOperator: "And",
+
+
+
+  conditions: [
+
+
+
+      {
+
+
+
+          operator: "GreaterThanOrEqual",
+
+
+
+          value: window.localStorage.getItem("start_date")+"T21:00:00.000Z"
+
+
+
+      },
+
+
+
+      {
+
+
+
+          operator: "LessThan",
+
+
+
+          value: window.localStorage.getItem("end_date")+"T22:00:00.000Z"
+
+
+
+      }
+
+
+
+  ]
+
+
+
+};
+
+
 
 if(!props.Token){
   if(!window.localStorage.getItem("token"))
@@ -638,7 +713,7 @@ if(!props.Token){
                   embedUrl:newUrl,
                   accessToken: EmbedToken,
                   tokenType: models.TokenType.Embed,
-                  // filters: [filter1,filter2],
+                  filters: [datefilter],
                   settings: {
                     panes: {
                       filters: {
@@ -653,21 +728,22 @@ if(!props.Token){
                   new Map([
                     ['loaded', function (event, report) {
                       console.log('Report loaded');
-                      const filter = {
-                        $schema: "http://powerbi.com/product/schema#advanced",
-                        target: {
-                            table: "content_data player",
-                            column: "player_name"
-                        },
-                        filterType: models.FilterType.Advanced,
-                        logicalOperator: "Is",
-                        conditions: [
-                            {
-                                operator: "Is",
-                                value: window.localStorage.getItem("player_name")
-                            }
-                        ]  
-                    };
+                      if(true){
+                        const filter = {
+                          $schema: "http://powerbi.com/product/schema#advanced",
+                          target: {
+                              table: "content_data player",
+                              column: "player_name"
+                          },
+                          filterType: models.FilterType.Advanced,
+                          logicalOperator: "Is",
+                          conditions: [
+                              {
+                                  operator: "Is",
+                                  value: window.localStorage.getItem("player_name")
+                              }
+                          ]  
+                      };
                       let company_name = ''
                       window.report.getActivePage().then(
                         (activePage=>{
@@ -696,6 +772,52 @@ if(!props.Token){
                           )
                         })
                       )
+                      }else{
+                        const filter = {
+
+                          $schema: "http://powerbi.com/product/schema#basic",
+                      
+                          target: {
+                      
+                              table: "date_table",
+                      
+                              column: "date"
+                      
+                          },
+                      
+                          filterType: models.FilterType.Advanced,
+                      
+                          logicalOperator: "And",
+                      
+                          conditions: [
+                      
+                              {
+                      
+                                  operator: "GreaterThanOrEqual",
+                      
+                                  value: "2020-10-12T21:00:00.000Z"
+                      
+                              },
+                      
+                              {
+                      
+                                  operator: "LessThan",
+                      
+                                  value: "2021-11-28T22:00:00.000Z"
+                      
+                              }
+                      
+                          ]
+                      
+                      };
+                      try{
+                        report.updateFilters(models.FiltersOperations.Add, [filter]).then(
+                          console.log("Report filter was added.")
+                        );
+                      }catch(error){
+                        console.log(error)
+                      }
+                      }
                     }],
                     ['rendered', function () {
                       console.log('report render')
@@ -726,7 +848,7 @@ if(!props.Token){
                         })
                       )
                     }],
-                    ['error', function (event) {console.log(event.detail);}]
+                    ['error', function (event) {console.log('powerbi_error=',event.detail);}]
                   ])
                 }
               

@@ -12,6 +12,7 @@ const FigmaOtp = (props) => {
     const [width, setWidth] = useState(window.innerWidth);
     const [wrongOTP, setWrongOTP] = useState(false);
     const[username, setusername] = useState(null)
+    const [lastname, setlastname] = useState(null)
 
     function handleWindowSizeChange() {
         setWidth(window.innerWidth);
@@ -36,6 +37,10 @@ const FigmaOtp = (props) => {
     let usernameChanged = (e) =>{
       setusername(e.target.value)
     }
+
+    let lastnameChanged = (e) =>{
+      setlastname(e.target.value)
+    }
     
     let login = (e)=>{
         e.preventDefault();
@@ -50,7 +55,8 @@ const FigmaOtp = (props) => {
         const uploadData = new FormData();
         if(JSON.parse(window.localStorage.getItem('unregistered'))){
           uploadData.append('email', props.email);
-          uploadData.append('username', username)
+          uploadData.append('first_name', username)
+          uploadData.append('last_name', lastname)
           uploadData.append('phone', phone)
         uploadData.append('OTP', otp);
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/authorise/login/`, {
@@ -140,7 +146,9 @@ const FigmaOtp = (props) => {
                   <label></label>
                   <input type = 'text' name = 'phone' id='phone' placeholder='Phone' className="form-control" value={phone}  onChange={(e) => phoneChanged(e)}/>
                   <label></label>
-                  <input type = 'text' name = 'username' id='username' placeholder='Username' className="form-control" value={username}  onChange={(e) => usernameChanged(e)}/>
+                  <input type = 'text' name = 'username' id='username' placeholder='Firstname' className="form-control" value={username}  onChange={(e) => usernameChanged(e)}/>
+                  <label></label>
+                  <input type = 'text' name = 'lastname' id='lastname' placeholder='Lastname' className="form-control" value={lastname}  onChange={(e) => lastnameChanged(e)}/>
                 </>:<></>}
             </div>
             <button type="submit" className="btn btn-primary btn-block" style={{backgroundColor:'#EE2D31' , border:'None'}} >Submit</button>

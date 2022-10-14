@@ -207,10 +207,12 @@ useEffect(()=>{
     alert('You need to buy this report first')
   }
 
-  let handleOnClick=(rep)=>{
+  let handleOnClick=(rep, start_date, end_date)=>{
 // if youu pass wrong prop then link will act like window.location.href. use e.preventDefault() to check
     console.log('rep=', rep)
     props.getReportName(rep)
+    window.localStorage.setItem('start_date',start_date)
+    window.localStorage.setItem('end_date', end_date)
   }
 
   if(!props.Token){
@@ -242,12 +244,15 @@ useEffect(()=>{
                 <Wrap key={repver.id}>
                   <UpperRow>{repver.report_name}</UpperRow>
                   <MidRow>
-                    {(repver.players.slice(0, 3)).join(',  ')} & more
+                    {(repver.players.slice(0, 3)).join(',  ').length>0?(repver.players.slice(0, 3)).join(',  ')+' & more':'no companies available'}
                     {/* {ReportPlayer.find(element=> element.report_name === repver.report_name)?.player_name} */}
                     {/* {console.log('rep_player=',(ReportPlayer.find(element=> element.report_name === repver.report_name)).player_name)} */}
                   </MidRow>
                   <EndRow>
-                  <Link to="/report" style={{float:'right', marginRight:'2vw', backgroundColor:'#FF6471', border:'None'}} className="btn btn-primary" onClick = {()=>handleOnClick(repver.report_name)}>View Report</Link>
+                  <Link to="/report" style={{float:'right', marginRight:'2vw', backgroundColor:'#FF6471', border:'None'}}
+                  className="btn btn-primary"
+                  onClick = {()=>handleOnClick(repver.report_name, repver.start_date, repver.end_date)}
+                  >View Report</Link>
                   </EndRow>
                 </Wrap>
                 )
