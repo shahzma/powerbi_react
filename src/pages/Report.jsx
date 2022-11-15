@@ -36,6 +36,7 @@ function Report(props) {
   const [ pages, setPages ] = useState([]);
   const [myPages, setMyPages] = useState([]);
   const [pagename, setPageName] = useState([]);
+  // is powerbi report id like efcac618-0e1a-4c7f-8e6c-850a686946df
   const [ reportId, setReportId ] = useState('');
   const [ newUrl, setNewUrl ] = useState('');
   const [width, setWidth] = useState(window.innerWidth);
@@ -45,6 +46,7 @@ function Report(props) {
   const [bdata, setBdata] = useState({});
   const [comment, setComment] = useState("Hello");
   const [commentsOpen, setCommentsOpen] = useState(false);
+  const [excelLoader, setexcelLoader] = useState(false)
   // const { form_id, instanceId, question_id } = useParams();
   // const [ form_id, setForm_id ] = useState('851');
   let [ formId, setFormId ] = useState('851');
@@ -81,7 +83,10 @@ function Report(props) {
   let subtitle;
 
   useEffect(()=>{
+    let email = window.localStorage.getItem("email")
+    if (email.split('@')[1] in ['redseerconsulting.com','redseer.com' ,'redcore.co','benchmarks.digital','Beeroute.in'] === false){
     ReactGA.pageview(window.location.pathname)
+  }
   },[])
   
   function handleWindowSizeChange() {
@@ -209,7 +214,7 @@ function Report(props) {
         setReportUrl(data['report_url'])
         setPages(data['pages'])
         setReportId(data['report_id'])
-        console.log('newUrl=', data['report_url'])
+        console.log('report_id=', data['report_id'])
         // console.log(reportUrl+'&pageName=ReportSection7446fb261ebfdaa647fa')
         if(window.localStorage.getItem("player_name")){
           let player_name = window.localStorage.getItem("player_name")
@@ -432,6 +437,30 @@ let setDropDownValue = (e)=>{
   console.log('month=', selectedMonth)
   console.log('bdata=', bdata)
 }
+
+let downloadExcel = ()=>{
+  setexcelLoader(true)
+  let client_id = window.localStorage.getItem("clientId")
+  let report_name = window.localStorage.getItem("ReportName")
+  fetch(`${process.env.REACT_APP_API_ENDPOINT}/excel_link/?client_id=${client_id}&report_name=${report_name}`,{
+      method:'GET',
+      headers:{
+        'Content-Type': 'application/json',
+        // Authorization: `Token ${prop_token}`
+      }
+    }).then((res) => res.json())
+    .then(
+      res => {
+          console.log('link= ', res)
+          window.open(res['excel_link'], "_blank")
+          setexcelLoader(false)
+      }
+      )
+      .catch( error => {
+        console.error(error)
+      })
+}
+
 const isMount = useIsMount();
 useEffect(()=>{
   if (isMount){
@@ -642,7 +671,7 @@ if(!props.Token){
             <img src= '/Images/benchmark_side.svg' alt= ''/>
           </SideBarHeader>
             <Menu>
-              <MenuItem></MenuItem>
+              <MenuItem><button onClick={()=>downloadExcel()}>Excel File</button></MenuItem>
               <MenuItem><h5>{window.localStorage.getItem("ReportName")}</h5></MenuItem>
               {myPages.map((repver,index)=>{
                 return repver.children_page_name.length===0?(
@@ -756,7 +785,7 @@ if(!props.Token){
                               const state = await slicer.getSlicerState();    
                               console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
                               if(state.targets[0].column==="player_name"){
-                                console.log('slicer_name=',slicer.name)
+                                console.log('slicer_name=',slicer)
                                 let target_slicer = visuals.filter(function (visual) {
                                   return visual.type === "slicer" && visual.name === slicer.name;             
                               })[0];
@@ -821,6 +850,29 @@ if(!props.Token){
                     }],
                     ['rendered', function () {
                       console.log('report render')
+                      window.report.getActivePage().then(
+                        (activePage=>{
+                          activePage.getVisuals().then(
+                            (visuals=>{
+                              let slicers = visuals.filter(function (visual) {
+                                return visual.type === "slicer";
+                            });
+                              slicers.forEach(async (slicer) => {
+                              const state = await slicer.getSlicerState();    
+                              if(state.targets[0].column==="player_name"){
+                                console.log('slicer_name=',slicer)
+                              //   let target_slicer = visuals.filter(function (visual) {
+                              //     return visual.type === "slicer" && visual.name === slicer.name;             
+                              // })[0];
+                              //   await target_slicer.setSlicerState({ filters: [filter] });
+                              }
+                              
+                      
+                          })      
+                            })
+                          )
+                        })
+                      )
                     }],
                     ['buttonClicked', function(event, report){
                       let ques_name = event.detail['title']
@@ -957,246 +1009,6 @@ if(!props.Token){
 }
 
 export default Report;
-
-// const Comments = ({
-//   open,
-//   setOpen,
-//   comments = [],
-//   postCommentOnQuestion,
-//   postReplyOnQuestion,
-// }) => {
-//   const { currentUser } = useContext(AuthContext);
-//   const [comment, setComment] = useState("");
-//   const [commentsLoading, setCommentsLoading] = useState(true);
-
-//   const onSubmitComment = (e) => {
-//     e.preventDefault();
-//     const commentObj = {
-//       author: currentUser.displayName,
-//       author_email: currentUser.email,
-//       author_display_picture: currentUser.photoURL,
-//       message: comment,
-//     };
-//     postCommentOnQuestion(commentObj);
-//     setComment("");
-//   };
-
-//   useEffect(() => {
-//     if (comments.comments?.length) {
-//       setCommentsLoading(false);
-//       return;
-//     }
-
-//     setTimeout(() => {
-//       setCommentsLoading(false);
-//     }, 3000);
-//   }, [comments.comments, open]);
-
-//   useEffect(() => {
-//     return () => {
-//       setComment("");
-//       setCommentsLoading(true);
-//     };
-//   }, [open]);
-//   return (
-//     <Sidebar open={open} setOpen={setOpen}>
-//       <div className={styles.commentsContainer}>
-//         <IconButton className={styles.closeIcon} onClick={() => setOpen(false)}>
-//           <IoMdClose size="20" />
-//         </IconButton>
-//         <h2>Q{comments.currentQuestion} &nbsp; Comments</h2>
-//         <div className={styles.hLine}></div>
-//         <form className={styles.commentBox} onSubmit={onSubmitComment}>
-//           <InputField
-//             variant="normal"
-//             placeholder="Type your comment here..."
-//             value={comment}
-//             required
-//             onChange={(e) => setComment(e.target.value)}
-//           />
-//         </form>
-//         <div className={styles.comments}>
-//           {!commentsLoading && comments.comments.length ? (
-//             comments?.comments?.map((comment) => (
-//               <Comment
-//                 key={comment?.id}
-//                 comment={comment}
-//                 onSubmitReply={postReplyOnQuestion}
-//               />
-//             ))
-//           ) : !commentsLoading && !comments.comments.length ? (
-//             <div className={styles.notFound}>
-//               <p>No comments found</p>
-//             </div>
-//           ) : (
-//             <div className={styles.loading}>
-//               <CircularProgress className={styles.circularProgress} />
-//             </div>
-//           )}
-//         </div>
-//       </div>
-//     </Sidebar>
-//   );
-// };
-
-// const Comment = ({ comment: commentData, onSubmitReply: submitReply }) => {
-//   const [reply, setReply] = useState("");
-//   const [replyOpen, setReplyOpen] = useState(false);
-
-//   // useEffect(() => {
-//   //   return () => {
-//   //     setReply("");
-//   //   };
-//   // }, [open]);
-//   const { currentUser } = useContext(AuthContext);
-
-//   const onSubmitReply = (e) => {
-//     e.preventDefault();
-//     const commentObj = {
-//       author: currentUser.displayName,
-//       author_email: currentUser.email,
-//       author_display_picture: currentUser.photoURL,
-//       message: reply,
-//       replied_to: commentData.author_email,
-//     };
-
-//     submitReply(commentObj, commentData.id);
-//     setReply("");
-//   };
-
-//   const onSubmitInnerReply = (commentObj) => {
-//     submitReply(commentObj, commentData.id);
-//   };
-
-//   return (
-//     <div className={styles.comment}>
-//       <div className={styles.header}>
-//         <div className={styles.displayPicture}>
-//           <img src={commentData.author_display_picture} alt="display" />
-//         </div>
-//         <div className={styles.details}>
-//           <h4>{commentData.author}</h4>
-//           <p>{getTimeAgo(commentData.created_at)}</p>
-//         </div>
-//       </div>
-//       <div className={styles.content}>
-//         <p>{commentData.comment}</p>
-//       </div>
-//       <button
-//         type="button"
-//         className={styles.replyBtn}
-//         onClick={() => setReplyOpen(!replyOpen)}
-//       >
-//         Reply
-//       </button>
-//       {replyOpen && (
-//         <form className={styles.commentBox} onSubmit={onSubmitReply}>
-//           <InputField
-//             variant="normal"
-//             placeholder="Type your reply here..."
-//             value={reply}
-//             onChange={(e) => setReply(e.target.value)}
-//             required
-//           />
-//         </form>
-//       )}
-//       {commentData?.replies?.length && (
-//         <div className={styles.replies}>
-//           {commentData?.replies?.map((reply) => (
-//             <Reply
-//               key={reply?.id}
-//               reply={reply}
-//               onSubmitReply={onSubmitInnerReply}
-//             />
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// const Reply = ({ reply: replyData, onSubmitReply: submitReply }) => {
-//   const [reply, setReply] = useState(`@${replyData.author_email} `);
-//   const [replyOpen, setReplyOpen] = useState(false);
-
-//   const { currentUser } = useContext(AuthContext);
-
-//   const onSubmitReply = (e) => {
-//     e.preventDefault();
-//     const commentObj = {
-//       author: currentUser.displayName,
-//       author_email: currentUser.email,
-//       author_display_picture: currentUser.photoURL,
-//       message: reply,
-//       replied_to: replyData.author_email,
-//     };
-
-//     submitReply(commentObj);
-//     setReply("");
-//   };
-
-//   return (
-//     <div className={styles.comment}>
-//       <div className={styles.header}>
-//         <div className={styles.displayPicture}>
-//           <img src={replyData.author_display_picture} alt="display" />
-//         </div>
-//         <div className={styles.details}>
-//           <h4>{replyData.author}</h4>
-//           <p>{getTimeAgo(replyData.created_at)}</p>
-//         </div>
-//       </div>
-//       <div className={styles.content}>
-//         <p>{replyData.comment}</p>
-//       </div>
-//       <button
-//         type="button"
-//         className={styles.replyBtn}
-//         onClick={() => setReplyOpen(!replyOpen)}
-//       >
-//         Reply
-//       </button>
-//       {replyOpen && (
-//         <form className={styles.commentBox} onSubmit={onSubmitReply}>
-//           <InputField
-//             variant="normal"
-//             placeholder="Type your reply here..."
-//             value={reply}
-//             onChange={(e) => setReply(e.target.value)}
-//             required
-//           />
-//         </form>
-//       )}
-//     </div>
-//   );
-// };
-
-// const InvalidForm = ({ formId }) => {
-//   return (
-//     <div className={styles.noForms}>
-//       <img src={noFormsImage} alt="no-forms-found" />
-//       <p>
-//         Couldn't find any form assigned to you with the ID:{" "}
-//         <strong>{formId}</strong>
-//       </p>
-//     </div>
-//   );
-// };
-
-// const getTimeAgo = (date) => {
-//   const diff = moment().diff(moment(new Date(date)), "minutes");
-//   if (diff < 1) {
-//     return "Just now";
-//   } else if (diff >= 1440) {
-//     return `${Math.floor(diff / 1440)} days ago`;
-//   } else if (diff === 1440) {
-//     return `${Math.floor(diff / 1440)} day ago`;
-//   } else if (diff >= 60) {
-//     return `${Math.floor(diff / 60)} hr ago`;
-//   } else if (diff >= 1) {
-//     return `${diff} min ago`;
-//   }
-// };
 
 const PageContainer =styled.div`
 display:flex;

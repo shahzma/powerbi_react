@@ -57,7 +57,10 @@ function Mainpage(props) {
   }, [props.email, props.Token, props.pseudo_email, props.clientID]);
 
   useEffect(()=>{
+    let email = window.localStorage.getItem("email")
+    if (email.split('@')[1] in ['redseerconsulting.com','redseer.com' ,'redcore.co','benchmarks.digital','Beeroute.in'] === false){
     ReactGA.pageview(window.location.pathname)
+  }
   },[])
 
   useEffect(() => {
