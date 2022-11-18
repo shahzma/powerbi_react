@@ -13,8 +13,9 @@ import { ImProfile } from "react-icons/im";
 import {SiCoveralls, SiSimpleanalytics} from "react-icons/si"
 import {FiUsers} from "react-icons/fi"
 import {AiOutlineFileSearch} from 'react-icons/ai'
-import { GiHamburgerMenu } from "react-icons/gi";
-import { BiCategory, BiBookContent } from "react-icons/bi";
+import { GiBreakingChain } from "react-icons/gi";
+import { RiMoneyDollarBoxFill } from "react-icons/ri";
+import { BiCategory, BiBookContent, BiCartAlt } from "react-icons/bi";
 import $ from 'jquery';
 import Modal from 'react-modal';
 import { firestore, database } from "../utils/auth/firebase";
@@ -25,7 +26,7 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import ReactGA from 'react-ga'
 import { useIsMount } from '../utils/custom_hooks/useIsMount';
-
+import { TailSpin } from  'react-loader-spinner'
 
 function Report(props) {
 //get id and reporturl and accesstoken from click
@@ -77,7 +78,11 @@ function Report(props) {
     'Unit Economics':<MdMonetizationOn/>,
     'Keyboard':<FaKeyboard/>,
     'Dashboard':<MdDashboard/>,
-    'City Split':<FaCity/>
+    'City Split':<FaCity/>,
+    'Supply Chain Metrics':<GiBreakingChain/>,
+    'Revenue Metrics':<RiMoneyDollarBoxFill/>,
+    'Operational Metrics':<BiCartAlt/>
+
   })
 
   let subtitle;
@@ -440,8 +445,9 @@ let setDropDownValue = (e)=>{
 
 let downloadExcel = ()=>{
   setexcelLoader(true)
-  let client_id = window.localStorage.getItem("clientId")
+  let client_id = window.localStorage.getItem("clientID")
   let report_name = window.localStorage.getItem("ReportName")
+  console.log(client_id, report_name)
   fetch(`${process.env.REACT_APP_API_ENDPOINT}/excel_link/?client_id=${client_id}&report_name=${report_name}`,{
       method:'GET',
       headers:{
@@ -665,7 +671,7 @@ if(!props.Token){
   return (
     width>768 ?
         (
-        <PageContainer>
+        excelLoader===false?(<PageContainer>
           <ProSidebarContainer collapsed={false}>
           <SideBarHeader onClick={()=>gotoMainPage()}>
             <img src= '/Images/benchmark_side.svg' alt= ''/>
@@ -932,7 +938,16 @@ if(!props.Token){
               }
                     />
           </ReportContainer>
-        </PageContainer>
+        </PageContainer>):(<TailSpin
+  height="80"
+  width="80"
+  color="red"
+  ariaLabel="tail-spin-loading"
+  radius="1"
+  wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}
+  wrapperClass=""
+  visible={true}
+/>)
         ):(
           <PageContainer>
             <ProSidebarContainer collapsed={toggle} width={200}>
