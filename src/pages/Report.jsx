@@ -92,6 +92,9 @@ function Report(props) {
     if (email.split('@')[1] in ['redseerconsulting.com','redseer.com' ,'redcore.co','benchmarks.digital','Beeroute.in'] === false){
     ReactGA.pageview(window.location.pathname)
   }
+
+  
+  // ReactGA.pageview(window.location.pathname)
   },[])
   
   function handleWindowSizeChange() {
@@ -677,7 +680,7 @@ if(!props.Token){
             <img src= '/Images/benchmark_side.svg' alt= ''/>
           </SideBarHeader>
             <Menu>
-              <MenuItem><button onClick={()=>downloadExcel()}>Excel File</button></MenuItem>
+              {['redseerconsulting.com','redseer.com' ,'redcore.co','benchmarks.digital','Beeroute.in'].includes(window.localStorage.getItem("email").split('@')[1])?<></>:<MenuItem><button onClick={()=>downloadExcel()}>Excel File</button></MenuItem>}
               <MenuItem><h5>{window.localStorage.getItem("ReportName")}</h5></MenuItem>
               {myPages.map((repver,index)=>{
                 return repver.children_page_name.length===0?(

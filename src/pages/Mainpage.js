@@ -6,6 +6,7 @@ import {Link, Navigate} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import ReactGA from 'react-ga'
 import { useLocation } from 'react-router-dom';
+import TagManager from 'react-gtm-module'
 
 function Mainpage(props) {
   const [ ReportData, setReportData ] = useState([]);
@@ -61,6 +62,14 @@ function Mainpage(props) {
     if (email.split('@')[1] in ['redseerconsulting.com','redseer.com' ,'redcore.co','benchmarks.digital','Beeroute.in'] === false){
     ReactGA.pageview(window.location.pathname)
   }
+  TagManager.dataLayer({
+    dataLayer: {
+      event: 'customview',
+      pagePath: '/Mainpage',
+      pageTitle: 'MainPage',
+    },
+  });
+  // ReactGA.pageview(window.location.pathname)
   },[])
 
   useEffect(() => {
@@ -126,7 +135,16 @@ function Mainpage(props) {
 
 useEffect(()=>{
         let rem_reports = AllReports.filter(x => !UserReports.includes(x));
-        setOtherReports(rem_reports)
+        console.log('rem_reports=',rem_reports)
+        let removable_reports = ['Data Check (Internal)', 'Shortform Video Demo', 'OTT Audio - TD Demo', 'Keyboard', 'New Dashboard', 'Online Retail 2.0 - Category', 'Cohort Analysis', 'Sectors Company Profile', 'Brand Verse', 'Online Retail Demo', 'Vahan Dashboard', 'Brandverse Product', 'OTT Audio Demo']
+        let email = window.localStorage.getItem("email")
+        let email_arr = ['rahulkumar@redseerconsulting.com','ankit.sharma@redseerconsulting.com','shubhangi.k@redseerconsulting.com', 'shahzmaalif@redseerconsulting.com' , 'vaseka@redseerconsulting.com', 'gaurav.singh@redseerconsulting.com']
+        if (email_arr.includes(email)){
+          setOtherReports(rem_reports)
+        }else{
+          let r_rem_reports = rem_reports.filter(x=>!removable_reports.includes(x))
+          setOtherReports(r_rem_reports)
+        }
         console.log('rem_reports=',rem_reports)
 },[AllReports, UserReports])
 

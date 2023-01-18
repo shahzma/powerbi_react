@@ -8,7 +8,15 @@ import Report from './pages/Report';
 import FigmaLogin from './pages/FigmaLogin';
 import FigmaOtp from './pages/FigmaOtp';
 import ReactGA from 'react-ga';
-
+import TagManager from 'react-gtm-module'
+import NewFigmaLogin from './pages/NewFigmaLogin';
+import NewFigmaSIgnIn from './pages/NewFigmaSIgnIn';
+import NewFigmaOTP from './pages/NewFigmaOTP';
+import NewReport from './pages/NewReport';
+import NewMainPage from './pages/NewMainPage';
+import Frontpage from './pages/Frontpage';
+import Article from './pages/Article';
+import ArticleDetail from './pages/ArticleDetail';
 
 function App() {
 
@@ -54,7 +62,13 @@ function App() {
   }
 
   const TRACKING_ID = 'UA-241888110-1'
-
+  const tagManagerArgs = {
+    gtmId: 'GTM-MXCJ6SF'
+}
+// const tagManagerArgs = {
+//   gtmId: 'GTM-P3W82CC'
+// }
+  TagManager.initialize(tagManagerArgs)
   ReactGA.initialize(TRACKING_ID)
 
   return (
@@ -62,11 +76,19 @@ function App() {
       <Routes>
         {/* <Route path = "/" element = {<Login userLogin={userLogin}/>}></Route> */}
         <Route path = "/" element = {<FigmaLogin userLogin={userLogin} getRealEmail={getRealEmail} setClientID={setClientID}/>}></Route>
+        <Route path = '/login' element = {<NewFigmaLogin/>}></Route>
+        <Route path = '/signin' element={<NewFigmaSIgnIn/>}  ></Route>
+        <Route path = '/otp' element = {<NewFigmaOTP/>}></Route>
+        <Route path = '/frontpage' element = {<Frontpage/>}></Route>
         {/* <Route path = "/otp" element = {<Otp Token={Token} getReportName={getReportName}/>}/> */}
         <Route path = "/FigmaOtp" element = {<FigmaOtp email = {RealEmail} IsLoggedIn={IsLoggedIn} SignedInStatus={SignedInStatus} setTokenVal = {setTokenVal}/>}/>
         {/* <Route path = "/mainpage" element = {<Mainpage Email = {'maruti@redseerconsulting.com'} Token={Token} Reportname={Reportname} IsAdmin = {IsAdmin} getReportVersionID = {getReportVersionID}/>}/> */}
         <Route path = "/mainpage" element = {<Mainpage email = {RealEmail} pseudo_email={Email} IsSignedIn={IsSignedIn} Token = {Token} getReportName={getReportName} clientID={clientID}/>}/>
         <Route path = "/report" element = {<Report Token={Token} email = {RealEmail} pseudo_email={Email} ReportName = {Reportname}/>}/>
+        <Route path = 'newreport' element = {<NewReport/>}></Route>
+        <Route path = '/newmainpage' element = {<NewMainPage/>}></Route>
+        <Route path = '/article' element = {<Article/>}></Route>
+        <Route path='/articled' element = {<ArticleDetail/>}></Route>
       </Routes>
     </Router>
 

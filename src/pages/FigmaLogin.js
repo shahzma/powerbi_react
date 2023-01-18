@@ -8,6 +8,7 @@ import GoogleLogin from 'react-google-login';
 import MicrosoftLogin from "react-microsoft-login";
 import GoogleButton from 'react-google-button'
 import{ useCallback, useContext } from 'react';
+import TagManager from 'react-gtm-module';
 import './FigmaLogin.css'
 
 const FigmaLogin = (props) => {
@@ -46,10 +47,15 @@ const FigmaLogin = (props) => {
     
     let login = (e)=>{
         e.preventDefault();
-        // console.log(email)
-        // setLoggedIn(true)
       console.log(email)
       window.localStorage.setItem('email', email)
+      const isInternalUser = email.endsWith('@redseerconsulting.com');
+      console.log('is_internal= ' , isInternalUser)
+      // TagManager.dataLayer({
+      //   event: 'userLogin',
+      //   'isInternalUser':isInternalUser,
+      //   email,
+      // });
       props.getRealEmail(email)
       fetch(`${process.env.REACT_APP_API_ENDPOINT}/authorise/login/?email=${email}`, {
         method: 'GET',
@@ -59,7 +65,6 @@ const FigmaLogin = (props) => {
           data => data.json(),        )
       .then(
         data => {
-          // this.props.userLogin(data.token);
           setLoggedIn(true)
           console.log(loggedIn)
           console.log('data=',data['pseudo_email'])
@@ -76,7 +81,8 @@ const FigmaLogin = (props) => {
 
     const authHandler = useCallback((err, data) => {
       window.sessionStorage.clear()
-      console.log(err, data);
+      console.log('error=', err);
+      console.log('data=', data)
       if(data && !err){
         console.log('acc=', data['account'].userName)
         let email = data['account'].userName
