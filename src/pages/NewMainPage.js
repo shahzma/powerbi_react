@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
-import Dropdown from 'react-dropdown';
-import 'react-dropdown/style.css';
 import './NewMainPage.css'
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +13,8 @@ const NewMainPage = () => {
     const [ ShowReportData, setShowReportData ] = useState([]);
     const [width, setWidth] = useState(window.innerWidth);
     const [UserReports, setUserReports] = useState([]);
-    const [AllReports, setAllReports] = useState([])
+    const [AllReports, setAllReports] = useState([]);
+    const [tagData, setTagData] = useState([]);
 
     const options = [
         'Bought', 'Buyable'
@@ -107,6 +106,46 @@ const NewMainPage = () => {
     "Spinach",    
     "Tomato", 
     "Turnip"]
+
+    const tag_data= [
+      {
+          "id": 1,
+          "tag_name": "swiggy",
+          "report_val": [
+              {
+                  "report_name": "Food Aggregators"
+              },
+              {
+                  "report_name": "FoodTech Report"
+              },
+              {
+                  "report_name": "Food Tech 2.0"
+              }
+          ],
+          "reports": [
+              "Food Aggregators",
+              "FoodTech Report",
+              "Food Tech 2.0"
+          ]
+      },
+      {
+          "id": 2,
+          "tag_name": "flipkart",
+          "report_val": [
+              {
+                  "report_name": "Online Retail"
+              },
+              {
+                  "report_name": "Online Retail 2.0"
+              }
+          ],
+          "reports": [
+              "Online Retail",
+              "Online Retail 2.0"
+          ]
+      }
+  ]
+
     function handleWindowSizeChange() {
         setWidth(window.innerWidth);
     }
@@ -157,12 +196,22 @@ const NewMainPage = () => {
         )
         .catch( error => console.error(error))
     }, [])
+
+    useEffect(()=>{
+      fetch(`${process.env.REACT_APP_API_ENDPOINT}/tags/`)
+        .then(data =>data.json())
+        .then(data =>{
+          console.log('data_tag = ', data)
+          setTagData(data)
+        })
+    },[])
     
       const handleOnSearch = (string, results) => {
         // onSearch will have as the first callback parameter
         // the string searched and for the second the results.
-        let arr = ReportDataBack.slice(0, 8);
-        setShowReportData(arr)
+        // to clear out selction on clicking cross
+        // let arr = ReportDataBack.slice(0, 8);
+        // setShowReportData(arr)
         // setReportData(ReportDataBack)
         console.log(string, results)
       }
@@ -175,8 +224,8 @@ const NewMainPage = () => {
       const handleOnSelect = (item) => {
         // the item selected
         console.log('handle on select')
-        // setReportDataBack(ReportData)
-        setShowReportData(ShowReportData.filter(rep=>rep.report_name===item.report_name))
+        // console.log('new = ',ShowReportData.filter(rep=>item.reports.includes(rep.report_name)))
+        setShowReportData(ShowReportData.filter(rep=>item.reports.includes(rep.report_name)))
       }
     
       const handleOnFocus = () => {
@@ -189,7 +238,7 @@ const NewMainPage = () => {
           <>
             {/* <span style={{ display: 'block', textAlign: 'left' }}>id: {item.id}</span> */}
             {/* <span style={{ display: 'block', textAlign: 'left' }}>{item.name}</span> */}
-            <span style={{ display: 'block', textAlign: 'left' }}>{item.report_name}</span>
+            <span style={{ display: 'block', textAlign: 'left' }}>{item.tag_name}</span>
           </>
         )
       }
@@ -226,14 +275,20 @@ const NewMainPage = () => {
   return (
     width>768 ?(<>
         <PageHeader>
-            <div><img src = '/Images/benchmark_logo.png' alt = ''/></div> <div>About</div> <div>Products</div><div>Articles</div><div>{hour<15?'Good Morning ':'Good Evening '}<img src = "/Images/user.svg" alt = "" style={{width: '3vw', borderRadius:'40px'}}/></div>
+            <div><img src = '/Images/benchmark_logo.png' alt = ''/></div> <div>About</div>
+             <ProductDiv>
+              Products
+              <DropDiv>
+                <a>Sign Out</a>
+              </DropDiv>
+              </ProductDiv><div>Articles</div><div>{hour<15?'Good Morning ':'Good Evening '}<img src = "/Images/user.svg" alt = "" style={{width: '3vw', borderRadius:'40px'}}/></div>
         </PageHeader>
         <img src = '/Images/company_acess.png'/>
         <IconBar>
-        <h3 style={{'marginLeft':'80px'}}>All Products</h3>
+        <h3 style={{'marginLeft':'30px'}}>All Products</h3>
         <FilterBar>
         <div style={{ width: 250 }}>
-          <ReactSearchAutocomplete
+          {/* <ReactSearchAutocomplete
             items={ReportData}
             fuseOptions={{ keys: ["report_name", 'players'] }}
             resultStringKeyName="report_name"
@@ -244,10 +299,22 @@ const NewMainPage = () => {
             autoFocus
             formatResult={formatResult}
             styling = {{borderRadius: "5px", height: "40px",}}
+          /> */}
+          <ReactSearchAutocomplete
+            items={tagData}
+            fuseOptions={{ keys: ["tag_name"] }}
+            resultStringKeyName="tag_name"
+            onSearch={handleOnSearch}
+            onHover={handleOnHover}
+            onSelect={handleOnSelect}
+            onFocus={handleOnFocus}
+            autoFocus
+            formatResult={formatResult}
+            styling = {{borderRadius: "5px", height: "40px",}}
           />
           {/* <Autocomplete data={item_data} /> */}
         </div>
-        <Dropdown options={options} onChange={(e)=>setDropDownValue(e)} placeholder="Status" controlClassName='myClassName'/>
+        {/* <Dropdown options={options} onChange={(e)=>setDropDownValue(e)} placeholder="Status" controlClassName='myClassName'/> */}
         {/* <button>NormalView</button>
         <button>GridView</button>
         <button>Notif</button> */}
@@ -332,9 +399,10 @@ background-color:#F4F4FD;
 display:flex;
 align-items:center;
 justify-content:center;
-gap:50vw;
+gap:52vw;
 `
 const FilterBar = styled.div`
+margin-left:30px;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -352,6 +420,34 @@ const Content = styled.div`
     grid-template-columns:100%;
     margin:20px 40px;
 }
+`
+
+const DropDiv = styled.div`
+display:none;
+position:absolute;
+top:58px;
+right:25px;
+background:#F6F6F6;
+border:1px solid black;
+border-radius: 0 0 5px 5px;
+width:90px;
+height: 40px;
+font-size:16px;
+/* transition-duration:160ms; */
+text-align:center;
+&:hover{
+  background-color: #ddd;
+}
+`
+
+const ProductDiv = styled.div`
+&:hover{
+    ${DropDiv}{
+        align-items:center;
+        display:flex;
+        justify-content:center;
+    }
+  }
 `
 
 const Wrap = styled.div`

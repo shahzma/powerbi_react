@@ -13,6 +13,7 @@ const ArticleDetail = () => {
             <div><img src = '/Images/benchmark_logo.png' alt = ''/></div> <div>About</div> <div>Products</div><div>Articles</div><div>{hour<15?'Good Morning ':'Good Evening '}<img src = "/Images/user.svg" alt = "" style={{width: '3vw', borderRadius:'40px'}}/></div>
     </PageHeader>
     <div id = 'main'></div>
+    <img src = '/Images/get_started.png' style = {{'width':'100vw'}}/>
     </>
   )
 }

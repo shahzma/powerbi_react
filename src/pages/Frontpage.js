@@ -1,10 +1,27 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useState, useEffect } from 'react';
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
+import {PowerBIEmbed} from 'powerbi-client-react';
+import {models} from 'powerbi-client';
+import {Navigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from 'react-responsive-carousel';
+import './FrontPage.css';
+
 
 const Frontpage = () => {
 
+    const navigate = useNavigate();
+    const options = [
+        'one', 'two', 'three'
+      ];
+    const defaultOption = options[0];
     const [width, setWidth] = useState(window.innerWidth);
+    const [ EmbedToken, setEmbedToken ] = useState('');
+    const [ newUrl, setNewUrl ] = useState('');
 
     function handleWindowSizeChange() {
         setWidth(window.innerWidth);
@@ -17,11 +34,23 @@ const Frontpage = () => {
         }
     }, []);
 
+
   return (
     
     width>768 ?(<>
         <PageHeader>
-                <div><img src = '/Images/benchmark_logo.png' alt = ''/></div><div>Products</div><div>Articles</div><SignInDiv><a href='/signin'>Login</a> <button>Register</button></SignInDiv>
+                <div><img src = '/Images/benchmark_logo.png' alt = ''/></div>
+                <ProductDiv>
+                Products
+                <DropDiv>
+                    <OverViewDiv>
+                    <h5>Products</h5>
+                    <div>Hello World</div>
+                    </OverViewDiv>
+                    <TypesDiv>World</TypesDiv>
+                </DropDiv>
+              </ProductDiv>
+                <div>Articles</div><SignInDiv><a href='/signin'>Login</a></SignInDiv>
         </PageHeader>
         <FirstPage>
             <NewAge><h2>New Age <span style={{'color':'blue'}}>Market Intelligence</span><br></br>Platform of choice</h2> Benchmarks is an on - demand business intelligence platform that tracks 150+
@@ -30,36 +59,151 @@ const Frontpage = () => {
                         <br/>
                         <br/>
                         <br/>
-                        <img src = '/Images/graph.png'/>
+                        <PowerBIEmbed
+                  embedConfig = {{
+                    type: 'report',   // Supported types: report, dashboard, tile, visual and qna
+                    id: 'reportId',
+                    //get from props
+                    embedUrl:'https://app.powerbi.com/view?r=eyJrIjoiM2UwNjU2MzgtZGE1Mi00YzQ3LTkxZGYtM2EwMGVjMjZjYWYwIiwidCI6IjAwYTlmZjhjLTk4MzAtNDg0Ny1hZTUxLTQ1NzllYzA5MmNiNCJ9',
+                    // embedUrl:newUrl,
+                    accessToken: EmbedToken,
+                    tokenType: models.TokenType.Embed,
+                    // filters: [datefilter],
+                    settings: {
+                      panes: {
+                        filters: {
+                          expanded: false,
+                          visible: false,
+                        },
+                      },
+                      navContentPaneEnabled:false
+                    }
+                  }}
+                  eventHandlers = {
+                    new Map([
+                      ['loaded', function (event, report) {
+                        console.log('loaded')
+                      }],
+                      ['rendered', function () {
+                        console.log('render')
+                      }],
+                      ['buttonClicked', function(event, report){
+                        console.log('buttonclick')
+                      }],
+                      ['error', function (event) {console.log('powerbi_error=',event.detail);}]
+                    ])
+                  }
+                  cssClassName = { "report-style-class" }
+                  getEmbeddedComponent = {async(embeddedReport) => {
+                    window.report = embeddedReport ;
+                  }
+                  
+                                }
+                      />
             </NewAge>
             <Article>
                 {/* <div><img src = '/Images/top_left.png'/></div> */}
                 <img src = '/Images/top_left.png' style = {{'width':'44vw'}}  />
                 <VerticalArticles>
-                    <div style={{'marginLeft':'5px'}}> 
-                        <div>B2B Service<br/> It is our pleasure to release our report The Most<br/> Inclusive Football Tournament</div>
-                        <div><img src = '/Images/sidebar_demo.png'/></div>
-                    </div>
-                    <div style={{'marginLeft':'5px'}}>
-                    <div>B2B Service<br/> It is our pleasure to release our report The Most<br/> Inclusive Football Tournament</div>
-                        <div><img src = '/Images/sidebar_demo.png'/></div>
-                    </div>
-                    <div style={{'marginLeft':'5px'}}>
-                    <div>B2B Service<br/> It is our pleasure to release our report The Most<br/> Inclusive Football Tournament</div>
-                        <div><img src = '/Images/sidebar_demo.png'/></div>
-                    </div>
-                    <div style={{'marginLeft':'5px'}}>
-                    <div>B2B Service<br/> It is our pleasure to release our report The Most<br/> Inclusive Football Tournament</div>
-                        <div><img src = '/Images/sidebar_demo.png'/></div>
-                    </div>
+                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/700-mn-indian-digital-consumer-funnel/'}}   > 
+                        <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div><div style={{'fontWeight':'bold'}}>700 Mn+ Indian Digital Consumer Funnel</div></div>
+                        <div><img style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/funnel.png'/></div>
+                    </VerticalArticleDiv>
+                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/looking-back-at-indias-internet-economy-in-2022/'}}>
+                    <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div> <div style={{'fontWeight':'bold'}}>Looking Back at India's Internet Economy in 2022</div></div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/InternetEconomy.png'/></div>
+                    </VerticalArticleDiv>
+                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/digital-native-brands-transforming-retail-landscape/'}}>
+                    <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>B2B Services</div> <div style={{'fontWeight':'bold'}}>Digital Native Brands - Transforming Retail Landscape</div> </div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/nativeBrands.png'/></div>
+                    </VerticalArticleDiv>
+                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/inside-story-of-40000-crore-festive-season-2022/'}}>
+                    <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Retail and Consumer goods</div> <div style={{'fontWeight':'bold'}}>Inside Story of 40,000 Crore Festive Season 2022</div></div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/40kCrore.png'/></div>
+                    </VerticalArticleDiv>
                 </VerticalArticles>
             </Article>
         </FirstPage>
-        <img src = '/Images/top_company.png'/>
+                <Carousel>
+                <div>
+                    <img src="/Images/top_company.png" />
+                    <p className="legend"></p>
+                </div>
+                <div>
+                    <img src="/Images/top_company.png" />
+                    <p className="legend"></p>
+                </div>
+                <div>
+                    <img src="/Images/top_company.png" />
+                    <p className="legend"></p>
+                </div>
+                </Carousel>
         <div style = {{'display':'flex', 'alignItems': 'center', 'justifyContent':'center', 'height':'25vh', 'fontWeight':'bold', 'flexDirection':'column', 'gap':'5vh'}}>
             Trusted by the best and brightest digital brands
             <img src = '/Images/brands.png'/>
         </div>
+        {/* <ProductGridContainer>
+            <ArticleProduct>
+                <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/700-mn-indian-digital-consumer-funnel/'}}   > 
+                    <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div><div style={{'fontWeight':'bold'}}>700 Mn+ Indian Digital Consumer Funnel</div></div>
+                    <div><img style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/funnel.png'/></div>
+                </VerticalArticleDiv>
+                <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/looking-back-at-indias-internet-economy-in-2022/'}}>
+                <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div> <div style={{'fontWeight':'bold'}}>Looking Back at India's Internet Economy in 2022</div></div>
+                    <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/InternetEconomy.png'/></div>
+                </VerticalArticleDiv>
+                <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/digital-native-brands-transforming-retail-landscape/'}}>
+                <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>B2B Services</div> <div style={{'fontWeight':'bold'}}>Digital Native Brands - Transforming Retail Landscape</div> </div>
+                    <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/nativeBrands.png'/></div>
+                </VerticalArticleDiv>
+                <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/inside-story-of-40000-crore-festive-season-2022/'}}>
+                <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Retail and Consumer goods</div> <div style={{'fontWeight':'bold'}}>Inside Story of 40,000 Crore Festive Season 2022</div></div>
+                    <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/40kCrore.png'/></div>
+                </VerticalArticleDiv>
+            </ArticleProduct><Graph>
+            <PowerBIEmbed
+                  embedConfig = {{
+                    type: 'report',   // Supported types: report, dashboard, tile, visual and qna
+                    id: 'reportId',
+                    //get from props
+                    embedUrl:'https://app.powerbi.com/view?r=eyJrIjoiM2UwNjU2MzgtZGE1Mi00YzQ3LTkxZGYtM2EwMGVjMjZjYWYwIiwidCI6IjAwYTlmZjhjLTk4MzAtNDg0Ny1hZTUxLTQ1NzllYzA5MmNiNCJ9',
+                    // embedUrl:newUrl,
+                    accessToken: EmbedToken,
+                    tokenType: models.TokenType.Embed,
+                    // filters: [datefilter],
+                    settings: {
+                      panes: {
+                        filters: {
+                          expanded: false,
+                          visible: false,
+                        },
+                      },
+                      navContentPaneEnabled:false
+                    }
+                  }}
+                  eventHandlers = {
+                    new Map([
+                      ['loaded', function (event, report) {
+                        console.log('loaded')
+                      }],
+                      ['rendered', function () {
+                        console.log('render')
+                      }],
+                      ['buttonClicked', function(event, report){
+                        console.log('buttonclick')
+                      }],
+                      ['error', function (event) {console.log('powerbi_error=',event.detail);}]
+                    ])
+                  }
+                  cssClassName = { "report-style-classProduct" }
+                  getEmbeddedComponent = {async(embeddedReport) => {
+                    window.report = embeddedReport ;
+                  }
+                  
+                                }
+                      />
+            </Graph>
+        </ProductGridContainer> */}
         <img src='/Images/base.png'/>
         <img src = '/Images/get_started.png'/>
         {/* <div style = {{'display':'flex', 'alignItems': 'center', 'justifyContent':'center', 'height':'10vh', 'fontWeight':'bold'}}>
@@ -152,8 +296,8 @@ background-color:#F9FAFB;
 display:flex;
 justify-content:center;
 align-items:center;
-gap:12vw;
-div{
+gap:22vw;
+/* div{
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -167,12 +311,80 @@ div{
 
 @media (max-width:768px){
 }
-}
+} */
 `
 
 const SignInDiv = styled.div`
 color:blue;
 `
+
+const DropDiv = styled.div`
+display:none;
+position:absolute;
+top:10vh;
+right:1px;
+left:1px;
+background:#FFFFFF;
+border:1px solid aquamarine;
+border-radius: 0 0 5px 5px;
+width:100vw;
+height: 24vh;
+font-size:16px;
+/* transition-duration:160ms; */
+text-align:center;
+&:hover{
+  background-color: #ddd;
+}
+`
+
+const OverViewDiv = styled.div``
+const TypesDiv = styled.div``
+const ProductDiv = styled.div`
+&:hover{
+    ${DropDiv}{
+        display: grid !important;
+        grid-auto-rows: 1fr; 
+        grid-template-columns: 0.3fr 1fr 2.4fr 0.3fr; 
+        grid-template-rows: 0.2fr 2.6fr 0.2fr; 
+        gap: 0px 0px; 
+        grid-template-areas: 
+            ". . . ."
+            ". Products Types ."
+            ". . . ."; 
+            
+    }
+    ${OverViewDiv}{
+        grid-area: Products;
+    }
+    ${TypesDiv}{
+        grid-area:Types;
+    }
+  }
+`
+const ProductGridContainer = styled.div`
+display: grid; 
+  grid-auto-rows: 1fr; 
+  grid-template-columns: 0.5fr 1.8fr 0.56fr 1.64fr 0.5fr; 
+  grid-template-rows: 0.3fr 2.4fr 0.3fr; 
+  gap: 0px 0px; 
+  grid-template-areas: 
+    ". . . . ."
+    ". ArticleProduct . Graph ."
+    ". . . . ."; 
+`
+
+const ArticleProduct = styled.div`
+grid-area: ArticleProduct;
+display:grid;
+height:55vh;
+grid-template-rows: repeat(4, 1fr);
+gap:0px 0px;
+`
+const Graph = styled.div`
+grid-area: Graph;
+
+`
+
 const FirstPage = styled.div`
 height:90vh;
 display:grid;
@@ -195,10 +407,10 @@ grid-template-areas:
 const NewAge = styled.div`
 grid-area:NewAge;
 button{
-    background-color:#F9FAFB;
+    background-color:#55E4E4;
     border:none;
     padding:10px 40px;
-    border:1px solid blue;
+    border:none;
 }
 
 @media (max-width:768px){
@@ -224,17 +436,17 @@ display:grid;
 height:55vh;
 grid-template-rows: repeat(4, 1fr);
 gap:0px 0px;
-div{
+@media (max-width:768px) {
+    min-height:90vh;
+}
+`
+
+const VerticalArticleDiv = styled.div`
     display: flex;
     justify-content:space-between;
     /* align-items:center; */
     gap:10px;
     border-bottom: 1px solid black;
-
-}
-@media (max-width:768px) {
-    min-height:90vh;
-}
 `
 
 const Footer = styled.div`
