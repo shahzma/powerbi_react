@@ -59,46 +59,48 @@ const Frontpage = () => {
                         <br/>
                         <br/>
                         <br/>
+                        <br/>
+                        <span><img src = '/Images/graph.png'/> <span style={{'fontSize':'18px'}}>Companies we cover</span></span>
                         <PowerBIEmbed
-                  embedConfig = {{
-                    type: 'report',   // Supported types: report, dashboard, tile, visual and qna
-                    id: 'reportId',
-                    //get from props
-                    embedUrl:'https://app.powerbi.com/view?r=eyJrIjoiM2UwNjU2MzgtZGE1Mi00YzQ3LTkxZGYtM2EwMGVjMjZjYWYwIiwidCI6IjAwYTlmZjhjLTk4MzAtNDg0Ny1hZTUxLTQ1NzllYzA5MmNiNCJ9',
-                    // embedUrl:newUrl,
-                    accessToken: EmbedToken,
-                    tokenType: models.TokenType.Embed,
-                    // filters: [datefilter],
-                    settings: {
-                      panes: {
-                        filters: {
-                          expanded: false,
-                          visible: false,
-                        },
-                      },
-                      navContentPaneEnabled:false
-                    }
-                  }}
-                  eventHandlers = {
-                    new Map([
-                      ['loaded', function (event, report) {
-                        console.log('loaded')
-                      }],
-                      ['rendered', function () {
-                        console.log('render')
-                      }],
-                      ['buttonClicked', function(event, report){
-                        console.log('buttonclick')
-                      }],
-                      ['error', function (event) {console.log('powerbi_error=',event.detail);}]
-                    ])
-                  }
-                  cssClassName = { "report-style-class" }
-                  getEmbeddedComponent = {async(embeddedReport) => {
-                    window.report = embeddedReport ;
-                  }
-                  
-                                }
+                        embedConfig = {{
+                            type: 'report',   // Supported types: report, dashboard, tile, visual and qna
+                            id: 'reportId',
+                            //get from props
+                            embedUrl:'https://app.powerbi.com/view?r=eyJrIjoiM2UwNjU2MzgtZGE1Mi00YzQ3LTkxZGYtM2EwMGVjMjZjYWYwIiwidCI6IjAwYTlmZjhjLTk4MzAtNDg0Ny1hZTUxLTQ1NzllYzA5MmNiNCJ9',
+                            // embedUrl:newUrl,
+                            accessToken: EmbedToken,
+                            tokenType: models.TokenType.Embed,
+                            // filters: [datefilter],
+                            settings: {
+                            panes: {
+                                filters: {
+                                expanded: false,
+                                visible: false,
+                                },
+                            },
+                            navContentPaneEnabled:false
+                            }
+                        }}
+                        eventHandlers = {
+                            new Map([
+                            ['loaded', function (event, report) {
+                                console.log('loaded')
+                            }],
+                            ['rendered', function () {
+                                console.log('render')
+                            }],
+                            ['buttonClicked', function(event, report){
+                                console.log('buttonclick')
+                            }],
+                            ['error', function (event) {console.log('powerbi_error=',event.detail);}]
+                            ])
+                        }
+                        cssClassName = { "report-style-class" }
+                        getEmbeddedComponent = {async(embeddedReport) => {
+                            window.report = embeddedReport ;
+                        }
+                        
+                                        }
                       />
             </NewAge>
             <Article>
@@ -106,24 +108,40 @@ const Frontpage = () => {
                 <img src = '/Images/top_left.png' style = {{'width':'44vw'}}  />
                 <VerticalArticles>
                     <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/700-mn-indian-digital-consumer-funnel/'}}   > 
-                        <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div><div style={{'fontWeight':'bold'}}>700 Mn+ Indian Digital Consumer Funnel</div></div>
-                        <div><img style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/funnel.png'/></div>
+                        <div>
+                            <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div>
+                            <div style={{'fontWeight':'bold'}}>700 Mn+ Indian Digital Consumer Funnel</div>
+                            <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'35px'}}>Article . January 6, 2023</div>
+                        </div>
+                        <div>
+                            <img style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/funnel.png'/>
+                        </div>
                     </VerticalArticleDiv>
                     <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/looking-back-at-indias-internet-economy-in-2022/'}}>
-                    <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div> <div style={{'fontWeight':'bold'}}>Looking Back at India's Internet Economy in 2022</div></div>
-                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/InternetEconomy.png'/></div>
+                    <div>
+                        <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div> <div style={{'fontWeight':'bold'}}>Looking Back at India's Internet Economy in 2022</div>
+                        <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'35px'}}>Article .  January 2, 2023</div>
+                        </div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px', 'borderRadius':'16px'}} src = '/Images/InternetEconomy.png'/></div>
                     </VerticalArticleDiv>
                     <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/digital-native-brands-transforming-retail-landscape/'}}>
-                    <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>B2B Services</div> <div style={{'fontWeight':'bold'}}>Digital Native Brands - Transforming Retail Landscape</div> </div>
-                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/nativeBrands.png'/></div>
+                    <div>
+                        <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>B2B Services</div> <div style={{'fontWeight':'bold'}}>Digital Native Brands - Transforming Retail Landscape</div> 
+                        <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'35px'}}>Article .  December 2, 2022</div>
+                    </div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/nativeBrands.png'/></div>
                     </VerticalArticleDiv>
                     <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/inside-story-of-40000-crore-festive-season-2022/'}}>
-                    <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Retail and Consumer goods</div> <div style={{'fontWeight':'bold'}}>Inside Story of 40,000 Crore Festive Season 2022</div></div>
-                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/40kCrore.png'/></div>
+                    <div>
+                        <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Retail and Consumer goods</div> <div style={{'fontWeight':'bold'}}>Inside Story of 40,000 Crore Festive Season 2022</div>
+                        <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'35px'}}>Article . October 26, 2022</div>
+                    </div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/40kCrore.png'/></div>
                     </VerticalArticleDiv>
                 </VerticalArticles>
             </Article>
         </FirstPage>
+        <br/><br/>
                 <Carousel>
                 <div>
                     <img src="/Images/top_company.png" />
@@ -142,24 +160,39 @@ const Frontpage = () => {
             Trusted by the best and brightest digital brands
             <img src = '/Images/brands.png'/>
         </div>
-        {/* <ProductGridContainer>
+        <ProductGridContainer>
             <ArticleProduct>
-                <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/700-mn-indian-digital-consumer-funnel/'}}   > 
-                    <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div><div style={{'fontWeight':'bold'}}>700 Mn+ Indian Digital Consumer Funnel</div></div>
-                    <div><img style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/funnel.png'/></div>
-                </VerticalArticleDiv>
-                <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/looking-back-at-indias-internet-economy-in-2022/'}}>
-                <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div> <div style={{'fontWeight':'bold'}}>Looking Back at India's Internet Economy in 2022</div></div>
-                    <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/InternetEconomy.png'/></div>
-                </VerticalArticleDiv>
-                <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/digital-native-brands-transforming-retail-landscape/'}}>
-                <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>B2B Services</div> <div style={{'fontWeight':'bold'}}>Digital Native Brands - Transforming Retail Landscape</div> </div>
-                    <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/nativeBrands.png'/></div>
-                </VerticalArticleDiv>
-                <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/inside-story-of-40000-crore-festive-season-2022/'}}>
-                <div><div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Retail and Consumer goods</div> <div style={{'fontWeight':'bold'}}>Inside Story of 40,000 Crore Festive Season 2022</div></div>
-                    <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px'}} src = '/Images/40kCrore.png'/></div>
-                </VerticalArticleDiv>
+            <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/online-festive-sales-the-biggest-gmv-churner-of-e-tailing-industry/'}}   > 
+                        <div>
+                            <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Retail and Consumer Goods</div>
+                            <div style={{'fontWeight':'bold'}}>The Biggest GMV Churner of E-Tailing industry</div>
+                            <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'35px'}}>Article . September 15, 2022</div>
+                        </div>
+                        <div>
+                            <img style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/ConsumerGoods.png'/>
+                        </div>
+                    </VerticalArticleDiv>
+                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/supercharging-20-of-indias-gdp-with-a-digital-touch/'}}>
+                    <div>
+                        <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Agriculture</div> <div style={{'fontWeight':'bold'}}>Supercharging 20% Of India's GDP With A Digital Touch</div>
+                        <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'10px'}}>Article .  October 13, 2022</div>
+                        </div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px', 'borderRadius':'16px'}} src = '/Images/Agriculture.png'/></div>
+                    </VerticalArticleDiv>
+                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/galvanized-by-ecommerce-indias-ecommerce-logistics-sector-scaling-new-heights/'}}>
+                    <div>
+                        <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Logisitcs and Enablers</div> <div style={{'fontWeight':'bold'}}>Galvanized by eCommerce, Logistics Sector is Scaling New Heights!</div> 
+                        <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'10px'}}>Article .  October 28, 2022</div>
+                    </div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/elogistics.png'/></div>
+                    </VerticalArticleDiv>
+                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/inside-story-of-40000-crore-festive-season-2022/'}}>
+                    <div>
+                        <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div> <div style={{'fontWeight':'bold'}}>Unlocking the Digital Potential of Traditional Brands</div>
+                        <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'10px'}}>Article . January 20, 2023</div>
+                    </div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/EmergingTech.png'/></div>
+                    </VerticalArticleDiv>
             </ArticleProduct><Graph>
             <PowerBIEmbed
                   embedConfig = {{
@@ -203,7 +236,7 @@ const Frontpage = () => {
                                 }
                       />
             </Graph>
-        </ProductGridContainer> */}
+        </ProductGridContainer>
         <img src='/Images/base.png'/>
         <img src = '/Images/get_started.png'/>
         {/* <div style = {{'display':'flex', 'alignItems': 'center', 'justifyContent':'center', 'height':'10vh', 'fontWeight':'bold'}}>
@@ -296,7 +329,7 @@ background-color:#F9FAFB;
 display:flex;
 justify-content:center;
 align-items:center;
-gap:22vw;
+gap:21.6vw;
 /* div{
     display:flex;
     align-items:center;
@@ -364,7 +397,7 @@ const ProductDiv = styled.div`
 const ProductGridContainer = styled.div`
 display: grid; 
   grid-auto-rows: 1fr; 
-  grid-template-columns: 0.5fr 1.8fr 0.56fr 1.64fr 0.5fr; 
+  grid-template-columns: 0.5fr 2.5fr 0.1fr 1.4fr 0.5fr; 
   grid-template-rows: 0.3fr 2.4fr 0.3fr; 
   gap: 0px 0px; 
   grid-template-areas: 
@@ -386,6 +419,7 @@ grid-area: Graph;
 `
 
 const FirstPage = styled.div`
+margin-top:3vh;
 height:90vh;
 display:grid;
 grid-template-columns: repeat(16, 1fr);
@@ -405,6 +439,7 @@ grid-template-areas:
 `
 
 const NewAge = styled.div`
+padding-top:40px;
 grid-area:NewAge;
 button{
     background-color:#55E4E4;
@@ -446,7 +481,7 @@ const VerticalArticleDiv = styled.div`
     justify-content:space-between;
     /* align-items:center; */
     gap:10px;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #BCBCBC;
 `
 
 const Footer = styled.div`
