@@ -10,7 +10,11 @@ import { useNavigate } from 'react-router-dom';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import './FrontPage.css';
-
+import { BsTag } from "react-icons/bs";
+import { MdHouseSiding , MdOutlineCasino} from "react-icons/md";
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import { GiHealthNormal } from "react-icons/gi";
+import { TbBooks } from "react-icons/tb";
 
 const Frontpage = () => {
 
@@ -22,6 +26,7 @@ const Frontpage = () => {
     const [width, setWidth] = useState(window.innerWidth);
     const [ EmbedToken, setEmbedToken ] = useState('');
     const [ newUrl, setNewUrl ] = useState('');
+    const [style, setStyle] = useState("invisible");
 
     function handleWindowSizeChange() {
         setWidth(window.innerWidth);
@@ -34,7 +39,11 @@ const Frontpage = () => {
         }
     }, []);
 
-
+    const changeStyle = () => {
+        console.log("you just clicked");
+      
+        setStyle("visible");
+      };
   return (
     
     width>768 ?(<>
@@ -42,12 +51,54 @@ const Frontpage = () => {
                 <div><img src = '/Images/benchmark_logo.png' alt = ''/></div>
                 <ProductDiv>
                 Products
+                {/* <div onClick={changeStyle} className={style}>
+                    <div className='overview'>
+                        <h5>Products</h5>
+                        <div>Hello My</div>
+                    </div>
+                    <div className='types'>
+                        World
+                    </div>
+                </div> */}
                 <DropDiv>
                     <OverViewDiv>
-                    <h5>Products</h5>
-                    <div>Hello World</div>
+                    <div className = 'ProductsText'>Products</div>
+                    <div className='ProductsTextBottom'>Hello World Hello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello </div>
+                    <button className='OverViewButton'>OverView</button>
                     </OverViewDiv>
-                    <TypesDiv>World</TypesDiv>
+                    <TypesDiv>
+                        <Brands>
+                            <div className = 'Browse'>
+                                Browse by Type
+                            </div>
+                            <h6><BsTag style={{'color':'#15BEBE'}}/> Brands</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        </Brands>
+                        <Sector>
+                            <div className='Browse'>Browse by Sector</div>
+                            <h6><MdOutlineCasino style={{'color':'#15BEBE'}}/> RMG</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        </Sector>
+                        <HealthCare>
+                            <br/>
+                            <h6><GiHealthNormal style={{'color':'#15BEBE'}}/> E-Health</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        </HealthCare>
+                        <Company>
+                            <h6><MdHouseSiding style={{'color':'#15BEBE'}}/> Company</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        </Company>
+                        <OnlineRetail><h6> <AiOutlineShoppingCart style={{'color':'#15BEBE'}}/> OnlineRetail</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div></OnlineRetail>
+                        <EdTech>
+                            <h6><TbBooks style={{'color':'#15BEBE'}}/> EdTech</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                            <div style={{'marginTop':'10px', 'marginLeft':'210px'}}><a style={{"text-decoration":"none", "fontSize":"12px"}}href="/newmainpage">Show More</a></div>
+                        </EdTech>
+                    </TypesDiv>
+                    <ViewDiv>
+                        {/* <a style={{"text-decoration":"none"}}href="/newmainpage">Show More</a> */}
+                    </ViewDiv>
                 </DropDiv>
               </ProductDiv>
                 <div>Articles</div><SignInDiv><a href='/signin'>Login</a></SignInDiv>
@@ -144,15 +195,15 @@ const Frontpage = () => {
         <br/><br/>
                 <Carousel>
                 <div>
-                    <img src="/Images/top_company.png" />
+                    <img src="/Images/RadarNew.png" />
                     <p className="legend"></p>
                 </div>
                 <div>
-                    <img src="/Images/top_company.png" />
+                    <img src="/Images/GOVNew.png" />
                     <p className="legend"></p>
                 </div>
                 <div>
-                    <img src="/Images/top_company.png" />
+                    <img src="/Images/GOVPay.png" />
                     <p className="legend"></p>
                 </div>
                 </Carousel>
@@ -353,45 +404,91 @@ color:blue;
 
 const DropDiv = styled.div`
 display:none;
-position:absolute;
-top:10vh;
-right:1px;
-left:1px;
-background:#FFFFFF;
-border:1px solid aquamarine;
-border-radius: 0 0 5px 5px;
-width:100vw;
-height: 24vh;
-font-size:16px;
-/* transition-duration:160ms; */
-text-align:center;
-&:hover{
-  background-color: #ddd;
-}
-`
-
-const OverViewDiv = styled.div``
-const TypesDiv = styled.div``
-const ProductDiv = styled.div`
-&:hover{
-    ${DropDiv}{
-        display: grid !important;
+/* display: grid !important;
         grid-auto-rows: 1fr; 
-        grid-template-columns: 0.3fr 1fr 2.4fr 0.3fr; 
+        grid-template-columns: 0.25fr 1.05fr 2.45fr 0.25fr; 
         grid-template-rows: 0.2fr 2.6fr 0.2fr; 
         gap: 0px 0px; 
         grid-template-areas: 
             ". . . ."
             ". Products Types ."
-            ". . . ."; 
-            
+            ". . . View";  */
+position:absolute;
+top:10vh;
+right:1px;
+left:1px;
+background-color:#FFFFFF;
+border:1px solid aquamarine;
+border-radius: 0 0 5px 5px;
+width:100vw;
+height: 32.5vh;
+font-size:16px;
+/* transition-duration:160ms; */
+/* text-align:center; */
+&:hover{
+  background-color: #ddd;
+}
+`
+
+const OverViewDiv = styled.div`
+grid-area: Products;
+background-color:#EBF1F4;
+border-radius:10px;
+padding:30px;
+`
+const TypesDiv = styled.div`
+grid-area:Types;
+margin-left:30px;
+display: grid; 
+grid-auto-rows: 1fr; 
+grid-template-columns: 1fr 1fr 1fr; 
+grid-template-rows: 1fr 1fr; 
+gap: 10px 10px; 
+grid-template-areas: 
+"Brands Sector HealthCare"
+"Company OnlineRetail EdTech"; 
+`
+const ViewDiv = styled.div`
+grid-area:View;
+text-align:right;
+font-size:12px;
+`
+
+const Brands = styled.div`
+`
+const Sector = styled.div``
+const HealthCare = styled.div``
+const Company = styled.div``
+const OnlineRetail = styled.div``
+const EdTech = styled.div``
+
+const ProductDiv = styled.div`
+height:10vh;
+padding-top:3.5vh;
+cursor:pointer;
+
+&:hover{
+    text-decoration:underline;
+    text-decoration-color: #0000FF;
+    text-underline-offset: 8px;
+    ${DropDiv}{
+        display: grid !important;
+        grid-auto-rows: 1fr; 
+        grid-template-columns: 0.25fr 1.05fr 2.45fr 0.25fr; 
+        grid-template-rows: 0.2fr 2.6fr 0.2fr; 
+        gap: 0px 0px; 
+        grid-template-areas: 
+            ". . . ."
+            ". Products Types ."
+            ". . View ."; 
+        background-color:#FFFFFF;
     }
-    ${OverViewDiv}{
+    /* ${OverViewDiv}{
         grid-area: Products;
     }
     ${TypesDiv}{
         grid-area:Types;
-    }
+    } */
   }
 `
 const ProductGridContainer = styled.div`

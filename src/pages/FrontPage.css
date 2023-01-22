@@ -9,3 +9,67 @@
     height: 55vh;
     width: 40vw;
 }
+
+.invisible{
+display:none;
+position:absolute;
+top:50vh;
+right:1px;
+left:1px;
+background:#FFFFFF;
+border:1px solid aquamarine;
+border-radius: 0 0 5px 5px;
+width:100vw;
+height: 24vh;
+font-size:16px;
+/* transition-duration:160ms; */
+text-align:center;
+/* &:hover{
+  background-color: #ddd;
+} */
+}
+
+
+.visible{
+        display: grid !important;
+        grid-auto-rows: 1fr; 
+        grid-template-columns: 0.3fr 1fr 2.4fr 0.3fr; 
+        grid-template-rows: 0.2fr 2.6fr 0.2fr; 
+        gap: 0px 0px; 
+        grid-template-areas: 
+            ". . . ."
+            ". Products Types ."
+            ". . . .";
+}
+
+.overview{
+    grid-area: Products;
+}
+
+.types{
+    grid-area:Types;
+}
+
+.ProductsText{
+font-size: 16px;
+font-weight: bold;
+}
+
+
+
+.ProductsTextBottom{
+    font-size: 13px;
+}
+
+.OverViewButton{
+    margin-top: 35px;
+    border: 1px solid #66DDDC;
+    background-color: white;
+    width: 8vw;
+    height: 38px;
+}
+
+.Browse{
+    font-size: 14px;
+    color: #656565;
+}
