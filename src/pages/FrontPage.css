@@ -1,13 +1,15 @@
 .report-style-class {
-    height: 34vh;
+    height: 47vh;
     margin-top: 2vh;
     margin-left:2px;
     width: 41vw;
+
 }
 
 .report-style-classProduct{
-    height: 55vh;
+    height: 45vh;
     width: 40vw;
+    margin-top: 10px;
 }
 
 .invisible{

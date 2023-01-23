@@ -61,36 +61,38 @@ const Frontpage = () => {
                     </div>
                 </div> */}
                 <DropDiv>
-                    <OverViewDiv>
+                    <OverViewDiv onClick={()=>{navigate('/newmainpage')}}>
                     <div className = 'ProductsText'>Products</div>
                     <div className='ProductsTextBottom'>Hello World Hello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello </div>
                     <button className='OverViewButton'>OverView</button>
                     </OverViewDiv>
                     <TypesDiv>
-                        <Brands>
+                        <Brands onClick={()=>{
+                            navigate('/newmainpage')
+                        }}>
                             <div className = 'Browse'>
                                 Browse by Type
                             </div>
                             <h6><BsTag style={{'color':'#15BEBE'}}/> Brands</h6>
                             <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
                         </Brands>
-                        <Sector>
+                        <Sector onClick={()=>{navigate('/newmainpage')}}>
                             <div className='Browse'>Browse by Sector</div>
                             <h6><MdOutlineCasino style={{'color':'#15BEBE'}}/> RMG</h6>
                             <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
                         </Sector>
-                        <HealthCare>
+                        <HealthCare onClick={()=>{navigate('/newmainpage')}}>
                             <br/>
                             <h6><GiHealthNormal style={{'color':'#15BEBE'}}/> E-Health</h6>
                             <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
                         </HealthCare>
-                        <Company>
+                        <Company onClick={()=>{navigate('/newmainpage')}}>
                             <h6><MdHouseSiding style={{'color':'#15BEBE'}}/> Company</h6>
                             <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
                         </Company>
-                        <OnlineRetail><h6> <AiOutlineShoppingCart style={{'color':'#15BEBE'}}/> OnlineRetail</h6>
+                        <OnlineRetail onClick={()=>{navigate('/newmainpage')}}><h6> <AiOutlineShoppingCart style={{'color':'#15BEBE'}}/> OnlineRetail</h6>
                             <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div></OnlineRetail>
-                        <EdTech>
+                        <EdTech onClick={()=>{navigate('/newmainpage')}}>
                             <h6><TbBooks style={{'color':'#15BEBE'}}/> EdTech</h6>
                             <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
                             <div style={{'marginTop':'10px', 'marginLeft':'210px'}}><a style={{"text-decoration":"none", "fontSize":"12px"}}href="/newmainpage">Show More</a></div>
@@ -101,12 +103,11 @@ const Frontpage = () => {
                     </ViewDiv>
                 </DropDiv>
               </ProductDiv>
-                <div>Articles</div><SignInDiv><a href='/signin'>Login</a></SignInDiv>
+                <div>Articles</div><SignInDiv><button style ={{'border':'1px solid #15BEBE', 'backgroundColor':'white', 'width':'120px', 'height':'30px'}} onClick={()=>{navigate('/signin')}}>Login</button></SignInDiv>
         </PageHeader>
         <FirstPage>
-            <NewAge><h2>New Age <span style={{'color':'blue'}}>Market Intelligence</span><br></br>Platform of choice</h2> Benchmarks is an on - demand business intelligence platform that tracks 150+
-                        business relevant KPIs, monthly across 1000+ companies, providing vast
-                        market insights and competitive edge in a fraction of time.<br></br><br></br><button> Get Started</button>
+            <NewAge><h2>New age <span style={{'color':'blue'}}>alternative data</span><br></br>platform of choice</h2> We track 150+ business relevant KPIs of top 500 consumer internet businesses and brands in India by crunching billions of data points every day to provide accurate, granular insights. Over 200 investment funds and innovative companies rely on us to help them make better business decisions.
+            <br></br><br></br><button onClick={()=>{navigate('/newmainpage')}}> Get Demo</button>
                         <br/>
                         <br/>
                         <br/>
@@ -117,7 +118,7 @@ const Frontpage = () => {
                             type: 'report',   // Supported types: report, dashboard, tile, visual and qna
                             id: 'reportId',
                             //get from props
-                            embedUrl:'https://app.powerbi.com/view?r=eyJrIjoiM2UwNjU2MzgtZGE1Mi00YzQ3LTkxZGYtM2EwMGVjMjZjYWYwIiwidCI6IjAwYTlmZjhjLTk4MzAtNDg0Ny1hZTUxLTQ1NzllYzA5MmNiNCJ9',
+                            embedUrl:'https://app.powerbi.com/view?r=eyJrIjoiNmFjOTNlYmQtOTQxNi00MmNkLTk0N2UtMWIyNDY5ZjVkNzE3IiwidCI6IjAwYTlmZjhjLTk4MzAtNDg0Ny1hZTUxLTQ1NzllYzA5MmNiNCJ9',
                             // embedUrl:newUrl,
                             accessToken: EmbedToken,
                             tokenType: models.TokenType.Embed,
@@ -182,29 +183,35 @@ const Frontpage = () => {
                     </div>
                         <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/nativeBrands.png'/></div>
                     </VerticalArticleDiv>
-                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/inside-story-of-40000-crore-festive-season-2022/'}}>
+                    <VerticalArticleDiv1 style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/inside-story-of-40000-crore-festive-season-2022/'}}>
                     <div>
                         <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Retail and Consumer goods</div> <div style={{'fontWeight':'bold'}}>Inside Story of 40,000 Crore Festive Season 2022</div>
                         <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'35px'}}>Article . October 26, 2022</div>
                     </div>
                         <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/40kCrore.png'/></div>
-                    </VerticalArticleDiv>
+                    </VerticalArticleDiv1>
                 </VerticalArticles>
+                <img style = {{'width':'43.2vw'}}src ='/Images/Premium.png'/>
             </Article>
         </FirstPage>
-        <br/><br/>
-                <Carousel>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <div style={{'textAlign':'center', 'fontSize':'16px', 'fontWeight':'bold', "backgroundColor":'#1A1A58' , 'color':'white' }}>Meaningful and granular Insights</div>
+                <Carousel showThumbs = {false}>
                 <div>
                     <img src="/Images/RadarNew.png" />
-                    <p className="legend"></p>
                 </div>
                 <div>
                     <img src="/Images/GOVNew.png" />
-                    <p className="legend"></p>
                 </div>
                 <div>
                     <img src="/Images/GOVPay.png" />
-                    <p className="legend"></p>
+                </div>
+                <div>
+                    <img src="/Images/IndiaNew.png" />
                 </div>
                 </Carousel>
         <div style = {{'display':'flex', 'alignItems': 'center', 'justifyContent':'center', 'height':'25vh', 'fontWeight':'bold', 'flexDirection':'column', 'gap':'5vh'}}>
@@ -237,14 +244,17 @@ const Frontpage = () => {
                     </div>
                         <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/elogistics.png'/></div>
                     </VerticalArticleDiv>
-                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/inside-story-of-40000-crore-festive-season-2022/'}}>
+                    <VerticalArticleDiv1 style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/inside-story-of-40000-crore-festive-season-2022/'}}>
                     <div>
                         <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div> <div style={{'fontWeight':'bold'}}>Unlocking the Digital Potential of Traditional Brands</div>
                         <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'10px'}}>Article . January 20, 2023</div>
                     </div>
                         <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/EmergingTech.png'/></div>
-                    </VerticalArticleDiv>
-            </ArticleProduct><Graph>
+                    </VerticalArticleDiv1>
+            </ArticleProduct>
+            <Graph>
+                <br/>
+            <span><img src = '/Images/graph.png'/> <span style={{'fontSize':'18px'}}>Brands We Cover</span></span>
             <PowerBIEmbed
                   embedConfig = {{
                     type: 'report',   // Supported types: report, dashboard, tile, visual and qna
@@ -288,8 +298,7 @@ const Frontpage = () => {
                       />
             </Graph>
         </ProductGridContainer>
-        <img src='/Images/base.png'/>
-        <img src = '/Images/get_started.png'/>
+        <img src = '/Images/Stay_updated.png'/>
         {/* <div style = {{'display':'flex', 'alignItems': 'center', 'justifyContent':'center', 'height':'10vh', 'fontWeight':'bold'}}>
         <img src = '/Images/brands.png'/>
         </div> */}
@@ -380,7 +389,7 @@ background-color:#F9FAFB;
 display:flex;
 justify-content:center;
 align-items:center;
-gap:21.6vw;
+gap:20vw;
 /* div{
     display:flex;
     align-items:center;
@@ -579,6 +588,13 @@ const VerticalArticleDiv = styled.div`
     /* align-items:center; */
     gap:10px;
     border-bottom: 1px solid #BCBCBC;
+`
+
+const VerticalArticleDiv1 = styled.div`
+display: flex;
+    justify-content:space-between;
+    gap:10px;
+    border-bottom: 0px solid #BCBCBC;
 `
 
 const Footer = styled.div`
