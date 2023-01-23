@@ -157,7 +157,7 @@ const Frontpage = () => {
             </NewAge>
             <Article>
                 {/* <div><img src = '/Images/top_left.png'/></div> */}
-                <img src = '/Images/top_left.png' style = {{'width':'44vw'}}  />
+                <img src = '/Images/Swiggy.png' style = {{'width':'44vw'}}  />
                 <VerticalArticles>
                     <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/700-mn-indian-digital-consumer-funnel/'}}   > 
                         <div>
@@ -199,7 +199,7 @@ const Frontpage = () => {
         <br/>
         <br/>
         <br/>
-        <div style={{'textAlign':'center', 'fontSize':'16px', 'fontWeight':'bold', "backgroundColor":'#1A1A58' , 'color':'white' }}>Meaningful and granular Insights</div>
+        <div style={{'textAlign':'center', 'fontSize':'25px', 'fontWeight':'bold', "backgroundColor":'#1A1A58' , 'color':'white', 'height':'50px' , 'paddingTop':'15px'}}>Meaningful and granular Insights</div>
                 <Carousel showThumbs = {false}>
                 <div>
                     <img src="/Images/RadarNew.png" />
