@@ -5,7 +5,7 @@ import './NewMainPage.css'
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Autocomplete from "../components/Autocomplete/autocomplete";
-
+import { useLocation } from 'react-router-dom';
 
 const NewMainPage = () => {
     const [ ReportData, setReportData ] = useState([]);
@@ -15,7 +15,8 @@ const NewMainPage = () => {
     const [UserReports, setUserReports] = useState([]);
     const [AllReports, setAllReports] = useState([]);
     const [tagData, setTagData] = useState([]);
-
+    const search = useLocation().search;
+    const tag_name = new URLSearchParams(search).get('tag')
     const options = [
         'Bought', 'Buyable'
       ];
@@ -158,6 +159,7 @@ const NewMainPage = () => {
     }, []);
 
     useEffect(()=>{
+        console.log('tag_name = ',tag_name)
         let curr_id = 52
         console.log('real_email=', window.localStorage.getItem("email"))
         console.log('pseudo_email=', window.localStorage.getItem("pseudo_email"))
@@ -278,9 +280,6 @@ const NewMainPage = () => {
             <div><img src = '/Images/benchmark_logo.png' alt = ''/></div> <div>About</div>
              <ProductDiv>
               Products
-              <DropDiv>
-                <a>Sign Out</a>
-              </DropDiv>
               </ProductDiv><div>Articles</div><div>{hour<15?'Good Morning ':'Good Evening '}<img src = "/Images/user.svg" alt = "" style={{width: '3vw', borderRadius:'40px'}}/></div>
         </PageHeader>
         <img src = '/Images/company_acess.png'/>
