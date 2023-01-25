@@ -27,7 +27,13 @@ const Frontpage = () => {
     const defaultOption = options[0];
     const [width, setWidth] = useState(window.innerWidth);
     const [ EmbedToken, setEmbedToken ] = useState('');
-    const [ newUrl, setNewUrl ] = useState('');
+    const [ EmbedToken1, setEmbedToken1 ] = useState('');
+    const [notsubmitted, setNotSubmitted] = useState(true);
+    const [email,setEmail] = useState('')
+    const [name, setName] = useState('')
+    const [phone, setPhone] = useState('')
+    const [msg,setMsg] = useState('')
+    const [newUrl, setNewUrl ] = useState('');
     const [style, setStyle] = useState("invisible");
 
     function handleWindowSizeChange() {
@@ -41,11 +47,79 @@ const Frontpage = () => {
         }
     }, []);
 
-    const changeStyle = () => {
-        console.log("you just clicked");
+    useEffect(()=>{
+        // console.log('props=', props)
+        let propsrep = 'Homepage_Platforms'
+        let prop_token = window.localStorage.getItem("token")
+        let pseudo_email = 'digital@redseerconsulting.com'
+        console.log('pseudo_email=', pseudo_email)
+    
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}&email=${pseudo_email}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Token ${prop_token}`
+        },
+        })
+        .then( data => data.json())
+        .then(
+        data => {
+            setEmbedToken(data['embed_token'])
+        }
+        )
+        .catch( error => console.error(error))
+        
+        let rep2 = 'Homepage_Brands'
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${rep2}&email=${pseudo_email}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Token ${prop_token}`
+            },
+            })
+            .then( data => data.json())
+            .then(
+            data => {
+                setEmbedToken1(data['embed_token'])
+            }
+            )
+            .catch( error => console.error(error))
+    },[]);
+
+    // const changeStyle = () => {
+    //     console.log("you just clicked");
       
-        setStyle("visible");
-      };
+    //     setStyle("visible");
+    //   };
+
+      let login = (e)=>{
+        e.preventDefault();
+        console.log('hello')
+        console.log(name, phone, email, msg)
+        const uploadData = new FormData();
+        uploadData.append('name', name);
+        uploadData.append('phone', phone);
+        uploadData.append('email', email);
+        uploadData.append('message', msg);
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/userpopup/`, {
+            method: 'POST',
+            body: uploadData
+            })
+            .then( data => data.json())
+            .then(
+            data => {
+                console.log(data)
+            }
+            )
+            .catch( error => console.error(error))
+            
+        setNotSubmitted(false)
+      }
+
+      let inputChanged = (e) => {
+        setEmail(e.target.value);
+      }
+
   return (
     
     width>768 ?(<>
@@ -53,15 +127,6 @@ const Frontpage = () => {
                 <div><img src = '/Images/benchmark_logo.png' alt = ''/></div>
                 <ProductDiv>
                 Products
-                {/* <div onClick={changeStyle} className={style}>
-                    <div className='overview'>
-                        <h5>Products</h5>
-                        <div>Hello My</div>
-                    </div>
-                    <div className='types'>
-                        World
-                    </div>
-                </div> */}
                 <DropDiv>
                     <OverViewDiv onClick={()=>{navigate('/newmainpage')}}>
                     <div className = 'ProductsText'>Products</div>
@@ -113,13 +178,30 @@ const Frontpage = () => {
             {/* <button onClick={()=>{navigate('/newmainpage')}}> Get Demo</button> */}
             <Popup trigger={<button className="button"> Get Demo </button>} modal>
                 <FormDiv>
-                <form>
-                <label for="fname">First Name</label>
-                <input type="text" id="fname" name="firstname" placeholder="Your name.."/>
-                <label for="email">Email</label>
-                <input type="text" id="lname" name="lastname" placeholder="Your email.."/>
-                </form>
-                <input type="submit" value="Submit"></input>
+                <SideImg>
+                    <img src = '/Images/handshake.png' alt = '' style={{'width':'20vw', 'min-height':'50vh'}}/>
+                 </SideImg>
+                 <InputDiv>
+                 {notsubmitted?<form onSubmit={(e)=>login(e)}>
+                    <h6>Find out what Benchmarks can do for you</h6>
+                    <h6>To get started, fill out the form.</h6>
+                    <div className="form-group" style={{"width":'26vw'}}>
+                        <label></label>
+                        <input type = 'text' name = 'fullname' id='fullname' placeholder='Full Name' className="form-control" value={name} onChange={(e) => {setName(e.target.value)}}/>
+                        <label></label>
+                        <input type = 'text' name = 'phone' id='phone' placeholder='Phone' className="form-control" value={phone} onChange={(e) => {setPhone(e.target.value)}} />
+                        <label></label>
+                        <input type = 'text' name = 'email' id='email' placeholder='Email' className="form-control" value={email} onChange={(e) => {setEmail(e.target.value)}}/>
+                        <label></label>
+                        <textarea style={{'width':'26vw', 'marginTop':'10px', 'padding':'2%'}} placeholder = '  Message' onChange={(e) => {setMsg(e.target.value)}}/>
+                    </div>
+                    <button type="submit" className="btn btn-primary btn-block" style={{backgroundColor:'#55E4E3' , border:'None', 'color':'black'}} >Submit</button>
+                </form>:<div style={{'marginTop':'140px'}}>
+                    <h6>Thank you for contacting us.</h6>
+                    <h6>Our experts will get back to you shortly.</h6>
+                </div>}
+                 </InputDiv>
+
                 </FormDiv>
             </Popup>
                         <br/>
@@ -135,7 +217,7 @@ const Frontpage = () => {
                             //get from props
                             // embedUrl:'https://app.powerbi.com/view?r=eyJrIjoiM2UwNjU2MzgtZGE1Mi00YzQ3LTkxZGYtM2EwMGVjMjZjYWYwIiwidCI6IjAwYTlmZjhjLTk4MzAtNDg0Ny1hZTUxLTQ1NzllYzA5MmNiNCJ9',
                             // embedUrl:newUrl,
-                            accessToken: 'H4sIAAAAAAAEACWWxa7FDI6E3-XfpqUwtdSLMPMJ7sLMnNG8-9xR7y3L_qps1f_8Y6fvMKfFP__-Z2vyp12WQ2b92JlpiJ6fjjzKp8aTSwCGcvxZ26j3YbxvPGMflbUGGGHjiaPjLGZP2yVNzGs3mlg43GHOo0XPzEZLhH7X4KKgELBd1npqdafEo3fP9HOIBOdZstulVXgGq5WkPtgrTge0eRg-r5G7yNXPvU4XMCAg4yxwFZNL16dZILv5g5PCcBYwPflgpLFqNjSg9MI-AzyhPAnZ4pVwBA9NmdMGwnRkmwPm4l4lqV4gLLC7jGn3zvt4RDMYEaq0JCzXtTBrlkYM31YaNrG_KTd6HQIBKdJL-GX6PdSVdMEzVIzRXJn-6hSGXNneBSIZ6a1whYlYh54MhtSF8gvP_HyNPtLTI-qjRiHKpb9N4qPqYlUzn4mQs8zCms4B6O6AoDtUy4MqaVaEM993YHbVFbwpAdLjrZnM8cU_-SoaSWw4GPe5IvbmalstVJ8rg_2iFG7pUottB5uf8Oc7YKGJdWMouSo3TMygSe92pKyTTRw9S5l8rcp8EtSJQL8U9_4ET0c96fWFTsewcuyuE2ujjb9R33QWbyqlbtOI0bD4Tv73dQXgAnr1ki4Gs4Y9RJzejqby4gmDNaNa-uL7FvswhKU7lw87BtsXloKLEEM6GVI0WUFvcapuxrbcc2V0WRM5mlzAX4mNUKy7fAIIBwjJI_Hg0XaObB4HU_th9SCRfb6UHu1hg0LhdW8rosuJCs6PS4IUbqQn5wLp5JiMyNdLHp2-Y5SIsJwiM6E-ZO_eAUCAPCLnfk2Q55CXsDa_FbIvmzWDx6ry-UK9rIYGgnK_LAvLkAmZ8hmJwO3Tb_djgX5thWOl_druSbvjwM04o-GDK7ODorNZC24eghTTuzuNIj0kZT4OoRm1jyfUng1jeR13qzK9AZY0BhFdJTVBI3ynApz1EzvTeUNflc7qRkkqd7R9QZCOsVwdTwe6XO4QE_vtdCY2E6PeL9VPrwTXrrBu1S2Tr4rtpR1FFdT5nR0O_zgqIpEmdz3iO4iqvDASWP8jPe_SejFzq9KNWcK47Gbf3tPtSfcrMvgIjw7K09wjhXswzkPq25l4Selyo7ja6j73LYeuagZZ3Xbn1NdaqXCK61utPO7R2rj31OTbl_xKtSdUa8xEP3ra6zVFnzq4gh7uxpXjALFZUcvGnrecGTAtWJY15Rdo7p-7VRh4LUhunDePvrI_rJq5Dd0IWqq1_s4kssLOwt72vSHpSNVUkOPHJ4fBxeKg7YJo8mwguuzdx0gKPKmlBDcYZsui0oH11bsMpWUB9OtiR2zu11xnxVLQkKzrCLCsfG9iwAC3NQZr5XT4NGZSax4WTvg-09q1CGiYPbxqtg5ITq_NlgSh02cAFYhh5IqOIjaGPHPKJ4GcYV9P3VOweoj1PSM_As9U5vM0K5sEQnu7aj6B9nvwiYGQdRZJ_YnVu6S8eZ5IEjchPYaw2vHIMJ5kOlEDaUThrlZk0zgZlq06feA8PwyOoxykDeg55KiL5pTQ32fzT6T3po__2c4d-LN1DBA5v5hcswq6vHZxzi3PtpJYo0kEOPDHblxEO01RQI5GG6Hj5qfodUlJ40qYjhdC0QYhW0PGt3on4FA82qYm2CuC85qhF6n2VYWUGQq-XHvgd7Me8kRy3y-wx0hPFUFGhe75mtGJDfrEhffY4uS7BY74q50NgHeq9Jp5PsA2yAEvvwSZ2Z9-DbVdLoG8O5cLqF_VgF9_069LT3_IWW4Xeqddg5CRWW5nzc3KSkp0HMHhNVDzA6O-TvcnGoNHANYkJGtpqLS2ruIevUieGFj6bnR9BpJUqqgG9JBrPM2xY0oiH_VDLwOzrzTNl1Dt8j113BODObETEQJiuyCnS1hgOACdgxz9YgDeOoCVeQ4_02CM-JLxHBxcowVZUL6Gtr32CgWjyFf9LIQmm0ehHmKGtoNYVTaYIe_g2x9oQJ1kKVYs505dVxaCSegEKnXepLa9C56BuZeIIJiLFk7uDhOJkuMexP7cZK2NVdRvKqqqPI1h2HDnRD2w4OSomSXL9fu9YBMDGFfNEKMvnUDu5rXP-yOOLU0YV1-N8NiB9r5NlhM8Vrfg7tO0oKSQzGKjDTpKR1hgoBjndRu2uuA1qdbTZ0zQHWQviNdfqBIaHBff5-8lgFqQQSVDp9Cm9wVm5vDFKGpxXI8mkwnuhI_bOqlsVLKMVkgxw23RfrTLdir2-1Q5Q09Eek-hQuvD-MpTbVhGn0e1QZDBM-D1wByvnKfd_ST3h2UfCO9OIS_RNfFbePKnZ-9yBdjPhAZK47rrCdDCcFGnfhZVPN1m7tCGFf91ooG5OuBoIy9u9PkGNi1ZCdE_RNjQhmBeTTNM14hwHLTHHDx_lgwGwWpiyqz1u956TeYw4dvoQRWJ6Cw4tGZTEHxWWVrPK_3A73_Tr-oNB3kB-8CRDOjrjUTPKwOm5PDrqc0gH6B_W4382BuKew5skzUcb--kYW6RgTZeam_RUqG97IeMkLk59BSuaExg9Sbe8YBY3UQkhPxn4l1rIV0yDDvbjNEFZLvIM5lPWTfzn__8869_uO1djlkr37-Y52TBb2FhuufyZp4kx7aa6u9pBrZWpnqIY7ZTcHWIaaD9nPfJ932qSks7MfX24sBRB0fXzYEeGPJ7P7N6hPgb6uFgUZ9sHw-X-yQEqhhN1zSc8hr07U_iJTPzw8J1zM6T_9QjC9sJLLIhmhQ3xWpxJD0HwVp_ZjUd-hKwgwMxI1ld_LJz2_Za8htYlL-1NLzDAK3ME5fbshPjOHiVZ9ir2aFDyPGX_ssriKE6wmJr8R80xH6HPqSCIcAoxB8xPk9w24EuzHY5o-Dkghqvirjodx1sCBLV703P2wvHN7u4Nizw3wXK8r00qqVKTp0e1u_oq1ZriQ2UkpNXo1rE_IfGkhe7_4v5XZpyU4I_yr6YLVIt_9j6zaLtJqjNjv3_iuG19ZQe51b-lTFcx4i8eKhZeF6pwTLA_Bd8kVwuxV8sYeAvLyE9lAASi9-HQykP6xQ-CmTldtCUMAFvIaIIUVrGQ7CJfOS5A2L70DpdQ_FUKsfElWCygZl4z7xPJytRGjGQISQQxST9U7X34ofVaaKqr55nF5n0NkegasZiDbIo-UAMDC1VgRlvv-ThwvhdmQrHvlC4cvpq9ulIrXiYfcjZzCvFT6bh7zv5-nS5-q3VTbsrwmkuIOrANE_-vO0-u3QQyWfbVLTZ8_PFN1RySGSlHP5FniwCbMKtAJHFoucHl12rAqyT900KfUpgXOtSDIx3ADrMT6Fqf84gKhhV7ThJXs8KRP3ffURH8v9i_O__AZ5OgMjaDAAA.eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLUlORElBLUNFTlRSQUwtQS1QUklNQVJZLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0IiwiZXhwIjoxNjc0NTY1OTc3LCJhbGxvd0FjY2Vzc092ZXJQdWJsaWNJbnRlcm5ldCI6dHJ1ZX0=',
+                            accessToken: EmbedToken,
                             tokenType: models.TokenType.Embed,
                             // filters: [datefilter],
                             settings: {
@@ -165,16 +247,10 @@ const Frontpage = () => {
                         cssClassName = { "report-style-class" }
                         getEmbeddedComponent = {async(embeddedReport) => {
                             window.report = embeddedReport ;
-                        }
-                        
-                                        }
-                      />
+                        }}/>
             </NewAge>
             <Article>
-                <img src = '/Images/Swiggy.png' style = {{'width':'44vw'}}  />
-                {/* <TopRight>
-                        HELLO WORLD
-                </TopRight> */}
+                <img src = '/Images/Swiggy.png' style = {{'width':'44vw', 'cursor':'pointer'}}  onClick= {()=>{window.location.href= 'https://redseer.com/newsletters/a-cup-full-of-food/'}}/>
                 <VerticalArticles>
                     <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/700-mn-indian-digital-consumer-funnel/'}}   > 
                         <div>
@@ -200,6 +276,20 @@ const Frontpage = () => {
                     </div>
                         <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/nativeBrands.png'/></div>
                     </VerticalArticleDiv>
+                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/shared-mobility-in-the-post-pandemic-world/'}}>
+                    <div>
+                        <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Auto and Mobiltity</div> <div style={{'fontWeight':'bold'}}> Shared Mobility in the Post-Pandemic World</div> 
+                        <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'35px'}}>Article .  April 11, 2022</div>
+                    </div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/shared_mobility.png'/></div>
+                    </VerticalArticleDiv>
+                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/how-e-commerce-made-a-comeback/'}}>
+                    <div>
+                        <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>B2B Services</div> <div style={{'fontWeight':'bold'}}>How e-commerce made a comeback</div> 
+                        <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'35px'}}>Article .  February 8, 2022</div>
+                    </div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/ecommerce_comeback.png'/></div>
+                    </VerticalArticleDiv>
                     <VerticalArticleDiv1 style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/inside-story-of-40000-crore-festive-season-2022/'}}>
                     <div>
                         <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Retail and Consumer goods</div> <div style={{'fontWeight':'bold'}}>Inside Story of 40,000 Crore Festive Season 2022</div>
@@ -215,26 +305,25 @@ const Frontpage = () => {
                 </Premium>
             </Article>
         </FirstPage>
-
-        <div style={{'textAlign':'center', 'fontSize':'25px', 'fontWeight':'bold', "backgroundColor":'#1A1A58' , 'color':'white', 'height':'50px' , 'paddingTop':'15px'}}>Meaningful and granular Insights</div>
+        {/* <div style={{'textAlign':'center', 'fontSize':'25px', 'fontWeight':'bold', "backgroundColor":'#1A1A58' , 'color':'white', 'height':'50px' , 'paddingTop':'15px'}}>Meaningful and granular Insights</div> */}
                 <Carousel showThumbs = {false}>
                 <div>
-                    <img src="/Images/RadarNew.png" />
+                    <img src="/Images/carousal1.png" />
                 </div>
                 <div>
-                    <img src="/Images/GOVNew.png" />
+                    <img src="/Images/Carousal2.png" />
                 </div>
                 <div>
-                    <img src="/Images/GOVPay.png" />
+                    <img src="/Images/Carousal3.png" />
                 </div>
                 <div>
-                    <img src="/Images/IndiaNew1.png" style={{'height':'73vh'}}/>
+                    <img src="/Images/Carousal4.png" style={{'height':'73vh'}}/>
                 </div>
                 </Carousel>
-        <div style = {{'display':'flex', 'alignItems': 'center', 'justifyContent':'center', 'height':'25vh', 'fontWeight':'bold', 'flexDirection':'column', 'gap':'5vh'}}>
+        {/* <div style = {{'display':'flex', 'alignItems': 'center', 'justifyContent':'center', 'height':'25vh', 'fontWeight':'bold', 'flexDirection':'column', 'gap':'5vh'}}>
             Trusted by the best and brightest digital brands
             <img src = '/Images/brands.png'/>
-        </div>
+        </div> */}
         <ProductGridContainer>
             <ArticleProduct>
             <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/online-festive-sales-the-biggest-gmv-churner-of-e-tailing-industry/'}}   > 
@@ -261,6 +350,20 @@ const Frontpage = () => {
                     </div>
                         <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/elogistics.png'/></div>
                     </VerticalArticleDiv>
+                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/value-first-egrocery-in-india-a-huge-opportunity/'}}>
+                    <div>
+                        <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Logisitcs and Enablers</div> <div style={{'fontWeight':'bold'}}>Value-first eGrocery in India</div> 
+                        <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'10px'}}>Article .  October 28, 2022</div>
+                    </div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/e_grocery.png'/></div>
+                    </VerticalArticleDiv>
+                    <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/whats-cooking-in-foodtech-part-1-delivery/'}}>
+                    <div>
+                        <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Retail and Consumer Goods</div> <div style={{'fontWeight':'bold'}}>What's cooking in FoodTech: Part 1 - Delivery</div> 
+                        <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'10px'}}>Article .  February 15, 2021</div>
+                    </div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/food_tech.png'/></div>
+                    </VerticalArticleDiv>
                     <VerticalArticleDiv1 style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/inside-story-of-40000-crore-festive-season-2022/'}}>
                     <div>
                         <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div> <div style={{'fontWeight':'bold'}}>Unlocking the Digital Potential of Traditional Brands</div>
@@ -279,7 +382,7 @@ const Frontpage = () => {
                             //get from props
                             // embedUrl:'https://app.powerbi.com/view?r=eyJrIjoiM2UwNjU2MzgtZGE1Mi00YzQ3LTkxZGYtM2EwMGVjMjZjYWYwIiwidCI6IjAwYTlmZjhjLTk4MzAtNDg0Ny1hZTUxLTQ1NzllYzA5MmNiNCJ9',
                             // embedUrl:newUrl,
-                            accessToken: 'H4sIAAAAAAAEADVWx67FCm77l7d1APcWYBbu9nHvZefee3eQf8_NALOnJIikBP7PP1b6DnNa_PPf_2hv9_On6ozsDNaucKlmTf6lFhhgeC2DDpkmbJ6DcMdm_S7kBqKz27HklRC07PBhhDicPf1W37sM5aMpXGlIZ11aadrP26_t4-0Tcb4_DkooyVm56wqtbMS6kZOUQ-iISLoUp8tsTwJjDwb9TFN9A3DbaLUqGrjCopaoC0RgzGMRC3LvvRwINwUYXJn06Hhy2pJWd3oOMeknOcNWG-0NUjiN2Bxld7nNrosue-A9EYq0wqKoLA04gz4UchhvM1G_J3MSfrXe44NQqG_-ALsvEkBGt0TaZ45EAIWsCoej9KXlHZKVZNydUhfaV4uujsGpZ4wya0LsGqB49WpnaCCJovWL3d0JGnzyje_CNqPqtNHHlg9KSqMwxE-VlOKOpL2-mB4UMq2ggnhjCb6tjqBLtkacfhfthfPUpcAiQmhVicQ9C5MDdQ7WFRfqYl0C5IJgWo7w2mxwp0VAg1wJ8Q7WnNJnCtYBM3gAeSU7IELoQF8qw7HPcyVwAZdnHtKDyidlpjNLVKGXcQnlVdFtCrA-MMkIFPpz6REkU8mjn1JrdqY-ykuv8THUR0Nlnd-wKKm5GXdXPiS3ksiu3_PXh6citsP2M-EhL3fOQaBp4FJ7gC-nsHHrBuNm8izC2sIlxpYvkfLULiZE1MFEUN3DHDWeRcen49QE6KrC3TrFzJKtwLUWPQc1PbhoqKf1gKPZEzLVTHyhIfPhPDsWUnjci1KivPkRxwpbgSoFrn_QrEl1DGRAOOM3CBIT4FX6LwUVSIXDJrJVy72KghbiEycwUJo6Bi_vVPTWzqei6gxRBYy--0fjdFwXMGEFPJNxvO5wRMgRnW9IE2Q6YYJWoKpeABNezxv66HVSGQ4mcDTYazpuEMyLCRfrkKHsXRwXxXsoLlOUnErlA-e49AnNhjvoW75B9CVlDUnjOjnJ3WZa5wGX6JH9opQyHkyspyio_Bcx8l_0dHiyCKhVeLRZzooQNUMPuC48DzfOYVPzwZICcSIsx4oDB1ZwJLZaE6fuKtXwKZhg0wklJO3IGDmzC1tu0OloZNGj13jcTcQxhrl7yo85nhuXNLdte24oSVZBUfZfWbWpMosSd3vsai5lgoajfvZ3q69psxXUulJx9e0RrT_mFvtxC4NSIrb2V_GYotoAmYkc_cEl4_jxcTE6sPnu34BV2o5gP8XubMjeiEx9gp7TkXWPffW2zomy9-yBojjXyp_yg9Y2Ud3O8IqRU24ge5KXHJSb8sYsmKUft_Yj4P_iWrjMbK1zC8WP49fXz5EG4XQx2sVlXfj31va9cdikurALe03Jwzi8dlGiQGfHc2va9EAQq1c2mNBIHTmryOC5SapXBGkZa-LKhPJ8J-8yEh5fME_95CtuGrKzeoeT38TqrZ9vQ3UL-OvRczuRZdn4A23OIaS9KCyl-KHkEwSQelra7lFJhdyP46j3tyKQdj7wKnHdSBdo2CS4MrEcoY5Xg5cUmNJPeA8zEVsXs8N0kJs3VbzJyhwawVnkDN93QV51gvf2QSw9sstnqaaDPW0BYkAgtGvlRncFs8SNsE6i7UijHdUwRjmdJRPL5dtBZ-iwRHi-gp-Kel55NfpHQAuIf7JHB16OY0NGE-Sn146xscnXwfILrMFdS-w_se6kGkh2i4cTpVnu_RRubxo_CuIy8zMqYonTY3ziFFngGrmzaqPt_auvUVJB_kMvjhiDDG1r1cbOxUpwNfcOK9I734KbO0q967fn-KMwduVrrZTHFcJLip2vRBbLSzmyhFjtnNG300XS2TDR3YEdbfakJ0mYs8ciZwgXUNXUO4kMx47hZqzUakqOUlmcTVEijBwB3LKxeGAARPmIaVqCsqjxVVLUOnxDoevrN4THuJiPL_9Sh73M1cs6thda8dB4uaRyx2QM_n0zfOHZhro-Dh34d0RVZ9pkCscccmRHBWhudsphBe6JlJP8YobBx2jY9js8nBwafby63px14nsT13EnM1ehcBwGYzPiFi8g8YMWezynMgc-Spm5WwZMomMq4mab8qBmAl0OfSGtuRcg1Axk93hSYhQUSedh9Mjgx_WL0eNUX9eO389N3SG0zLvgZQ5e4uoDaVq38xN4az0Pb6GD_JO4TQr6LHv3dT9VCXl8Xs468w-fp_bmvv18uIpXTFufS4TTXO7NrGuNrgpy0X1LDlTWka25YewHo6_OU2TFYZvgWXv6ZGBGKaXUN5D-qItWt3o1t3m885Uit0_7A8uoWFFaWdBhvOdcouLQNZwPiOcDC5T90TrZibh0N2rWosWmnjDFd6IdsI9hjKM8oeCVa143MwW9tdTkogqPh7MC2lU9zi4789mlvL-FP_w7J6xIpm4MJnhdObisl1qk9wKtXaAyFlseDqEsHIk5wygUuESYcpAf2B_4zr6GHn4EYbTFkh8rR1nsI5BKZlv0S5e6TQHG7aqlQNI9h1QuM0P1yQj53eR2PBAXqWFagViPeF_Y8Zd7PgJKrBC6uPUNpTwsVZk3bcZLH1ID2jqRzXZrbaRmZzJog4Xst4Vn_vWvf_7rH257l2NWy_cv5g0O656OCUEzQL3mVwEJTPSj_aB7EzKausegP8yR_vmDYMMLLhLVDXockhfbXwT057XoD6CEUhxYZSCF6UYffrFgFcwza08Fv01PIGKKqAwrIXPBVGOQlqgLExvgz1X4bLbmGGeVLcUVW_qdIfp2ybCZOk0PDjrpys5pBYHHpj7yHD-HYfdKdNRfYjPiO2zg9vx5Ssfa9G6WLjfy-LO_i00RFEjI_U-Eg-5zVsevFe3hXycgsXFcwYpODtDAz5__J83AWn2svkKTqA7urCS3EPY3o-AciIWa5tIYN5osuWawcSqH9UGtksxpuDmUJSwB95Dne0fHQFcPOIwFHPpmLAv8H5rfpSk3JfhjGcisQtMqcNrfiLOfihYFIr7_jXLbekqPcyv_YDsyTCwolbLmefextORaaNEFAYFtDln7xYslcQW3tSSLKJaJdpBc3LKN0LXTiOcrikMQdfcSeL0sFuITcmmLxM3SZqf4lF3CoZQlu1dY4p9nZrH_GMdTPvDC552-0nXxAq1vFQZJ7R-bNxHtnvtqLO0l__42_Uvt8TlX8nmjv_I7PzuYkm24wcIMSPiuQYeBt2D0EcmwCmEK2AD96gel5M8C9WcEbdr1jRUs25cIavQQvz0g-yBIQDkRPBn3WPmPdAGhXc6K_T8PI_O7fJhvx2lq3SxFVTVTukwL5i2m3bxMl011CrSoMFlHU2rq3oqAX2cHuie2NM4mKR697CCh7GT__2L87_8Bm8_P5toMAAA=.eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLUlORElBLUNFTlRSQUwtQS1QUklNQVJZLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0IiwiZXhwIjoxNjc0NTY3MTcwLCJhbGxvd0FjY2Vzc092ZXJQdWJsaWNJbnRlcm5ldCI6dHJ1ZX0=',
+                            accessToken: EmbedToken1,
                             tokenType: models.TokenType.Embed,
                             // filters: [datefilter],
                             settings: {
@@ -306,7 +409,7 @@ const Frontpage = () => {
                             ['error', function (event) {console.log('powerbi_error=',event.detail);}]
                             ])
                         }
-                        cssClassName = { "report-style-class" }
+                        cssClassName = { "report-style-classProduct" }
                         getEmbeddedComponent = {async(embeddedReport) => {
                             window.report = embeddedReport ;
                         }
@@ -338,7 +441,33 @@ const Frontpage = () => {
                 <div>About</div> 
                 <div>Product</div>
                 <div>Articles</div>
-                <div>Contact Us</div>
+                <Popup trigger={<div> Contact Us </div>} modal>
+                <FormDiv>
+                <SideImg>
+                    <img src = '/Images/handshake.png' alt = '' style={{'width':'20vw', 'min-height':'50vh'}}/>
+                 </SideImg>
+                 <InputDiv>
+                 {notsubmitted?<form onSubmit={(e)=>login(e)}>
+                    <h6>Find out what Benchmarks can do for you</h6>
+                    <h6>To get started, fill out the form.</h6>
+                    <div className="form-group" style={{"width":'26vw'}}>
+                        <label></label>
+                        <input type = 'text' name = 'fullname' id='fullname' placeholder='Full Name' className="form-control" value={name} onChange={(e) => {setName(e.target.value)}}/>
+                        <label></label>
+                        <input type = 'text' name = 'phone' id='phone' placeholder='Phone' className="form-control" value={phone} onChange={(e) => {setPhone(e.target.value)}} />
+                        <label></label>
+                        <input type = 'text' name = 'email' id='email' placeholder='Email' className="form-control" value={email} onChange={(e) => {setEmail(e.target.value)}}/>
+                        <label></label>
+                        <textarea style={{'width':'26vw', 'marginTop':'10px', 'padding':'2%'}} placeholder = '  Message' onChange={(e) => {setMsg(e.target.value)}}/>
+                    </div>
+                    <button type="submit" className="btn btn-primary btn-block" style={{backgroundColor:'#55E4E3' , border:'None', 'color':'black'}} >Submit</button>
+                </form>:<div style={{'marginTop':'140px'}}>
+                    <h6>Thank you for contacting us.</h6>
+                    <h6>Our experts will get back to you shortly.</h6>
+                </div>}
+                 </InputDiv>
+                </FormDiv>
+            </Popup>
             </MiniMenu>
             <div></div>
             <Socal>
@@ -482,9 +611,19 @@ font-size:12px;
 
 const FormDiv = styled.div`
 background-color:#F9FAFB;
-height:50vh;
+min-height:50vh;
 width:55vw;
-padding:5%;
+display:flex;
+`
+
+const SideImg = styled.div`
+width:44%;
+overflow:hidden;
+`
+
+const InputDiv = styled.div`
+padding-bottom:5%;
+padding-top:5%;
 `
 
 const Brands = styled.div`
@@ -525,6 +664,7 @@ cursor:pointer;
   }
 `
 const ProductGridContainer = styled.div`
+margin-top:4vh;
 display: grid; 
   grid-auto-rows: 1fr; 
   grid-template-columns: 0.5fr 2.5fr 0.1fr 1.4fr 0.5fr; 
@@ -549,12 +689,11 @@ grid-area: Graph;
 `
 
 const FirstPage = styled.div`
-margin-top:3vh;
 min-height:90vh;
 display:grid;
 grid-template-columns: repeat(16, 1fr);
 /* grid-template-rows: 0.23fr, 2.58fr, 0.19fr; -> causes invisible lines */
-grid-template-rows: 0.3fr 2.4fr 0.3fr;
+grid-template-rows: 0.3fr 2.4fr 0fr;
 grid-template-areas:
 '. . . . . . . . . . . . . . . . '
 '. NewAge NewAge NewAge NewAge NewAge NewAge NewAge Article Article Article Article Article Article Article  .'
@@ -601,7 +740,7 @@ gap:5px 0px; */
 
 const VerticalArticles = styled.div`
 display:grid;
-height:55vh;
+min-height:55vh;
 grid-template-rows: repeat(4, 1fr);
 gap:0px 0px;
 @media (max-width:768px) {

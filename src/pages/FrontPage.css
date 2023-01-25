@@ -6,10 +6,19 @@
 
 }
 
+.report-style-class iframe{
+    border:0px;
+}
+
 .report-style-classProduct{
-    height: 48vh;
+    height: 69vh;
+    margin-top: 2vh;
+    margin-left:2px;
     width: 40vw;
-    margin-top: 10px;
+}
+
+.report-style-classProduct iframe{
+    border: 0px;
 }
 
 .invisible{
