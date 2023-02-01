@@ -52,6 +52,7 @@ const NewFigmaOTP = () => {
           .then( data => {
             if (data.token){
                 setSignIn(true);
+                window.localStorage.setItem('loginStatus', 'true')
                 window.localStorage.setItem("token", data.token)
                 setWrongOTP(false)
             }

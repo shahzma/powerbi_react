@@ -6,6 +6,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Autocomplete from "../components/Autocomplete/autocomplete";
 import { useLocation } from 'react-router-dom';
+import { BsTag } from "react-icons/bs";
+import { MdHouseSiding , MdOutlineCasino} from "react-icons/md";
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import { GiHealthNormal } from "react-icons/gi";
+import { TbBooks } from "react-icons/tb";
+import Head from '../components/Head/Head';
 
 const NewMainPage = () => {
     const [ ReportData, setReportData ] = useState([]);
@@ -15,6 +21,7 @@ const NewMainPage = () => {
     const [UserReports, setUserReports] = useState([]);
     const [AllReports, setAllReports] = useState([]);
     const [tagData, setTagData] = useState([]);
+    const [loginStatus, setloginStatus] = useState(true)
     const search = useLocation().search;
     const tag_name = new URLSearchParams(search).get('tag')
     const options = [
@@ -158,9 +165,24 @@ const NewMainPage = () => {
         }
     }, []);
 
+    // useEffect(()=>{
+    //   let loginStatus = window.localStorage.getItem('loginStatus')
+    //   window.localStorage.setItem('loginStatus', 'false')
+    //   console.log('loginStatus=', loginStatus)
+    //   if(window.localStorage.getItem('loginStatus')==='true'){
+    //     console.log('loginStatus is true')
+    //   } else{
+    //     console.log('loginStatus is false')
+    //   }
+    // })
+
     useEffect(()=>{
         console.log('tag_name = ',tag_name)
         let curr_id = 52
+        if(window.localStorage.getItem('loginStatus')==='true')
+        {curr_id = 52}else{
+          curr_id=0
+        }
         console.log('real_email=', window.localStorage.getItem("email"))
         console.log('pseudo_email=', window.localStorage.getItem("pseudo_email"))
         console.log('curr_id=', curr_id)
@@ -189,24 +211,39 @@ const NewMainPage = () => {
                 }
             }
             // convert ressuch that it has description = list of company
+          fetch(`${process.env.REACT_APP_API_ENDPOINT}/tags/`)
+          .then(data =>data.json())
+          .then(data =>{
+            console.log('data_tag = ', data)
+            setTagData(data)
+            console.log('tags=', tagData)
             console.log('userrepData = ', res)
-            setReportData(res)
-            setReportDataBack(res)
-            let arr = res.slice(0, 8);
+            let li = ['Mobility 2.0','Food Tech 2.0','Real Money Gaming 2.0', 'OTT Audio 2.0', 'Online Retail 2.0', 'Online Retail 2.0 - Category']
+            let new_reps = res.filter(rep=>li.includes(rep.report_name))
+            if(tag_name){
+              new_reps = new_reps.filter(rep=>[tag_name].includes(rep.report_name))
+            }
+            console.log('new_reps=', new_reps)
+            setReportData(new_reps)
+            setReportDataBack(new_reps)
+            let arr = new_reps.slice(0, 8);
             setShowReportData(arr)
+          })
         }
         )
         .catch( error => console.error(error))
+        
+        
     }, [])
 
-    useEffect(()=>{
-      fetch(`${process.env.REACT_APP_API_ENDPOINT}/tags/`)
-        .then(data =>data.json())
-        .then(data =>{
-          console.log('data_tag = ', data)
-          setTagData(data)
-        })
-    },[])
+    // useEffect(()=>{
+    //   fetch(`${process.env.REACT_APP_API_ENDPOINT}/tags/`)
+    //     .then(data =>data.json())
+    //     .then(data =>{
+    //       console.log('data_tag = ', data)
+    //       setTagData(data)
+    //     })
+    // },[])
     
       const handleOnSearch = (string, results) => {
         // onSearch will have as the first callback parameter
@@ -224,8 +261,9 @@ const NewMainPage = () => {
       }
     
       const handleOnSelect = (item) => {
-        // the item selected
+        // the item selected. item is a dict containing tagname  and reports associated with that tag
         console.log('handle on select')
+        console.log('item=', item)
         // console.log('new = ',ShowReportData.filter(rep=>item.reports.includes(rep.report_name)))
         setShowReportData(ShowReportData.filter(rep=>item.reports.includes(rep.report_name)))
       }
@@ -274,14 +312,123 @@ const NewMainPage = () => {
         let len = ShowReportData.length + 4
         setShowReportData(ReportDataBack.slice(0, len))
       }
+
+      let showSubscribed = ()=>{
+        console.log('showreportdata=', ShowReportData) 
+        let arr = [] 
+        for (let i=0;i<ShowReportData.length; i++){
+          if(ShowReportData[i].bought){
+            arr.push(ShowReportData[i])
+          }
+        }
+        setShowReportData(arr)
+      }
+      const handleSignOut = ()=>{
+        console.log('signout')
+        window.localStorage.setItem('loginStatus','false')
+        window.location.reload()
+    }
   return (
     width>768 ?(<>
-        <PageHeader>
-            <div><img src = '/Images/benchmark_logo.png' alt = ''/></div> <div>About</div>
-             <ProductDiv>
-              Products
-              </ProductDiv><div>Articles</div><div>{hour<15?'Good Morning ':'Good Evening '}<img src = "/Images/user.svg" alt = "" style={{width: '3vw', borderRadius:'40px'}}/></div>
-        </PageHeader>
+        {window.localStorage.getItem('loginStatus')==='false'?<PageHeader>
+                <div><img src = '/Images/benchmark_logo.png' alt = ''/></div>
+                <ProductDiv>
+                Products
+                <DropDiv>
+                    <OverViewDiv onClick={()=>{navigate('/newmainpage')}}>
+                    <div className = 'ProductsText'>Products</div>
+                    <div className='ProductsTextBottom'>Hello World Hello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello </div>
+                    <button className='OverViewButton'>OverView</button>
+                    </OverViewDiv>
+                    <TypesDiv>
+                        <Brands onClick={()=>{
+                            navigate('/newmainpage')
+                        }}>
+                            <div className = 'Browse'>
+                                Browse by Type
+                            </div>
+                            <h6><BsTag style={{'color':'#15BEBE'}}/> Brands</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        </Brands>
+                        <Sector onClick={()=>{navigate('/newmainpage/?tag=Real Money Gaming 2.0')}}>
+                            <div className='Browse'>Browse by Sector</div>
+                            <h6><MdOutlineCasino style={{'color':'#15BEBE'}}/>RMG</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        </Sector>
+                        <HealthCare onClick={()=>{navigate('/newmainpage/?tag=Food Tech 2.0')}}>
+                            <br/>
+                            <h6><GiHealthNormal style={{'color':'#15BEBE'}}/>Food Tech</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        </HealthCare>
+                        <Company onClick={()=>{navigate('/newmainpage')}}>
+                            <h6><MdHouseSiding style={{'color':'#15BEBE'}}/> Company</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        </Company>
+                        <OnlineRetail onClick={()=>{navigate('/newmainpage/?tag=Online Retail 2.0')}}><h6> <AiOutlineShoppingCart style={{'color':'#15BEBE'}}/> OnlineRetail</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div></OnlineRetail>
+                        <EdTech onClick={()=>{navigate('/newmainpage/?tag=Mobility 2.0')}}>
+                            <h6><TbBooks style={{'color':'#15BEBE'}}/> Mobility</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                            <div style={{'marginTop':'10px', 'marginLeft':'210px'}}><a style={{"text-decoration":"none", "fontSize":"12px"}}href="/newmainpage">Show More</a></div>
+                        </EdTech>
+                    </TypesDiv>
+                </DropDiv>
+              </ProductDiv>
+                <div>Articles</div><SignInDiv><button style ={{'border':'1px solid #15BEBE', 'backgroundColor':'white', 'width':'120px', 'height':'30px'}} onClick={()=>{navigate('/signin')}}>Login</button></SignInDiv>
+        </PageHeader>:
+        <PageHeader1>
+          <div><img src = '/Images/benchmark_logo.png' alt = ''/></div>
+                <ProductDiv>
+                Products
+                <DropDiv>
+                    <OverViewDiv onClick={()=>{navigate('/newmainpage')}}>
+                    <div className = 'ProductsText'>Products</div>
+                    <div className='ProductsTextBottom'>Hello World Hello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello </div>
+                    <button className='OverViewButton'>OverView</button>
+                    </OverViewDiv>
+                    <TypesDiv>
+                        <Brands onClick={()=>{
+                            navigate('/newmainpage')
+                        }}>
+                            <div className = 'Browse'>
+                                Browse by Type
+                            </div>
+                            <h6><BsTag style={{'color':'#15BEBE'}}/> Brands</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        </Brands>
+                        <Sector onClick={()=>{navigate('/newmainpage/?tag=Real Money Gaming 2.0')}}>
+                            <div className='Browse'>Browse by Sector</div>
+                            <h6><MdOutlineCasino style={{'color':'#15BEBE'}}/>RMG</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        </Sector>
+                        <HealthCare onClick={()=>{navigate('/newmainpage/?tag=Food Tech 2.0')}}>
+                            <br/>
+                            <h6><GiHealthNormal style={{'color':'#15BEBE'}}/>Food Tech</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        </HealthCare>
+                        <Company onClick={()=>{navigate('/newmainpage')}}>
+                            <h6><MdHouseSiding style={{'color':'#15BEBE'}}/> Company</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        </Company>
+                        <OnlineRetail onClick={()=>{navigate('/newmainpage/?tag=Online Retail 2.0')}}><h6> <AiOutlineShoppingCart style={{'color':'#15BEBE'}}/> OnlineRetail</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div></OnlineRetail>
+                        <EdTech onClick={()=>{navigate('/newmainpage/?tag=Mobility 2.0')}}>
+                            <h6><TbBooks style={{'color':'#15BEBE'}}/> Mobility</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                            <div style={{'marginTop':'10px', 'marginLeft':'210px'}}><a style={{"text-decoration":"none", "fontSize":"12px"}}href="/newmainpage">Show More</a></div>
+                        </EdTech>
+                    </TypesDiv>
+                </DropDiv>
+              </ProductDiv>
+              <div onClick={showSubscribed}>My Subscriptions</div>
+                <div>Articles</div>
+                <Man>
+                  {hour<15?'Good Morning ':'Good Evening '}<img src = "/Images/user.svg" alt = "" style={{width: '3vw', borderRadius:'40px'}}/>
+                  <SignOut onClick={handleSignOut}>
+                        <a>Sign Out</a>
+                    </SignOut>
+                </Man>
+        </PageHeader1>}
         <img src = '/Images/company_acess.png'/>
         <IconBar>
         <h3 style={{'marginLeft':'30px'}}>All Products</h3>
@@ -332,7 +479,7 @@ const NewMainPage = () => {
                   </CompanyRow>
                   <TextRow>Flipkart, Amazon, MyntraFlipkart, Amazon, MyntraFlipkart, Amazon, MyntraFlipkart, Amazon, Myntra</TextRow>
                   <EndRow>
-                    <div>6th Jan</div><div>{repver.bought?<button  onClick = {()=>handleOnClick(repver.report_name, repver.start_date, repver.end_date)}>View</button>:<button onClick={goBuyReport}>Buy</button>}</div>
+                    <div>6th Jan</div><div>{repver.bought?<button  onClick = {()=>handleOnClick(repver.report_name, repver.start_date, repver.end_date)}>View</button>:<button onClick={goBuyReport}>Subscribe</button>}</div>
                   </EndRow>
                 </Wrap>
                 )
@@ -389,9 +536,49 @@ background-color:#F9FAFB;
 display:flex;
 justify-content:center;
 align-items:center;
-gap:12vw;
+gap:18vw;
 
 `
+
+const PageHeader1 = styled.div`
+height:10vh;
+background-color:#F9FAFB;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10.5vw;
+
+`
+const SignOut = styled.div`
+display:none;
+position:absolute;
+top:10vh;
+right:10vw;
+background:#F6F6F6;
+border:1px solid black;
+border-radius: 0 0 5px 5px;
+width:90px;
+height: 40px;
+font-size:16px;
+/* transition-duration:160ms; */
+text-align:center;
+&:hover{
+  background-color: #ddd;
+}
+`
+
+const Man = styled.div`
+height:10vh;
+padding-top:3vh;
+&:hover{
+    ${SignOut}{
+        align-items:center;
+        display:flex;
+        justify-content:center;
+    }
+  }
+`
+
 const IconBar = styled.div`
 height: 10vh;
 background-color:#F4F4FD;
@@ -421,35 +608,36 @@ const Content = styled.div`
 }
 `
 
-const DropDiv = styled.div`
-display:none;
-position:absolute;
-top:58px;
-right:25px;
-background:#F6F6F6;
-border:1px solid black;
-border-radius: 0 0 5px 5px;
-width:90px;
-height: 40px;
-font-size:16px;
-/* transition-duration:160ms; */
-text-align:center;
-&:hover{
-  background-color: #ddd;
-}
-`
+// const DropDiv = styled.div`
+// display:none;
+// position:absolute;
+// top:58px;
+// right:25px;
+// background:#F6F6F6;
+// border:1px solid black;
+// border-radius: 0 0 5px 5px;
+// width:90px;
+// height: 40px;
+// font-size:16px;
+// /* transition-duration:160ms; */
+// text-align:center;
+// &:hover{
+//   background-color: #ddd;
+// }
+// `
 
-const ProductDiv = styled.div`
-&:hover{
-    ${DropDiv}{
-        align-items:center;
-        display:flex;
-        justify-content:center;
-    }
-  }
-`
+// const ProductDiv = styled.div`
+// &:hover{
+//     ${DropDiv}{
+//         align-items:center;
+//         display:flex;
+//         justify-content:center;
+//     }
+//   }
+// `
 
 const Wrap = styled.div`
+  position: relative;
   border-radius:10px;
   /* overflow:hidden; */
   height:374px;
@@ -488,7 +676,7 @@ const TextRow = styled.div`
 font-size:12px;
 margin-left:10px;
 margin-top:5px;
-min-height:112px;
+max-height:112px;
 `
 
 const EndRow = styled.div`
@@ -546,4 +734,95 @@ div{
     font-size:13px;
     margin-bottom:25px;
 }
+`
+
+const Brands = styled.div`
+`
+const Sector = styled.div``
+const HealthCare = styled.div``
+const Company = styled.div``
+const OnlineRetail = styled.div``
+const EdTech = styled.div``
+
+
+
+const OverViewDiv = styled.div`
+grid-area: Products;
+background-color:#EBF1F4;
+border-radius:10px;
+padding:30px;
+`
+const TypesDiv = styled.div`
+grid-area:Types;
+margin-left:30px;
+display: grid; 
+grid-auto-rows: 1fr; 
+grid-template-columns: 1fr 1fr 1fr; 
+grid-template-rows: 1fr 1fr; 
+gap: 10px 10px; 
+grid-template-areas: 
+"Brands Sector HealthCare"
+"Company OnlineRetail EdTech"; 
+`
+
+const SignInDiv = styled.div`
+color:blue;
+`
+
+const DropDiv = styled.div`
+display:none;
+/* display: grid !important;
+        grid-auto-rows: 1fr; 
+        grid-template-columns: 0.25fr 1.05fr 2.45fr 0.25fr; 
+        grid-template-rows: 0.2fr 2.6fr 0.2fr; 
+        gap: 0px 0px; 
+        grid-template-areas: 
+            ". . . ."
+            ". Products Types ."
+            ". . . View";  */
+position:absolute;
+top:10vh;
+right:1px;
+left:1px;
+background-color:#FFFFFF;
+border:1px solid aquamarine;
+border-radius: 0 0 5px 5px;
+width:100vw;
+height: 32.5vh;
+font-size:16px;
+/* transition-duration:160ms; */
+/* text-align:center; */
+&:hover{
+  background-color: #ddd;
+}
+`
+
+const ProductDiv = styled.div`
+height:10vh;
+padding-top:3.5vh;
+cursor:pointer;
+
+&:hover{
+    text-decoration:underline;
+    text-decoration-color: #0000FF;
+    text-underline-offset: 8px;
+    ${DropDiv}{
+        display: grid !important;
+        grid-auto-rows: 1fr; 
+        grid-template-columns: 0.25fr 1.05fr 2.45fr 0.25fr; 
+        grid-template-rows: 0.2fr 2.6fr 0.2fr; 
+        gap: 0px 0px; 
+        grid-template-areas: 
+            ". . . ."
+            ". Products Types ."
+            ". . View ."; 
+        background-color:#FFFFFF;
+    }
+    /* ${OverViewDiv}{
+        grid-area: Products;
+    }
+    ${TypesDiv}{
+        grid-area:Types;
+    } */
+  }
 `

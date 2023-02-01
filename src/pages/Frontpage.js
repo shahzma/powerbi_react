@@ -17,6 +17,7 @@ import { GiHealthNormal } from "react-icons/gi";
 import { TbBooks } from "react-icons/tb";
 import img from './top_left.png'
 import Popup from 'reactjs-popup';
+import Head from '../components/Head/Head';
 
 const Frontpage = () => {
 
@@ -123,55 +124,7 @@ const Frontpage = () => {
   return (
     
     width>768 ?(<>
-        <PageHeader>
-                <div><img src = '/Images/benchmark_logo.png' alt = ''/></div>
-                <ProductDiv>
-                Products
-                <DropDiv>
-                    <OverViewDiv onClick={()=>{navigate('/newmainpage')}}>
-                    <div className = 'ProductsText'>Products</div>
-                    <div className='ProductsTextBottom'>Hello World Hello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello </div>
-                    <button className='OverViewButton'>OverView</button>
-                    </OverViewDiv>
-                    <TypesDiv>
-                        <Brands onClick={()=>{
-                            navigate('/newmainpage')
-                        }}>
-                            <div className = 'Browse'>
-                                Browse by Type
-                            </div>
-                            <h6><BsTag style={{'color':'#15BEBE'}}/> Brands</h6>
-                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
-                        </Brands>
-                        <Sector onClick={()=>{navigate('/newmainpage')}}>
-                            <div className='Browse'>Browse by Sector</div>
-                            <h6><MdOutlineCasino style={{'color':'#15BEBE'}}/> RMG</h6>
-                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
-                        </Sector>
-                        <HealthCare onClick={()=>{navigate('/newmainpage')}}>
-                            <br/>
-                            <h6><GiHealthNormal style={{'color':'#15BEBE'}}/> E-Health</h6>
-                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
-                        </HealthCare>
-                        <Company onClick={()=>{navigate('/newmainpage')}}>
-                            <h6><MdHouseSiding style={{'color':'#15BEBE'}}/> Company</h6>
-                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
-                        </Company>
-                        <OnlineRetail onClick={()=>{navigate('/newmainpage')}}><h6> <AiOutlineShoppingCart style={{'color':'#15BEBE'}}/> OnlineRetail</h6>
-                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div></OnlineRetail>
-                        <EdTech onClick={()=>{navigate('/newmainpage')}}>
-                            <h6><TbBooks style={{'color':'#15BEBE'}}/> EdTech</h6>
-                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
-                            <div style={{'marginTop':'10px', 'marginLeft':'210px'}}><a style={{"text-decoration":"none", "fontSize":"12px"}}href="/newmainpage">Show More</a></div>
-                        </EdTech>
-                    </TypesDiv>
-                    <ViewDiv>
-                        {/* <a style={{"text-decoration":"none"}}href="/newmainpage">Show More</a> */}
-                    </ViewDiv>
-                </DropDiv>
-              </ProductDiv>
-                <div>Articles</div><SignInDiv><button style ={{'border':'1px solid #15BEBE', 'backgroundColor':'white', 'width':'120px', 'height':'30px'}} onClick={()=>{navigate('/signin')}}>Login</button></SignInDiv>
-        </PageHeader>
+        <Head/>
         <FirstPage>
             <NewAge><h2>New age <span style={{'color':'blue'}}>alternative data</span><br></br>platform of choice</h2> We track 150+ business relevant KPIs of top 500 consumer internet businesses and brands in India by crunching billions of data points every day to provide accurate, granular insights. Over 200 investment funds and innovative companies rely on us to help them make better business decisions.
             <br></br><br></br>
@@ -308,7 +261,7 @@ const Frontpage = () => {
         {/* <div style={{'textAlign':'center', 'fontSize':'25px', 'fontWeight':'bold', "backgroundColor":'#1A1A58' , 'color':'white', 'height':'50px' , 'paddingTop':'15px'}}>Meaningful and granular Insights</div> */}
                 <Carousel showThumbs = {false}>
                 <div>
-                    <img src="/Images/carousal1.png" />
+                    <img src="/Images/Carousal1.png" />
                 </div>
                 <div>
                     <img src="/Images/Carousal2.png" />
@@ -418,7 +371,7 @@ const Frontpage = () => {
                       />
             </Graph>
         </ProductGridContainer>
-        <img src = '/Images/Stay_updated.png'/>
+        <div><img src = '/Images/Stay_updated.png'/></div>
         {/* <div style = {{'display':'flex', 'alignItems': 'center', 'justifyContent':'center', 'height':'10vh', 'fontWeight':'bold'}}>
         <img src = '/Images/brands.png'/>
         </div> */}

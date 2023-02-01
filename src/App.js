@@ -92,12 +92,6 @@ function App() {
       </Routes>
     </Router>
 
-
-
-    // <div className="App">
-    //   <Login userLogin={userLogin}/>
-    //   {/* <GetReportList token={token}/> */}
-    // </div>
   );
 }
 
