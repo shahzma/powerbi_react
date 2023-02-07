@@ -8,11 +8,11 @@ import { ProSidebar, Menu, MenuItem, SubMenu} from 'react-pro-sidebar';
 import {Link, Navigate} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { FaAmazon, FaTrafficLight,FaUsers, FaDeezer,FaAlignLeft, FaKeyboard, FaCity } from 'react-icons/fa';
-import{MdOutlineSummarize, MdMonetizationOn, MdInsights, MdDashboard} from 'react-icons/md';
+import{MdOutlineSummarize, MdMonetizationOn, MdInsights, MdDashboard, MdAlignHorizontalLeft} from 'react-icons/md';
 import { ImProfile } from "react-icons/im";
 import {SiCoveralls, SiSimpleanalytics} from "react-icons/si"
 import {FiUsers} from "react-icons/fi"
-import {AiOutlineFileSearch} from 'react-icons/ai'
+import {AiOutlineFileSearch, AiOutlineProfile, AiOutlineShoppingCart} from 'react-icons/ai'
 import { GiBreakingChain } from "react-icons/gi";
 import { RiMoneyDollarBoxFill } from "react-icons/ri";
 import { BiCategory, BiBookContent, BiCartAlt } from "react-icons/bi";
@@ -33,6 +33,7 @@ function Report(props) {
   const [ AccessToken, setAccessToken ] = useState('');
   const [report, setReport] = useState(null);
   const [ EmbedToken, setEmbedToken ] = useState('');
+  // defaulturl
   const [ reportUrl, setReportUrl ] = useState('');
   const [ pages, setPages ] = useState([]);
   const [myPages, setMyPages] = useState([]);
@@ -47,7 +48,7 @@ function Report(props) {
   const [bdata, setBdata] = useState({});
   const [comment, setComment] = useState("Hello");
   const [commentsOpen, setCommentsOpen] = useState(false);
-  const [excelLoader, setexcelLoader] = useState(false)
+  const [excelLoader, setexcelLoader] = useState(false);
   // const { form_id, instanceId, question_id } = useParams();
   // const [ form_id, setForm_id ] = useState('851');
   let [ formId, setFormId ] = useState('851');
@@ -81,8 +82,10 @@ function Report(props) {
     'City Split':<FaCity/>,
     'Supply Chain Metrics':<GiBreakingChain/>,
     'Revenue Metrics':<RiMoneyDollarBoxFill/>,
-    'Operational Metrics':<BiCartAlt/>
-
+    'Operational Metrics':<BiCartAlt/>,
+    'Company Profiles':<AiOutlineProfile/>,
+    'Horizontals':<MdAlignHorizontalLeft/>,
+    'Ecommerce in India':<AiOutlineShoppingCart/>
   })
 
   let subtitle;
@@ -206,49 +209,7 @@ function Report(props) {
     console.log('pseudo_email=', pseudo_email)
 
     console.log('email=', window.localStorage.getItem("email"))
-    fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}&email=${pseudo_email}`, {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Token ${prop_token}`
-    },
-    })
-    .then( data => data.json())
-    .then(
-    data => {
-
-        setAccessToken(data['access_token'])
-        setEmbedToken(data['embed_token'])
-        setReportUrl(data['report_url'])
-        setPages(data['pages'])
-        setReportId(data['report_id'])
-        console.log('report_id=', data['report_id'])
-        // console.log(reportUrl+'&pageName=ReportSection7446fb261ebfdaa647fa')
-        if(window.localStorage.getItem("player_name")){
-          let player_name = window.localStorage.getItem("player_name")
-          fetch(`https://api.benchmarks.digital/player/?name=${player_name}`, {
-            method:'GET',
-            headers:{
-              'Content-Type': 'application/json',
-            },
-          })
-          .then(res=>res.json())
-          .then(
-            res=>{
-              console.log('reportUrl=', data['report_url'])
-              console.log('res=',res.powerbi_page)
-              setNewUrl(data['report_url']+'&pageName='+res.powerbi_page)
-              // window.sessionStorage.setItem('powerbi_page', res.powerbi_page)
-            }
-          )
-        }else{
-          setNewUrl(data['report_url'])
-        }
-    }
-    )
-    .catch( error => console.error(error))
     
-    // replace ott audio below with propsrep
     fetch(`${process.env.REACT_APP_API_ENDPOINT}/PageReports/?rep=${propsrep}`, {
       method:'GET',
       headers:{
@@ -259,16 +220,184 @@ function Report(props) {
     .then(
       res=>{
         console.log('tree=',res)
+        let page_array = res
+        let real_report_name
+        if(res[0].report_name){
+          real_report_name = res[0].report_name
+        }else{
+          real_report_name = propsrep
+        }
         setMyPages(res)
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${real_report_name}&email=${pseudo_email}`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Token ${prop_token}`
+          },
+          })
+          .then( data => data.json())
+          .then(
+          data => {
+      
+              setAccessToken(data['access_token'])
+              setEmbedToken(data['embed_token'])
+              setReportUrl(data['report_url'])
+              setPages(data['pages'])
+              setReportId(data['report_id'])
+              console.log('report_id=', data['report_id'])
+              // console.log(reportUrl+'&pageName=ReportSection7446fb261ebfdaa647fa')
+              //player_name get form url params when redirecting from coeus
+              if(window.localStorage.getItem("player_name")){
+                let player_name = window.localStorage.getItem("player_name")
+                fetch(`https://api.benchmarks.digital/player/?name=${player_name}`, {
+                  method:'GET',
+                  headers:{
+                    'Content-Type': 'application/json',
+                  },
+                })
+                .then(res=>res.json())
+                .then(
+                  res=>{
+                    console.log('reportUrl=', data['report_url'])
+                    console.log('res=',res.powerbi_page)
+                    setNewUrl(data['report_url']+'&pageName='+res.powerbi_page)
+                    // window.sessionStorage.setItem('powerbi_page', res.powerbi_page)
+                  }
+                )
+              }else{
+                setNewUrl(data['report_url']+'&pageName='+page_array[0].link)
+              }
+          }
+          )
+          .catch( error => console.error(error))
       }
     )
+    window.localStorage.setItem('filter_on_company', 'false')
 },[]);
 
 
-let handleClick = (Name)=>{
+let handleClick = (Name, url, powerbi_report_id, report_name, page_name,same_page)=>{
   setPageName(Name)
-  console.log('name=',Name)
-  setNewUrl(reportUrl+'&pageName='+Name)
+  console.log('name=',Name, report_name, page_name, same_page)
+  if(url){
+    let prop_token = window.localStorage.getItem("token")
+    let pseudo_email = window.localStorage.getItem("pseudo_email")
+    let propsrep = report_name
+    fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}&email=${pseudo_email}`, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${prop_token}`
+      },
+      })
+      .then( data => data.json())
+      .then(
+      data => {  
+          setEmbedToken(data['embed_token'])
+          setReportId(powerbi_report_id)
+          setNewUrl(url+'&pageName='+Name)
+        console.log('url present = ',url+'&pageName='+Name)
+      }
+      )
+      .catch( error => console.error(error))
+  }else{
+    // console.log('reporturl_init=', reportUrl)
+    // setNewUrl(reportUrl+'&pageName='+Name)
+    // console.log('url absent=',reportUrl+'&pageName='+Name)
+    let prop_token = window.localStorage.getItem("token")
+    let pseudo_email = window.localStorage.getItem("pseudo_email")
+    let propsrep =  window.localStorage.getItem("ReportName")
+    console.log(prop_token, pseudo_email, propsrep)
+    fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}&email=${pseudo_email}`, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${prop_token}`
+      },
+      })
+      .then( data => data.json())
+      .then(
+      data => {  
+          setEmbedToken(data['embed_token'])
+          setReportId(data['report_id'])
+          console.log('new_embed_tok=', data['embed_token'])
+          setNewUrl(reportUrl+'&pageName='+Name)
+        console.log('url present = ',reportUrl+'&pageName='+Name)
+      }
+      )
+      .catch( error => console.error(error))
+  }
+  if(same_page){
+    window.localStorage.setItem('filter_on_company', 'true')
+    window.localStorage.setItem('drop_dn_player_name', page_name)
+    console.log('drop_dn_player_name=', page_name)
+    const filter = {
+      $schema: "http://powerbi.com/product/schema#advanced",
+      target: {
+          table: "content_data player",
+          column: "player_name"
+      },
+      filterType: models.FilterType.Advanced,
+      logicalOperator: "Is",
+      conditions: [
+          {
+              operator: "Is",
+              value: window.localStorage.getItem("player_name")
+          }
+      ]  
+  };
+  // filter if there is a player in dropdown menu instead of page
+    const filter_player_dropdown = {
+      $schema: "http://powerbi.com/product/schema#advanced",
+        target: {
+            table: "content_data main_data",
+            column: "Players"
+        },
+        filterType: models.FilterType.Advanced,
+        logicalOperator: "Is",
+        conditions: [
+            {
+                operator: "Is",
+                value: window.localStorage.getItem('drop_dn_player_name')
+            }
+        ] 
+    }
+    window.report.getActivePage().then(
+      (activePage=>{
+        activePage.getVisuals().then(
+          (visuals=>{
+            let slicers = visuals.filter(function (visual) {
+              return visual.type === "slicer";
+          });
+            slicers.forEach(async (slicer) => {
+              const state = await slicer.getSlicerState();    
+              console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+              if(state.targets[0].column==="player_name"){
+                console.log('slicer_name=',slicer)
+                let target_slicer = visuals.filter(function (visual) {
+                  return visual.type === "slicer" && visual.name === slicer.name;             
+              })[0];
+                await target_slicer.setSlicerState({ filters: [filter] });
+              }
+
+              //not using state as it will change on page load
+              if(state.targets[0].column==='Players' && window.localStorage.getItem('filter_on_company')==='true'){
+                let target_slicer = visuals.filter(function (visual) {
+                  return visual.type === "slicer" && visual.name === slicer.name;             
+              })[0];
+                await target_slicer.setSlicerState({ filters: [filter_player_dropdown] });
+              }
+    
+        })      
+            // console.log('slicer=', slicers)
+          })
+        )
+      })
+    )
+    
+  }else{
+    window.localStorage.setItem('filter_on_company', 'false')
+  }
 }
 
 let handleSignOut = ()=>{
@@ -684,14 +813,14 @@ if(!props.Token){
               <MenuItem><h5>{window.localStorage.getItem("ReportName")}</h5></MenuItem>
               {myPages.map((repver,index)=>{
                 return repver.children_page_name.length===0?(
-                  <MenuItem key={1} icon={iconDict[repver.page_name]} onClick={()=>handleClick(repver.link)}>
+                  <MenuItem key={1} icon={iconDict[repver.page_name]} onClick={()=>handleClick(repver.link, repver.url, repver.powerbi_report_id, repver.report_name, repver.page_name, repver.same_page)}>
                     {repver.page_name}
                   </MenuItem>
                 ):(
                   <SubMenu title={repver.page_name} icon={iconDict[repver.page_name]}>
                     {repver.children_page_name.map(i=>{
                         return(
-                          <MenuItem key={i.id} onClick={()=>handleClick(i.link)}>
+                          <MenuItem key={i.id} onClick={()=>handleClick(i.link, i.url, i.powerbi_report_id, i.report_name, i.page_name, i.same_page)}>
                               <div style = {{fontFamily:'Arial'}}>{'\u2022'}&nbsp;&nbsp;{i.page_name}</div>
                           </MenuItem>
                         )
@@ -782,6 +911,22 @@ if(!props.Token){
                               }
                           ]  
                       };
+                      // filter if there is a player in dropdown menu instead of page
+                      const filter_player_dropdown = {
+                        $schema: "http://powerbi.com/product/schema#advanced",
+                          target: {
+                              table: "content_data main_data",
+                              column: "Players"
+                          },
+                          filterType: models.FilterType.Advanced,
+                          logicalOperator: "Is",
+                          conditions: [
+                              {
+                                  operator: "Is",
+                                  value: window.localStorage.getItem('drop_dn_player_name')
+                              }
+                          ] 
+                      }
                       let company_name = ''
                       window.report.getActivePage().then(
                         (activePage=>{
@@ -791,18 +936,23 @@ if(!props.Token){
                                 return visual.type === "slicer";
                             });
                               slicers.forEach(async (slicer) => {
-                              const state = await slicer.getSlicerState();    
-                              console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
-                              if(state.targets[0].column==="player_name"){
-                                console.log('slicer_name=',slicer)
-                                let target_slicer = visuals.filter(function (visual) {
-                                  return visual.type === "slicer" && visual.name === slicer.name;             
-                              })[0];
-                                await target_slicer.setSlicerState({ filters: [filter] });
-                                // company_name=state.filters[0].values[0]
-                                // openModal(company_name, ques_name)
-                              }
-                              
+                                const state = await slicer.getSlicerState();    
+                                console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+                                if(state.targets[0].column==="player_name"){
+                                  console.log('slicer_name=',slicer)
+                                  let target_slicer = visuals.filter(function (visual) {
+                                    return visual.type === "slicer" && visual.name === slicer.name;             
+                                })[0];
+                                  await target_slicer.setSlicerState({ filters: [filter] });
+                                }
+
+                                //not using state as it will change on page load.page laod code for 1st
+                                if(state.targets[0].column==='Players' && window.localStorage.getItem('filter_on_company')==='true'){
+                                  let target_slicer = visuals.filter(function (visual) {
+                                    return visual.type === "slicer" && visual.name === slicer.name;             
+                                })[0];
+                                  await target_slicer.setSlicerState({ filters: [filter_player_dropdown] });
+                                }
                       
                           })      
                               // console.log('slicer=', slicers)

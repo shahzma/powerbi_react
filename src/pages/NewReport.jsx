@@ -21,7 +21,9 @@ import Dropdown from 'react-dropdown';
 import { v4 as uuid } from "uuid";
 import { useIsMount } from '../utils/custom_hooks/useIsMount';
 import './NewReport.css';
-
+import TreeMenu from 'react-simple-tree-menu';
+// import default minimal styling or your own styling
+import '../../node_modules/react-simple-tree-menu/dist/main.css'
 
 const NewReport = () => {
     // const { collapseSidebar } = useProSidebar();
@@ -459,17 +461,8 @@ const NewReport = () => {
       
       
             {
-      
-      
-      
                 operator: "GreaterThanOrEqual",
-      
-      
-      
                 value: window.localStorage.getItem("start_date")+"T21:00:00.000Z"
-      
-      
-      
             },
       
       
@@ -495,17 +488,37 @@ const NewReport = () => {
       
       
       };
+
+      const treeData = [
+        {
+          key: 'first-level-node-1',
+          label: 'Hello',
+          nodes: [
+            {
+              key: 'second-level-node-1',
+              label: 'Node 1 at the second level',
+              nodes: [
+                {
+                  key: 'third-level-node-1',
+                  label: 'Last node of the branch',
+                  nodes: [] // you can remove the nodes property or leave it as an empty array
+                },
+              ],
+            },
+          ],
+        },
+        {
+          key: 'first-level-node-2',
+          label: 'Node 2 at the first level',
+        },
+      ];
   return (
     <>
         <PageHeader>
             <div><img src = '/Images/benchmark_logo.png' alt = ''/></div> <div>About</div> <div>Products</div><div>Articles</div><div>{hour<15?'Good Morning ':'Good Evening '}<img src = "/Images/user.svg" alt = "" style={{width: '3vw', borderRadius:'40px'}}/></div>
         </PageHeader>
-        <div>Hello</div>
         <BodyContainer>
-            <ProSidebarContainer collapsed={toggle}>
-            {/* <SideBarHeader onClick={()=>gotoMainPage()}>
-              <img src= '/Images/bold_strategy.svg' alt= ''/>
-            </SideBarHeader> */}
+            {/* <ProSidebarContainer collapsed={toggle}>
               <Menu>
                 <MenuItem></MenuItem>
                 <MenuItem><button onClick={()=>handleToggle()}><img src = "/Images/menu.png" style={{width: '20px', height:'15px'}}/></button></MenuItem>
@@ -527,12 +540,19 @@ const NewReport = () => {
                     </ProSubMenu>
                   )
                 })}
-                {/* <ProMenuItem icon={<FaAmazon fontSize="1.5em"/>}>Winds of death</ProMenuItem>
-                <ProMenuItem icon={<FaAmazon fontSize="1.5em"/>}>Purple sun of xereus</ProMenuItem>
-                <ProMenuItem icon={<FaAmazon fontSize="1.5em"/>}>Doom And Darkness</ProMenuItem> */}
-                {/* <ProMenuDivItem icon={<FaAmazon fontSize="1.5em"/>}>Doom And Darkness</ProMenuDivItem> */}
               </Menu>
-            </ProSidebarContainer>
+            </ProSidebarContainer> */}
+
+            <TreeMenu data={myPages}
+             onClickItem={({ key, label, ...props }) => {
+              if(props.link.length>3){
+                console.log('label=', props.link, props.page_name, props.link.length);
+                handleClick(props.link,props.page_name )
+              } // user defined prop
+            }
+            }/>
+            
+            {/* // Use any third-party UI framework */}
             <PowerbiContainer>
                 <BreadCrumbTop>
                   <h2 style={{'marginLeft':'3.5vw', 'marginTop':'1vh'}}>{window.localStorage.getItem("ReportName")}</h2>

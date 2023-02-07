@@ -220,6 +220,7 @@ const NewMainPage = () => {
             console.log('userrepData = ', res)
             let li = ['Mobility 2.0','Food Tech 2.0','Real Money Gaming 2.0', 'OTT Audio 2.0', 'Online Retail 2.0', 'Online Retail 2.0 - Category']
             let new_reps = res.filter(rep=>li.includes(rep.report_name))
+            // let new_reps = res
             if(tag_name){
               new_reps = new_reps.filter(rep=>[tag_name].includes(rep.report_name))
             }
