@@ -1,13 +1,21 @@
 /* .inner{ position: relative; height: auto; } */
 
-.report-style-class {
+.report-style-class-newreport {
     height: 100vh;
     margin-left: -10px;
-    margin-top: -132px;
+    margin-top: -90px;
     z-index: -1;
     /* min-width: 80vw;
     position: absolute;
     top: 3vh; */
+}
+
+.report-style-class-newreport iframe{
+    border:0px;
+}
+
+.report-style-class-newreport iframe body #pbiAppPlaceHolder .mainContent.title{
+    display: none;
 }
 
 .menuItem{

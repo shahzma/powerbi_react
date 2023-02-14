@@ -178,9 +178,9 @@ const NewMainPage = () => {
 
     useEffect(()=>{
         console.log('tag_name = ',tag_name)
-        let curr_id = 52
+        let curr_id = 1
         if(window.localStorage.getItem('loginStatus')==='true')
-        {curr_id = 52}else{
+        {curr_id = 1}else{
           curr_id=0
         }
         console.log('real_email=', window.localStorage.getItem("email"))
@@ -218,9 +218,9 @@ const NewMainPage = () => {
             setTagData(data)
             console.log('tags=', tagData)
             console.log('userrepData = ', res)
-            let li = ['Mobility 2.0','Food Tech 2.0','Real Money Gaming 2.0', 'OTT Audio 2.0', 'Online Retail 2.0', 'Online Retail 2.0 - Category']
-            let new_reps = res.filter(rep=>li.includes(rep.report_name))
-            // let new_reps = res
+            // let li = ['Mobility 2.0','Food Tech 2.0','Real Money Gaming 2.0', 'OTT Audio 2.0', 'Online Retail 2.0', 'Online Retail 2.0 - Category']
+            // let new_reps = res.filter(rep=>li.includes(rep.report_name))
+            let new_reps = res
             if(tag_name){
               new_reps = new_reps.filter(rep=>[tag_name].includes(rep.report_name))
             }

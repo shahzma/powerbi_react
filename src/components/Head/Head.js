@@ -108,7 +108,7 @@ const Head = () => {
                 </ProductDiv>
                 <div>Articles</div>
                 <Man>
-                    {hour<15?'Good Morning ':'Good Evening '}<img src = "/Images/user.svg" alt = "" style={{width: '3vw', borderRadius:'40px'}}/>
+                    {hour<15?'Good Morning ':'Good Evening '}<img src = "/Images/new_user.png" alt = "" style={{width: '3vw', borderRadius:'40px'}}/>
                     <SignOut onClick={handleSignOut}>
                         <a>Sign Out</a>
                     </SignOut>
@@ -133,7 +133,7 @@ gap:19vw;
 const SignOut = styled.div`
 display:none;
 position:absolute;
-top:10vh;
+top:8.8vh;
 right:110px;
 background:#F6F6F6;
 border:1px solid black;
@@ -166,6 +166,7 @@ color:blue;
 
 
 const DropDiv = styled.div`
+z-index:1000;
 display:none;
 /* display: grid !important;
         grid-auto-rows: 1fr; 

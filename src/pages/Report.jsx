@@ -793,7 +793,21 @@ target: {
 
 };
 
-
+const datefilter_max = {
+  $schema: "http://powerbi.com/product/schema#basic",
+target: {
+      table: "db_date_table ",
+      column: "DB_Date"
+  },
+  filterType: models.FilterType.Advanced,
+  logicalOperator: "Is",
+  conditions: [
+      {
+          operator: "LessThan",
+          value: window.localStorage.getItem("end_date")+"T22:00:00.000Z"
+      }
+  ]
+};
 
 if(!props.Token){
   if(!window.localStorage.getItem("token"))
@@ -806,7 +820,7 @@ if(!props.Token){
         excelLoader===false?(<PageContainer>
           <ProSidebarContainer collapsed={false}>
           <SideBarHeader onClick={()=>gotoMainPage()}>
-            <img src= '/Images/benchmark_side.svg' alt= ''/>
+            <img src= '/Images/benchmark.svg' alt= ''/>
           </SideBarHeader>
             <Menu>
               {['redseerconsulting.com','redseer.com' ,'redcore.co','benchmarks.digital','Beeroute.in'].includes(window.localStorage.getItem("email").split('@')[1])?<></>:<MenuItem><button onClick={()=>downloadExcel()}>Excel File</button></MenuItem>}
@@ -880,7 +894,7 @@ if(!props.Token){
                   embedUrl:newUrl,
                   accessToken: EmbedToken,
                   tokenType: models.TokenType.Embed,
-                  filters: [datefilter],
+                  filters: [datefilter, datefilter_max],
                   settings: {
                     panes: {
                       filters: {
@@ -1063,7 +1077,7 @@ if(!props.Token){
                   ])
                 }
               
-                cssClassName = { "report-style-class" }
+                cssClassName = { "report-style-class-report" }
                 getEmbeddedComponent = {async(embeddedReport) => {
                   // console.log('winRow=', window.report)
                   window.report = embeddedReport ;
@@ -1180,6 +1194,7 @@ export default Report;
 
 const PageContainer =styled.div`
 display:flex;
+height:100vh;
 `
 const ToggleButton = styled.button`
 /* height:20px; */
@@ -1196,16 +1211,17 @@ width:80%;
 }
 `
 const ProSidebarContainer = styled(ProSidebar)`
-width:20%
+width:20%;
+height:100vh;
 `
 const SidebarContainer = styled.div`
-width:21%
+width:21%;
 `
 const SideBarHeader = styled.div`
 padding-left:20px;
 padding-top:10px;
 img{
-  height:50px;
+  height:40px;
 }
 `
 

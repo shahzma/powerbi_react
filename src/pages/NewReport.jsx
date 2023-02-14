@@ -24,6 +24,9 @@ import './NewReport.css';
 import TreeMenu from 'react-simple-tree-menu';
 // import default minimal styling or your own styling
 import '../../node_modules/react-simple-tree-menu/dist/main.css'
+import Head from '../components/Head/Head';
+import { ListGroupItem, Input, ListGroup } from 'reactstrap';
+
 
 const NewReport = () => {
     // const { collapseSidebar } = useProSidebar();
@@ -44,6 +47,9 @@ const NewReport = () => {
     const [pagename, setPageName] = useState([]);
     const [pagenameVerbose, setPageNameVerbose] = useState('');
     const [commentsOpen, setCommentsOpen] = useState(false);
+    const [newReportPages, setnewReportPages] = useState([]);
+    const [searchVal , setsearchVal] = useState(null);
+    const [treearr, setTreearr] = useState([])
     const [commentsData, setCommentsData] = useState({
       currentQuestion: 1,
       currentQuestionId: "",
@@ -80,58 +86,72 @@ const NewReport = () => {
 
       useEffect(()=>{
         // console.log('props=', props)
-        let propsrep = window.localStorage.getItem("ReportName")
-        // propsrep = window.localStorage.getItem("ReportName")
-        let prop_token = window.localStorage.getItem("token")
-        let pseudo_email = 'Gladebrook@redseerconsulting.com'
-        // let pseudo_email = window.localStorage.getItem("pseudo_email")
-        console.log('pseudo_email=', pseudo_email)
+        // let propsrep = window.localStorage.getItem("ReportName")
+        // // propsrep = window.localStorage.getItem("ReportName")
+        // let prop_token = window.localStorage.getItem("token")
+        // let pseudo_email = 'Gladebrook@redseerconsulting.com'
+        // // let pseudo_email = window.localStorage.getItem("pseudo_email")
+        // console.log('pseudo_email=', pseudo_email)
     
-        console.log('email=', window.localStorage.getItem("email"))
-        fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}&email=${pseudo_email}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Token ${prop_token}`
-        },
-        })
-        .then( data => data.json())
-        .then(
-        data => {
+        // console.log('email=', window.localStorage.getItem("email"))
+        // fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}&email=${pseudo_email}`, {
+        // method: 'GET',
+        // headers: {
+        //     'Content-Type': 'application/json',
+        //     Authorization: `Token ${prop_token}`
+        // },
+        // })
+        // .then( data => data.json())
+        // .then(
+        // data => {
     
-            setAccessToken(data['access_token'])
-            setEmbedToken(data['embed_token'])
-            setReportUrl(data['report_url'])
-            setPages(data['pages'])
-            setReportId(data['report_id'])
-            console.log('report_id=', data['report_id'])
-            // console.log(reportUrl+'&pageName=ReportSection7446fb261ebfdaa647fa')
-            if(window.localStorage.getItem("player_name")){
-              let player_name = window.localStorage.getItem("player_name")
-              fetch(`https://api.benchmarks.digital/player/?name=${player_name}`, {
-                method:'GET',
-                headers:{
-                  'Content-Type': 'application/json',
-                },
-              })
-              .then(res=>res.json())
-              .then(
-                res=>{
-                  console.log('reportUrl=', data['report_url'])
-                  console.log('res=',res.powerbi_page)
-                  setNewUrl(data['report_url']+'&pageName='+res.powerbi_page)
-                  // window.sessionStorage.setItem('powerbi_page', res.powerbi_page)
-                }
-              )
-            }else{
-              setNewUrl(data['report_url'])
-            }
-        }
-        )
-        .catch( error => console.error(error))
+        //     setAccessToken(data['access_token'])
+        //     setEmbedToken(data['embed_token'])
+        //     setReportUrl(data['report_url'])
+        //     setPages(data['pages'])
+        //     setReportId(data['report_id'])
+        //     console.log('report_id=', data['report_id'])
+        //     // console.log(reportUrl+'&pageName=ReportSection7446fb261ebfdaa647fa')
+        //     if(window.localStorage.getItem("player_name")){
+        //       let player_name = window.localStorage.getItem("player_name")
+        //       fetch(`https://api.benchmarks.digital/player/?name=${player_name}`, {
+        //         method:'GET',
+        //         headers:{
+        //           'Content-Type': 'application/json',
+        //         },
+        //       })
+        //       .then(res=>res.json())
+        //       .then(
+        //         res=>{
+        //           console.log('reportUrl=', data['report_url'])
+        //           console.log('res=',res.powerbi_page)
+        //           setNewUrl(data['report_url']+'&pageName='+res.powerbi_page)
+        //           // window.sessionStorage.setItem('powerbi_page', res.powerbi_page)
+        //         }
+        //       )
+        //     }else{
+        //       setNewUrl(data['report_url'])
+        //     }
+        // }
+        // )
+        // .catch( error => console.error(error))
         
         // replace ott audio below with propsrep
-        fetch(`${process.env.REACT_APP_API_ENDPOINT}/PageReports/?rep=${propsrep}`, {
+        // fetch(`${process.env.REACT_APP_API_ENDPOINT}/PageReports/?rep=${propsrep}`, {
+        //   method:'GET',
+        //   headers:{
+        //     'Content-Type': 'application/json',
+        //   },
+        // })
+        // .then(res=>res.json())
+        // .then(
+        //   res=>{
+        //     console.log('tree=',res)
+        //     setMyPages(res)
+        //   }
+        // )
+
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreports/?rep=Consumer Internet`, {
           method:'GET',
           headers:{
             'Content-Type': 'application/json',
@@ -200,9 +220,126 @@ const NewReport = () => {
         setNewUrl(reportUrl+'&pageName='+Name)
       }
 
+      async function executeAfterLoop(res,arr) {
+        await new Promise(resolve => {
+          for (let i = 0; i < res.length; i++) {
+            let pseudo_email = 'digital@redseerconsulting.com'
+              let prop_token = ''
+              // powerbireport name and not report name form table
+              // let propsrep = res[i].report_name
+              let propsrep = res[i]['report_name']
+              fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}&email=${pseudo_email}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Token ${prop_token}`
+                },
+                })
+                .then( data => data.json())
+                .then(
+                data => {
+                  // console.log(res[0])
+                  // console.log(data['embed_token'])
+                  res[i]['embed_token'] = data['embed_token']
+                  arr.push(data['embed_token'])
+                }
+                )
+                .catch( error => console.error(error))
+          }
+          resolve();
+        });
+        console.log('Loop finished');
+      }
+
+      let handleClickTree = (reportname)=>{
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep=${reportname}`, {
+          method:'GET',
+          headers:{
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(res=>res.json())
+        .then(
+          res=>{
+            console.log(res.length)
+            let arr = []
+            // executeAfterLoop(res,arr)
+            // for(var i = 0; i<res.length; i++){
+            //   let pseudo_email = 'digital@redseerconsulting.com'
+            //   let prop_token = ''
+            //   // powerbireport name and not report name form table
+            //   // let propsrep = res[i].report_name
+            //   let propsrep = 'OTT Audio'
+            //   fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}&email=${pseudo_email}`, {
+            //     method: 'GET',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         Authorization: `Token ${prop_token}`
+            //     },
+            //     })
+            //     .then( data => data.json())
+            //     .then(
+            //     data => {
+            //       // console.log(res[0])
+            //       arr.push(data['embed_token'])
+            //     }
+            //     )
+            //     .catch( error => console.error(error))
+
+            // }
+            console.log('tree=',res)
+            console.log('arr=',arr)
+            setnewReportPages(res)
+          }
+        )
+        console.log(reportname)
+      }
+
       let handleToggle = ()=>{
         setToggle(!toggle)
       }
+      const DEFAULT_PADDING = 16;
+      const ICON_SIZE = 8;
+      const LEVEL_SPACE = 16
+
+      const ToggleIcon = ({ on }) => <span style={{ marginRight: 8 }}>{on ? '-' : '+'}</span>;
+
+      const ListItem = ({
+        level = 0,
+        hasNodes,
+        isOpen,
+        label,
+        searchTerm,
+        openNodes,
+        toggleNode,
+        matchSearch,
+        focused,
+        ...props
+      }) => (
+        <ListGroupItem
+          {...props}
+          style={{
+            paddingLeft: DEFAULT_PADDING + ICON_SIZE + level * LEVEL_SPACE,
+            cursor: 'pointer',
+            boxShadow: focused ? '0px 0px 5px 0px #222' : 'none',
+            zIndex: focused ? 999 : 'unset',
+            position: 'relative',
+          }}
+        >
+          {hasNodes && (
+            <div
+              style={{ display: 'inline-block' }}
+              onClick={e => {
+                hasNodes && toggleNode && toggleNode();
+                e.stopPropagation();
+              }}
+            >
+              <ToggleIcon on={isOpen} />
+            </div>
+          )}
+          {label}
+        </ListGroupItem>
+      );
 
       const postComment = async(comment, formId, instanceId, questionId)=>{
         console.log('comment=', comment)
@@ -488,19 +625,21 @@ const NewReport = () => {
       
       
       };
-
       const treeData = [
         {
           key: 'first-level-node-1',
-          label: 'Hello',
+          label: 'Death',
+          name:'pain', // any other props you need, e.g. url
           nodes: [
             {
               key: 'second-level-node-1',
-              label: 'Node 1 at the second level',
+              label: 'cote',
+              name:'killer',
               nodes: [
                 {
                   key: 'third-level-node-1',
-                  label: 'Last node of the branch',
+                  label: 'code',
+                  name:'purgatory',
                   nodes: [] // you can remove the nodes property or leave it as an empty array
                 },
               ],
@@ -509,14 +648,44 @@ const NewReport = () => {
         },
         {
           key: 'first-level-node-2',
-          label: 'Node 2 at the first level',
+          label: 'geass',
+          name:'plain'
         },
       ];
+
+      // const getNodesForRender = (nodes, searchTerm = null) => {
+      //   const nodesForRender = [];
+      //   console.log('stnfr=', searchTerm)
+      //   console.log('len = ', nodes)
+      //   console.log('searchval=', searchVal)
+      //   if (searchVal) {
+
+      //     for (let itemIdx = 0; itemIdx < nodes.length; itemIdx++) {
+      //       if (nodes[itemIdx].hasNodes===true){
+
+      //       }
+      //       if (nodes[itemIdx].name.includes(searchVal)){
+      //         nodesForRender.push(nodes[itemIdx])
+      //       }
+
+      //     }
+      //   // const filteredData = nodes.filter(node => node.name.includes(searchVal));
+      //   console.log(nodesForRender)
+      //   return nodesForRender
+      //   } else {
+      //    return nodes
+      //   }
+      // };
+
+      let handleSearch=(e)=>{
+        setsearchVal(e.target.value);
+      }
   return (
     <>
-        <PageHeader>
-            <div><img src = '/Images/benchmark_logo.png' alt = ''/></div> <div>About</div> <div>Products</div><div>Articles</div><div>{hour<15?'Good Morning ':'Good Evening '}<img src = "/Images/user.svg" alt = "" style={{width: '3vw', borderRadius:'40px'}}/></div>
-        </PageHeader>
+        {/* <PageHeader>
+            <div><img src = '/Images/benchmark_logo.png' alt = ''/></div> <div>About</div> <div>Products</div><div>Articles</div><div>{hour<15?'Good Morning ':'Good Evening '} <img src = "/Images/user.svg" alt = "" style={{width: '3vw', borderRadius:'40px'}}/></div>
+        </PageHeader> */}
+        <Head/>
         <BodyContainer>
             {/* <ProSidebarContainer collapsed={toggle}>
               <Menu>
@@ -543,21 +712,58 @@ const NewReport = () => {
               </Menu>
             </ProSidebarContainer> */}
 
-            <TreeMenu data={myPages}
-             onClickItem={({ key, label, ...props }) => {
-              if(props.link.length>3){
-                console.log('label=', props.link, props.page_name, props.link.length);
-                handleClick(props.link,props.page_name )
-              } // user defined prop
-            }
-            }/>
+            <SideMenuContainer>
+              <TreeMenu data={myPages}
+              // matchSearch = {({label, searchTerm})=>{
+              //   console.log('searchTerm = ', searchTerm)
+              //   console.log('label = ', label)
+              //   console.log(label.toLowerCase().includes(searchTerm.toLowerCase()))
+              //   label.toLowerCase().includes(searchTerm.toLowerCase())
+              // }}
+               onClickItem={({ key, label, ...props }) => {
+                let arr = treearr
+                if(props.hasNodes === false){
+                  arr.pop()
+                  arr.push(label)
+                }else{
+                  arr.push(label)
+                }
+                setTreearr(arr)
+                if(props.hasNodes === false){
+                  // get its data from new report pages
+                  handleClickTree(label)
+                  console.log(props)
+                }
+              }
+              }/>
+              {/* <TreeMenu
+              data={treeData}
+              onClickItem={({ key, label, ...props }) => {
+                console.log('click') 
+              }}
+              >
+                {({ search, items, searchTerm }) => {
+                  const nodesForRender = getNodesForRender(items, searchTerm);
+                  return (
+                <>
+                  <Input onChange={(e) => handleSearch(e)} placeholder="Type and search" />
+                  <ListGroup>
+                    {nodesForRender.map(props => (
+                      <ListItem {...props} />
+                    ))}
+                  </ListGroup>
+                </>
+            )}}
+            </TreeMenu> */}
+            </SideMenuContainer>
             
             {/* // Use any third-party UI framework */}
             <PowerbiContainer>
                 <BreadCrumbTop>
                   <h2 style={{'marginLeft':'3.5vw', 'marginTop':'1vh'}}>{window.localStorage.getItem("ReportName")}</h2>
                   <div  style={{'marginLeft':'3.5vw'}}>
-                  <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose}
+                  {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
+                  <a href='/newmainpage'>Home</a> / {treearr.length>0?<>{treearr.join(" / ")}</>:<></>}
                   </div>
                   <div>
                   <Modal
@@ -589,15 +795,18 @@ const NewReport = () => {
                     </Modal>
                   </div>
                 </BreadCrumbTop>
-                <PowerBiDiv>
+              <PowerBiDiv>
+              {newReportPages.map((index,i) => {
+                console.log("indexkeys=", Object.keys(index));
+                return(
+                <div key={index.id}>
                   <PowerBIEmbed
                   embedConfig = {{
                     type: 'report',   // Supported types: report, dashboard, tile, visual and qna
-                    id: reportId,
-                    //get from props
-                    embedUrl:'https://app.powerbi.com/reportEmbed?reportId=f87ed8df-7267-4a8a-835f-6a786edf57ed&groupId=d786d974-91ce-43e8-a52c-c0e6b402f74f&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLUlORElBLUNFTlRSQUwtQS1QUklNQVJZLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0IiwiZW1iZWRGZWF0dXJlcyI6eyJtb2Rlcm5FbWJlZCI6dHJ1ZSwiYW5ndWxhck9ubHlSZXBvcnRFbWJlZCI6dHJ1ZSwiY2VydGlmaWVkVGVsZW1ldHJ5RW1iZWQiOnRydWUsInVzYWdlTWV0cmljc1ZOZXh0Ijp0cnVlLCJza2lwWm9uZVBhdGNoIjp0cnVlfX0%3d&pageName=ReportSection19fe81eb665f9dc58332&w=2',
-                    // embedUrl:newUrl,
-                    accessToken: EmbedToken,
+                    id: index['powerbi_report_id'],
+                    // id: reportId,
+                    embedURl:index['url'],
+                    accessToken:index['embed'],
                     tokenType: models.TokenType.Embed,
                     // filters: [datefilter],
                     settings: {
@@ -607,12 +816,14 @@ const NewReport = () => {
                           visible: false,
                         },
                       },
-                      navContentPaneEnabled:false
+                      navContentPaneEnabled:false,
+                      title: ""
                     }
                   }}
                   eventHandlers = {
                     new Map([
                       ['loaded', function (event, report) {
+                        console.log('keys= ',index['powerbi_report_id'],index['url'], index['EmbedToken'])
                         console.log('Report loaded');
                         if(true){
                           const filter = {
@@ -647,61 +858,16 @@ const NewReport = () => {
                                     return visual.type === "slicer" && visual.name === slicer.name;
                                 })[0];
                                   await target_slicer.setSlicerState({ filters: [filter] });
-                                  // company_name=state.filters[0].values[0]
-                                  // openModal(company_name, ques_name)
                                 }
                   
                   
                             })
-                                // console.log('slicer=', slicers)
                               })
                             )
                           })
                         )
                         }else{
-                          const filter = {
-                            $schema: "http://powerbi.com/product/schema#basic",
-                  
-                            target: {
-                  
-                                table: "date_table",
-                  
-                                column: "date"
-                  
-                            },
-                  
-                            filterType: models.FilterType.Advanced,
-                  
-                            logicalOperator: "And",
-                  
-                            conditions: [
-                  
-                                {
-                  
-                                    operator: "GreaterThanOrEqual",
-                  
-                                    value: "2020-10-12T21:00:00.000Z"
-                  
-                                },
-                  
-                                {
-                  
-                                    operator: "LessThan",
-                  
-                                    value: "2021-11-28T22:00:00.000Z"
-                  
-                                }
-                  
-                            ]
-                  
-                        };
-                        try{
-                          report.updateFilters(models.FiltersOperations.Add, [filter]).then(
-                            console.log("Report filter was added.")
-                          );
-                        }catch(error){
-                          console.log(error)
-                        }
+                         console.log('pass')
                         }
                       }],
                       ['rendered', function () {
@@ -717,10 +883,6 @@ const NewReport = () => {
                                 const state = await slicer.getSlicerState();
                                 if(state.targets[0].column==="player_name"){
                                   console.log('slicer_name=',slicer)
-                                //   let target_slicer = visuals.filter(function (visual) {
-                                //     return visual.type === "slicer" && visual.name === slicer.name;
-                                // })[0];
-                                //   await target_slicer.setSlicerState({ filters: [filter] });
                                 }
                   
                   
@@ -742,15 +904,12 @@ const NewReport = () => {
                               });
                                 slicers.forEach(async (slicer) => {
                                 const state = await slicer.getSlicerState();
-                                // console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
                                 if(state.targets[0].column==="player_name"){
                                   company_name=state.filters[0].values[0]
-                                  // company_name=window.sessionStorage.getItem("player_name")
                                   openModal(company_name, ques_name)
                                 }
                   
                             })
-                                // console.log('slicer=', slicers)
                               })
                             )
                           })
@@ -759,33 +918,15 @@ const NewReport = () => {
                       ['error', function (event) {console.log('powerbi_error=',event.detail);}]
                     ])
                   }
-                  cssClassName = { "report-style-class" }
+                  cssClassName = { "report-style-class-newreport" }
                   getEmbeddedComponent = {async(embeddedReport) => {
-                    // console.log('winRow=', window.report)
                     window.report = embeddedReport ;
-                    // window.report.getActivePage().then(
-                    //   (activePage=>{console.log(activePage)})
-                    // )
-                    // console.log('winRow1=', window.report)
-                    // const pages = awa(embeddedReport).getPages();
-                    // setReport(embeddedReport)
-                    // console.log('embedReport=',embeddedReport)
-                    // const pages = embeddedReport.getPages();
-                    // console.log('pages1=',pages)
-                    // const getPages= async (embeddedReport) => {
-                    //   console.log('start')
-                    //   const pagesgp = await embeddedReport.getPages()
-                    //   console.log('pagegp=', pagesgp)
-                    //   setReportPages(pagesgp);
-                    //   console.log('rp=', ReportPages)
-                    //   console.log('done')
-                    // };
-                  
-                    // getPages(window.report);
                   }
                   
                                 }
-                      />
+                      /> 
+                </div>
+              )})}
                 </PowerBiDiv>
             </PowerbiContainer>
         </BodyContainer>
@@ -810,7 +951,7 @@ gap:12vw;
 
 const BodyContainer = styled.div`
     display:flex;
-    height:90vh;
+    min-height:90vh;
 `
 
 const SidebarContainer = styled.div`
@@ -818,15 +959,16 @@ const SidebarContainer = styled.div`
 `
 const PowerbiContainer = styled.div`
     width:100%;
-    overflow-y:hidden;
+    /* overflow-y:hidden; */
     display:flex;
     flex-direction:column;
-    height:90vh;
+    min-height:90vh;
 `
 const BreadCrumbTop = styled.div`
   min-height:10vh;
 `
 const PowerBiDiv = styled.div`
+/* prevent overflow on select somehow */
   overflow-y:hidden;
 `
 
@@ -866,6 +1008,10 @@ const ProMenuDivItem = styled.div`
         background-color:#18183F;
         color:white;
     }
+`
+const SideMenuContainer = styled.div`
+  overflow-y:hidden;
+  width:25vw;
 `
 
 const ProSidebarContainer = styled(ProSidebar)`
