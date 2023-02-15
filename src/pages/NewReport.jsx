@@ -8,7 +8,7 @@ import { ImProfile } from "react-icons/im";
 import {SiCoveralls, SiSimpleanalytics} from "react-icons/si"
 import {FiUsers} from "react-icons/fi"
 import {AiOutlineFileSearch} from 'react-icons/ai'
-import { GiBreakingChain } from "react-icons/gi";
+import { GiBreakingChain, GiEvilFork } from "react-icons/gi";
 import { RiMoneyDollarBoxFill } from "react-icons/ri";
 import { BiCategory, BiBookContent, BiCartAlt } from "react-icons/bi";
 import { ProSidebar, SubMenu} from 'react-pro-sidebar';
@@ -324,6 +324,7 @@ const NewReport = () => {
             boxShadow: focused ? '0px 0px 5px 0px #222' : 'none',
             zIndex: focused ? 999 : 'unset',
             position: 'relative',
+            backgroundColor:'Blue'
           }}
         >
           {hasNodes && (
@@ -653,29 +654,29 @@ const NewReport = () => {
         },
       ];
 
-      // const getNodesForRender = (nodes, searchTerm = null) => {
-      //   const nodesForRender = [];
-      //   console.log('stnfr=', searchTerm)
-      //   console.log('len = ', nodes)
-      //   console.log('searchval=', searchVal)
-      //   if (searchVal) {
+      const getNodesForRender = (nodes, searchTerm = null) => {
+        const nodesForRender = [];
+        console.log('stnfr=', searchTerm)
+        console.log('len = ', nodes)
+        console.log('searchval=', searchVal)
+        if (searchVal) {
 
-      //     for (let itemIdx = 0; itemIdx < nodes.length; itemIdx++) {
-      //       if (nodes[itemIdx].hasNodes===true){
+          for (let itemIdx = 0; itemIdx < nodes.length; itemIdx++) {
+            if (nodes[itemIdx].hasNodes===true){
 
-      //       }
-      //       if (nodes[itemIdx].name.includes(searchVal)){
-      //         nodesForRender.push(nodes[itemIdx])
-      //       }
+            }
+            if (nodes[itemIdx].name.includes(searchVal)){
+              nodesForRender.push(nodes[itemIdx])
+            }
 
-      //     }
-      //   // const filteredData = nodes.filter(node => node.name.includes(searchVal));
-      //   console.log(nodesForRender)
-      //   return nodesForRender
-      //   } else {
-      //    return nodes
-      //   }
-      // };
+          }
+        // const filteredData = nodes.filter(node => node.name.includes(searchVal));
+        console.log(nodesForRender)
+        return nodesForRender
+        } else {
+         return nodes
+        }
+      };
 
       let handleSearch=(e)=>{
         setsearchVal(e.target.value);
@@ -713,7 +714,7 @@ const NewReport = () => {
             </ProSidebarContainer> */}
 
             <SideMenuContainer>
-              <TreeMenu data={myPages}
+              {/* <TreeMenu data={myPages}
               // matchSearch = {({label, searchTerm})=>{
               //   console.log('searchTerm = ', searchTerm)
               //   console.log('label = ', label)
@@ -725,19 +726,36 @@ const NewReport = () => {
                 if(props.hasNodes === false){
                   arr.pop()
                   arr.push(label)
-                }else{
+                }else if(arr.includes(label)){
+                  var index = arr.indexOf(label);
+                  arr.splice(index, 1);
                   arr.push(label)
                 }
+                else{
+                  arr.push(label)
+                }
+                // let currNode = props
+                // while (currNode.parent) {                  
+                //   const parent = treearr.find((n) => n.id === currNode.parent);
+                //   parents.unshift(parent);
+                //   currNode = parent;
+                // }
+                // console.log('parents=',parents)
+                // let parents = props.parent.split('/')
+                // let all_nodes= myPages
+                // for(let i= 0; i<parents.length; i++){
+                //   let parent_name = all_nodes.find((n)=>n.id===)
+                // }
+
+                // console.log('allnodes=', myPages)
                 setTreearr(arr)
                 if(props.hasNodes === false){
-                  // get its data from new report pages
                   handleClickTree(label)
-                  console.log(props)
                 }
               }
-              }/>
-              {/* <TreeMenu
-              data={treeData}
+              }/> */}
+              <TreeMenu
+              data={myPages}
               onClickItem={({ key, label, ...props }) => {
                 console.log('click') 
               }}
@@ -754,7 +772,7 @@ const NewReport = () => {
                   </ListGroup>
                 </>
             )}}
-            </TreeMenu> */}
+            </TreeMenu>
             </SideMenuContainer>
             
             {/* // Use any third-party UI framework */}
@@ -797,7 +815,6 @@ const NewReport = () => {
                 </BreadCrumbTop>
               <PowerBiDiv>
               {newReportPages.map((index,i) => {
-                console.log("indexkeys=", Object.keys(index));
                 return(
                 <div key={index.id}>
                   <PowerBIEmbed
@@ -1012,6 +1029,8 @@ const ProMenuDivItem = styled.div`
 const SideMenuContainer = styled.div`
   overflow-y:hidden;
   width:25vw;
+  background-color:blue;
+  color:white;
 `
 
 const ProSidebarContainer = styled(ProSidebar)`
