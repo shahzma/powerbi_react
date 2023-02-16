@@ -303,7 +303,7 @@ const NewReport = () => {
       const LEVEL_SPACE = 16
 
       const ToggleIcon = ({ on }) => <span style={{ marginRight: 8 }}>{on ? '-' : '+'}</span>;
-
+      // listitem is functional component
       const ListItem = ({
         level = 0,
         hasNodes,
@@ -317,6 +317,7 @@ const NewReport = () => {
         ...props
       }) => (
         <ListGroupItem
+        // props enabling clicking/navigating nodes
           {...props}
           style={{
             paddingLeft: DEFAULT_PADDING + ICON_SIZE + level * LEVEL_SPACE,
@@ -324,8 +325,13 @@ const NewReport = () => {
             boxShadow: focused ? '0px 0px 5px 0px #222' : 'none',
             zIndex: focused ? 999 : 'unset',
             position: 'relative',
-            backgroundColor:'Blue'
+            backgroundColor:'Blue',
+            border:'none'
           }}
+          // onClick={e => {
+          //   hasNodes && toggleNode && toggleNode();
+          //   // e.stopPropagation();
+          // }}
         >
           {hasNodes && (
             <div
@@ -757,20 +763,38 @@ const NewReport = () => {
               <TreeMenu
               data={myPages}
               onClickItem={({ key, label, ...props }) => {
-                console.log('click') 
+                // console.log('clickitem') 
+                let arr = treearr
+                if(props.hasNodes === false){
+                  arr.pop()
+                  arr.push(label)
+                }else if(arr.includes(label)){
+                  var index = arr.indexOf(label);
+                  arr.splice(index, 1);
+                  arr.push(label)
+                }
+                else{
+                  arr.push(label)
+                }
+                setTreearr(arr)
+                if(props.hasNodes === false){
+                  handleClickTree(label)
+                }
               }}
               >
                 {({ search, items, searchTerm }) => {
                   const nodesForRender = getNodesForRender(items, searchTerm);
                   return (
-                <>
-                  <Input onChange={(e) => handleSearch(e)} placeholder="Type and search" />
-                  <ListGroup>
-                    {nodesForRender.map(props => (
-                      <ListItem {...props} />
-                    ))}
-                  </ListGroup>
-                </>
+                  <div style={{padding:'10px'}}>
+                    <Input onChange={(e) => handleSearch(e)} placeholder="Type and search"/>
+                    <ListGroup>
+                      {nodesForRender.map(props => (
+                        //  listitem is functional component. this is same as when you create a seprate react file which 
+                        // exports some component and that component renders something after consuming some props
+                        <ListItem {...props} />
+                      ))}
+                    </ListGroup>
+                  </div>
             )}}
             </TreeMenu>
             </SideMenuContainer>
@@ -784,7 +808,7 @@ const NewReport = () => {
                   <a href='/newmainpage'>Home</a> / {treearr.length>0?<>{treearr.join(" / ")}</>:<></>}
                   </div>
                   <div>
-                  <Modal
+                  {/* <Modal
                         isOpen={modalIsOpen}
                         onAfterOpen={afterOpenModal}
                         onRequestClose={closeModal}
@@ -810,7 +834,7 @@ const NewReport = () => {
                           <CommentTextInput onChange={(e) => inputChanged(e)}/>
                           <button onClick={(e)=>addComment(e)}>Submit</button>
                         </form>
-                    </Modal>
+                    </Modal> */}
                   </div>
                 </BreadCrumbTop>
               <PowerBiDiv>
@@ -818,14 +842,14 @@ const NewReport = () => {
                 return(
                 <div key={index.id}>
                   <PowerBIEmbed
-                  embedConfig = {{
+                   embedConfig = {{
                     type: 'report',   // Supported types: report, dashboard, tile, visual and qna
                     id: index['powerbi_report_id'],
-                    // id: reportId,
-                    embedURl:index['url'],
-                    accessToken:index['embed'],
+                    //get from props
+                    embedUrl:index['url'],
+                    accessToken: index['embed'],
                     tokenType: models.TokenType.Embed,
-                    // filters: [datefilter],
+                    filters: [datefilter],
                     settings: {
                       panes: {
                         filters: {
@@ -833,14 +857,12 @@ const NewReport = () => {
                           visible: false,
                         },
                       },
-                      navContentPaneEnabled:false,
-                      title: ""
+                      navContentPaneEnabled:false
                     }
                   }}
                   eventHandlers = {
                     new Map([
                       ['loaded', function (event, report) {
-                        console.log('keys= ',index['powerbi_report_id'],index['url'], index['EmbedToken'])
                         console.log('Report loaded');
                         if(true){
                           const filter = {
@@ -856,8 +878,24 @@ const NewReport = () => {
                                     operator: "Is",
                                     value: window.localStorage.getItem("player_name")
                                 }
-                            ]
+                            ]  
                         };
+                        // filter if there is a player in dropdown menu instead of page
+                        const filter_player_dropdown = {
+                          $schema: "http://powerbi.com/product/schema#advanced",
+                            target: {
+                                table: "content_data main_data",
+                                column: "Players"
+                            },
+                            filterType: models.FilterType.Advanced,
+                            logicalOperator: "Is",
+                            conditions: [
+                                {
+                                    operator: "Is",
+                                    value: window.localStorage.getItem('drop_dn_player_name')
+                                }
+                            ] 
+                        }
                         let company_name = ''
                         window.report.getActivePage().then(
                           (activePage=>{
@@ -867,24 +905,75 @@ const NewReport = () => {
                                   return visual.type === "slicer";
                               });
                                 slicers.forEach(async (slicer) => {
-                                const state = await slicer.getSlicerState();
-                                console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
-                                if(state.targets[0].column==="player_name"){
-                                  console.log('slicer_name=',slicer)
-                                  let target_slicer = visuals.filter(function (visual) {
-                                    return visual.type === "slicer" && visual.name === slicer.name;
-                                })[0];
-                                  await target_slicer.setSlicerState({ filters: [filter] });
-                                }
-                  
-                  
-                            })
+                                  const state = await slicer.getSlicerState();    
+                                  console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+                                  if(state.targets[0].column==="player_name"){
+                                    console.log('slicer_name=',slicer)
+                                    let target_slicer = visuals.filter(function (visual) {
+                                      return visual.type === "slicer" && visual.name === slicer.name;             
+                                  })[0];
+                                    await target_slicer.setSlicerState({ filters: [filter] });
+                                  }
+  
+                                  //not using state as it will change on page load.page laod code for 1st
+                                  if(state.targets[0].column==='Players' && window.localStorage.getItem('filter_on_company')==='true'){
+                                    let target_slicer = visuals.filter(function (visual) {
+                                      return visual.type === "slicer" && visual.name === slicer.name;             
+                                  })[0];
+                                    await target_slicer.setSlicerState({ filters: [filter_player_dropdown] });
+                                  }
+                        
+                            })      
+                                // console.log('slicer=', slicers)
                               })
                             )
                           })
                         )
                         }else{
-                         console.log('pass')
+                          const filter = {
+  
+                            $schema: "http://powerbi.com/product/schema#basic",
+                        
+                            target: {
+                        
+                                table: "date_table",
+                        
+                                column: "date"
+                        
+                            },
+                        
+                            filterType: models.FilterType.Advanced,
+                        
+                            logicalOperator: "And",
+                        
+                            conditions: [
+                        
+                                {
+                        
+                                    operator: "GreaterThanOrEqual",
+                        
+                                    value: "2020-10-12T21:00:00.000Z"
+                        
+                                },
+                        
+                                {
+                        
+                                    operator: "LessThan",
+                        
+                                    value: "2021-11-28T22:00:00.000Z"
+                        
+                                }
+                        
+                            ]
+                        
+                        };
+                        try{
+                          report.updateFilters(models.FiltersOperations.Add, [filter]).then(
+                            console.log("Report filter was added.")
+                          );
+                        }catch(error){
+                          console.log(error)
+                        }
                         }
                       }],
                       ['rendered', function () {
@@ -897,13 +986,17 @@ const NewReport = () => {
                                   return visual.type === "slicer";
                               });
                                 slicers.forEach(async (slicer) => {
-                                const state = await slicer.getSlicerState();
+                                const state = await slicer.getSlicerState();    
                                 if(state.targets[0].column==="player_name"){
                                   console.log('slicer_name=',slicer)
+                                //   let target_slicer = visuals.filter(function (visual) {
+                                //     return visual.type === "slicer" && visual.name === slicer.name;             
+                                // })[0];
+                                //   await target_slicer.setSlicerState({ filters: [filter] });
                                 }
-                  
-                  
-                            })
+                                
+                        
+                            })      
                               })
                             )
                           })
@@ -920,13 +1013,16 @@ const NewReport = () => {
                                   return visual.type === "slicer";
                               });
                                 slicers.forEach(async (slicer) => {
-                                const state = await slicer.getSlicerState();
+                                const state = await slicer.getSlicerState();    
+                                // console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
                                 if(state.targets[0].column==="player_name"){
                                   company_name=state.filters[0].values[0]
+                                  // company_name=window.sessionStorage.getItem("player_name")
                                   openModal(company_name, ques_name)
                                 }
-                  
-                            })
+                        
+                            })      
+                                // console.log('slicer=', slicers)
                               })
                             )
                           })
@@ -935,13 +1031,34 @@ const NewReport = () => {
                       ['error', function (event) {console.log('powerbi_error=',event.detail);}]
                     ])
                   }
+                
                   cssClassName = { "report-style-class-newreport" }
                   getEmbeddedComponent = {async(embeddedReport) => {
+                    // console.log('winRow=', window.report)
                     window.report = embeddedReport ;
-                  }
+                    // window.report.getActivePage().then(
+                    //   (activePage=>{console.log(activePage)})
+                    // )
+                    // console.log('winRow1=', window.report)
+                    // const pages = awa(embeddedReport).getPages();
+                    // setReport(embeddedReport)
+                    // console.log('embedReport=',embeddedReport)
+                    // const pages = embeddedReport.getPages();
+                    // console.log('pages1=',pages)
+                    // const getPages= async (embeddedReport) => {
+                    //   console.log('start')
+                    //   const pagesgp = await embeddedReport.getPages()
+                    //   console.log('pagegp=', pagesgp)
+                    //   setReportPages(pagesgp);
+                    //   console.log('rp=', ReportPages)
+                    //   console.log('done')
+                    // };
                   
-                                }
-                      /> 
+                    // getPages(window.report);
+                  }
+                
+                }
+                 /> 
                 </div>
               )})}
                 </PowerBiDiv>
@@ -1032,6 +1149,7 @@ const SideMenuContainer = styled.div`
   background-color:blue;
   color:white;
 `
+
 
 const ProSidebarContainer = styled(ProSidebar)`
 width:20%;
