@@ -4,11 +4,12 @@ import { ProSidebarProvider } from 'react-pro-sidebar';
 import {Menu, MenuItem } from 'react-pro-sidebar';
 import { FaAmazon, FaTrafficLight,FaUsers, FaDeezer,FaAlignLeft, FaKeyboard, FaCity } from 'react-icons/fa';
 import{MdOutlineSummarize, MdMonetizationOn, MdInsights, MdDashboard} from 'react-icons/md';
+import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
 import { ImProfile } from "react-icons/im";
 import {SiCoveralls, SiSimpleanalytics} from "react-icons/si"
 import {FiUsers} from "react-icons/fi"
 import {AiOutlineFileSearch} from 'react-icons/ai'
-import { GiBreakingChain, GiEvilFork } from "react-icons/gi";
+import { GiBreakingChain, GiConsoleController, GiEvilFork } from "react-icons/gi";
 import { RiMoneyDollarBoxFill } from "react-icons/ri";
 import { BiCategory, BiBookContent, BiCartAlt } from "react-icons/bi";
 import { ProSidebar, SubMenu} from 'react-pro-sidebar';
@@ -31,6 +32,7 @@ import { ListGroupItem, Input, ListGroup } from 'reactstrap';
 const NewReport = () => {
     // const { collapseSidebar } = useProSidebar();
     const [myPages, setMyPages] = useState([]);
+    const [allNodes,setallNodes] = useState([])
     const [ toggle, setToggle ] = useState(false);
     const [ reportId, setReportId ] = useState('');
     const [ newUrl, setNewUrl ] = useState('');
@@ -162,6 +164,7 @@ const NewReport = () => {
           res=>{
             console.log('tree=',res)
             setMyPages(res)
+            setallNodes(res)
           }
         )
     },[]);
@@ -298,11 +301,47 @@ const NewReport = () => {
       let handleToggle = ()=>{
         setToggle(!toggle)
       }
+
+      let getNodeName = (key,all_nodes) =>{
+        console.log('node-id=', key)
+        console.log('allnodes = ', all_nodes)
+        let nodes = all_nodes
+        for(let i =0; i<nodes.length;i++){
+          // search in top layer
+          if(nodes[i].key==key){
+            console.log('lognode=',nodes[i])
+            return nodes[i].label
+          }else{
+            let node_name = getNodeName(key, nodes[i].nodes)
+            return node_name
+          }
+
+        }
+        // return labels correponding to key
+      }
+
+      const getParents = (props)=>{
+        console.log('nodes=',props)
+        let parent_string_arr = props.parent.split('/')
+        console.log('parent_string_arr=',parent_string_arr )
+        // ['9', '25', '26']
+        let parents = []
+        let all_nodes = allNodes
+        // my pages is a list with tree structure
+        if(parent_string_arr[0]!==''){
+          for(let i =0; i<parent_string_arr.length; i++){
+            let nodename = getNodeName(parent_string_arr[i],all_nodes)
+            parents.push(nodename)
+          }
+        }
+        console.log('parents = ', parents)
+        return parents
+      }
       const DEFAULT_PADDING = 16;
       const ICON_SIZE = 8;
       const LEVEL_SPACE = 16
 
-      const ToggleIcon = ({ on }) => <span style={{ marginRight: 8 }}>{on ? '-' : '+'}</span>;
+      const ToggleIcon = ({ on }) => <span style={{ marginRight: 8 }}>{on ? <IoIosArrowDown/> : <IoIosArrowForward/>}</span>;
       // listitem is functional component
       const ListItem = ({
         level = 0,
@@ -325,26 +364,39 @@ const NewReport = () => {
             boxShadow: focused ? '0px 0px 5px 0px #222' : 'none',
             zIndex: focused ? 999 : 'unset',
             position: 'relative',
-            backgroundColor:'Blue',
+            backgroundColor:'#18183E',
             border:'none'
           }}
-          // onClick={e => {
-          //   hasNodes && toggleNode && toggleNode();
-          //   // e.stopPropagation();
-          // }}
+          onClick={e => {
+            // this onclick conflicts with oclick defined below
+            // make your get parents function here
+            let parent_arr = getParents(props)
+            console.log('parent-arr=', parent_arr)
+            setTreearr(parent_arr)
+
+            if(hasNodes && toggleNode){
+              toggleNode()
+            }else{
+              handleClickTree(label)
+            }
+            e.stopPropagation();
+          }}
         >
           {hasNodes && (
             <div
               style={{ display: 'inline-block' }}
-              onClick={e => {
-                hasNodes && toggleNode && toggleNode();
-                e.stopPropagation();
-              }}
+              // onClick={e => {
+              //   if(hasNodes && toggleNode){
+              //     toggleNode()
+              //   }
+              //   // hasNodes && toggleNode && toggleNode();
+              //   e.stopPropagation();
+              // }}
             >
               <ToggleIcon on={isOpen} />
             </div>
           )}
-          {label}
+          {iconDict[label]} {label}
         </ListGroupItem>
       );
 
@@ -662,8 +714,6 @@ const NewReport = () => {
 
       const getNodesForRender = (nodes, searchTerm = null) => {
         const nodesForRender = [];
-        console.log('stnfr=', searchTerm)
-        console.log('len = ', nodes)
         console.log('searchval=', searchVal)
         if (searchVal) {
 
@@ -763,23 +813,23 @@ const NewReport = () => {
               <TreeMenu
               data={myPages}
               onClickItem={({ key, label, ...props }) => {
-                // console.log('clickitem') 
-                let arr = treearr
-                if(props.hasNodes === false){
-                  arr.pop()
-                  arr.push(label)
-                }else if(arr.includes(label)){
-                  var index = arr.indexOf(label);
-                  arr.splice(index, 1);
-                  arr.push(label)
-                }
-                else{
-                  arr.push(label)
-                }
-                setTreearr(arr)
-                if(props.hasNodes === false){
-                  handleClickTree(label)
-                }
+                console.log('init') 
+                // let arr = treearr
+                // if(props.hasNodes === false){
+                //   arr.pop()
+                //   arr.push(label)
+                // }else if(arr.includes(label)){
+                //   var index = arr.indexOf(label);
+                //   arr.splice(index, 1);
+                //   arr.push(label)
+                // }
+                // else{
+                //   arr.push(label)
+                // }
+                // setTreearr(arr)
+                // if(props.hasNodes === false){
+                //   handleClickTree(label)
+                // }
               }}
               >
                 {({ search, items, searchTerm }) => {
@@ -802,7 +852,7 @@ const NewReport = () => {
             {/* // Use any third-party UI framework */}
             <PowerbiContainer>
                 <BreadCrumbTop>
-                  <h2 style={{'marginLeft':'3.5vw', 'marginTop':'1vh'}}>{window.localStorage.getItem("ReportName")}</h2>
+                  <h2 style={{'marginLeft':'3.5vw', 'marginTop':'1vh'}}>Consumer Internet</h2>
                   <div  style={{'marginLeft':'3.5vw'}}>
                   {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
                   <a href='/newmainpage'>Home</a> / {treearr.length>0?<>{treearr.join(" / ")}</>:<></>}
@@ -1146,7 +1196,7 @@ const ProMenuDivItem = styled.div`
 const SideMenuContainer = styled.div`
   overflow-y:hidden;
   width:25vw;
-  background-color:blue;
+  background-color:#18183E;
   color:white;
 `
 
