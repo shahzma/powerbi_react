@@ -8,10 +8,14 @@ import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
 import { ImProfile } from "react-icons/im";
 import {SiCoveralls, SiSimpleanalytics} from "react-icons/si"
 import {FiUsers} from "react-icons/fi"
-import {AiOutlineFileSearch} from 'react-icons/ai'
-import { GiBreakingChain, GiConsoleController, GiEvilFork } from "react-icons/gi";
+import {AiOutlineFileSearch, AiOutlineMobile , AiTwotoneVideoCamera} from 'react-icons/ai'
+import { GiBreakingChain, GiConsoleController, GiEvilFork, GiHealthNormal, GiCarWheel, GiClothes,GiMedicines,GiFruitBowl, GiVideoConference } from "react-icons/gi";
 import { RiMoneyDollarBoxFill } from "react-icons/ri";
-import { BiCategory, BiBookContent, BiCartAlt } from "react-icons/bi";
+import {GoFileSymlinkDirectory} from 'react-icons/go'
+import { BiCategory, BiBookContent, BiCartAlt, BiFridge } from "react-icons/bi";
+import { IoFastFood } from "react-icons/io5";
+import {FaCarAlt, FaBusinessTime ,FaBabyCarriage, FaRegFileAudio} from 'react-icons/fa';
+import{ImConnection} from 'react-icons/im'
 import { ProSidebar, SubMenu} from 'react-pro-sidebar';
 import './NewReport.scss';
 import {PowerBIEmbed} from 'powerbi-client-react';
@@ -82,7 +86,27 @@ const NewReport = () => {
         'Supply Chain Metrics':<GiBreakingChain/>,
         'Revenue Metrics':<RiMoneyDollarBoxFill/>,
         'Operational Metrics':<BiCartAlt/>,
-        'Social Commerce Specific':<MdMonetizationOn/>
+        'Online Retail':<BiCartAlt/>,
+        'Social Commerce Specific':<MdMonetizationOn/>,
+        'Food Tech':<IoFastFood/>,
+        'Used Cars':<FaCarAlt/>,
+        'Real Money Gaming':<RiMoneyDollarBoxFill/>,
+        'Edtech':<BiBookContent/>,
+        'Ehealth':<GiHealthNormal/>,
+        'Mobility':<GiCarWheel/>,
+        'D2C Omni':<GoFileSymlinkDirectory/>,
+        'Eb2b':<FaBusinessTime/>,
+        'Consumer Internet':<ImConnection/>,
+        'Baby Care':<FaBabyCarriage/>,
+        'Mobile':<AiOutlineMobile/>,
+        'Fashion':<GiClothes/>,
+        'Electronics & Large/Small appliances':<BiFridge/>,
+        'Epharma':<GiMedicines/>,
+        'Grocery':<GiFruitBowl/>,
+        'Shortform Video':<GiVideoConference/>,
+        'OTT_Video':<AiTwotoneVideoCamera/>,
+        'OTT_Audio':<FaRegFileAudio/>,
+        'Content S&M':<BiBookContent/>,
       })
       let subtitle;
 
@@ -312,8 +336,14 @@ const NewReport = () => {
             console.log('lognode=',nodes[i])
             return nodes[i].label
           }else{
-            let node_name = getNodeName(key, nodes[i].nodes)
-            return node_name
+            if(nodes[i].nodes.length>0){
+              let node_name = getNodeName(key, nodes[i].nodes)
+              if(node_name){
+                return node_name
+              }
+            }else{
+              console.log('node array was empty')
+            }
           }
 
         }
@@ -324,14 +354,16 @@ const NewReport = () => {
         console.log('nodes=',props)
         let parent_string_arr = props.parent.split('/')
         console.log('parent_string_arr=',parent_string_arr )
-        // ['9', '25', '26']
+        // ['9', '25', '26', '44']
         let parents = []
         let all_nodes = allNodes
         // my pages is a list with tree structure
         if(parent_string_arr[0]!==''){
           for(let i =0; i<parent_string_arr.length; i++){
             let nodename = getNodeName(parent_string_arr[i],all_nodes)
-            parents.push(nodename)
+            if(nodename){
+              parents.push(nodename)
+            }
           }
         }
         console.log('parents = ', parents)
@@ -365,13 +397,17 @@ const NewReport = () => {
             zIndex: focused ? 999 : 'unset',
             position: 'relative',
             backgroundColor:'#18183E',
-            border:'none'
+            border:'none',
+            // '&:hover':{
+            //   backgroundColor:'red'
+            // }
           }}
           onClick={e => {
             // this onclick conflicts with oclick defined below
             // make your get parents function here
             let parent_arr = getParents(props)
             console.log('parent-arr=', parent_arr)
+            parent_arr.push(label)
             setTreearr(parent_arr)
 
             if(hasNodes && toggleNode){
@@ -382,21 +418,23 @@ const NewReport = () => {
             e.stopPropagation();
           }}
         >
-          {hasNodes && (
-            <div
-              style={{ display: 'inline-block' }}
-              // onClick={e => {
-              //   if(hasNodes && toggleNode){
-              //     toggleNode()
-              //   }
-              //   // hasNodes && toggleNode && toggleNode();
-              //   e.stopPropagation();
-              // }}
-            >
-              <ToggleIcon on={isOpen} />
-            </div>
-          )}
-          {iconDict[label]} {label}
+          <div style={{display:'flex', justifyContent:'space-between'}}>
+            <div>{iconDict[label]} {label}</div>
+            {hasNodes && (
+              <div
+                style={{ display: 'inline-block' }}
+                // onClick={e => {
+                //   if(hasNodes && toggleNode){
+                //     toggleNode()
+                //   }
+                //   // hasNodes && toggleNode && toggleNode();
+                //   e.stopPropagation();
+                // }}
+              >
+                <ToggleIcon on={isOpen} />
+              </div>
+            )}
+          </div>
         </ListGroupItem>
       );
 
@@ -833,12 +871,13 @@ const NewReport = () => {
               }}
               >
                 {({ search, items, searchTerm }) => {
-                  const nodesForRender = getNodesForRender(items, searchTerm);
+                  // const nodesForRender = getNodesForRender(items, searchTerm);
                   return (
                   <div style={{padding:'10px'}}>
-                    <Input onChange={(e) => handleSearch(e)} placeholder="Type and search"/>
+                    {/* <Input onChange={(e) => handleSearch(e)} placeholder="Type and search"/> */}
+                    <Input onChange={e => search(e.target.value)} placeholder="Type and search" />
                     <ListGroup>
-                      {nodesForRender.map(props => (
+                      {items.map(props => (
                         //  listitem is functional component. this is same as when you create a seprate react file which 
                         // exports some component and that component renders something after consuming some props
                         <ListItem {...props} />
