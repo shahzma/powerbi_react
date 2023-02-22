@@ -86,7 +86,7 @@ const NewFigmaOTP = () => {
           window.localStorage.setItem("ReportName", "Sectors_Company_Profile")
           return <Navigate to = "/report"/>
         }else{
-          return <Navigate to = "/newmainpage"/>
+          return <Navigate to = "/newreport"/>
         }
     }
 

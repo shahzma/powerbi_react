@@ -123,7 +123,7 @@ export default Head
 
 const PageHeader = styled.div`
 height:10vh;
-background-color:#F9FAFB;
+background-color:white;
 display:flex;
 justify-content:center;
 align-items:center;

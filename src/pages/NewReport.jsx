@@ -15,6 +15,7 @@ import {GoFileSymlinkDirectory} from 'react-icons/go'
 import { BiCategory, BiBookContent, BiCartAlt, BiFridge } from "react-icons/bi";
 import { IoFastFood } from "react-icons/io5";
 import {FaCarAlt, FaBusinessTime ,FaBabyCarriage, FaRegFileAudio} from 'react-icons/fa';
+import {BsGear} from 'react-icons/bs'
 import{ImConnection} from 'react-icons/im'
 import { ProSidebar, SubMenu} from 'react-pro-sidebar';
 import './NewReport.scss';
@@ -31,12 +32,13 @@ import TreeMenu from 'react-simple-tree-menu';
 import '../../node_modules/react-simple-tree-menu/dist/main.css'
 import Head from '../components/Head/Head';
 import { ListGroupItem, Input, ListGroup } from 'reactstrap';
-
+import {Link, Navigate} from 'react-router-dom';
 
 const NewReport = () => {
     // const { collapseSidebar } = useProSidebar();
     const [myPages, setMyPages] = useState([]);
     const [allNodes,setallNodes] = useState([])
+    const [selectedpage, setSelectedPage] = useState('Consumer Internet')
     const [ toggle, setToggle ] = useState(false);
     const [ reportId, setReportId ] = useState('');
     const [ newUrl, setNewUrl ] = useState('');
@@ -45,6 +47,9 @@ const NewReport = () => {
     let [ formId, setFormId ] = useState('851');
     let [ quesId, setQuesId ] = useState(108);
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [moneymodalIsOpen, setMoneyModalIsOpen] = useState(false);
+    const [currencytype, setCurrencyType] = useState('')
+    const [currencyval, setCurrencyVal] = useState(75)
     const [comments, setComments] = useState({});
     const [comment, setComment] = useState("Hello");
     const [ AccessToken, setAccessToken ] = useState('');
@@ -56,6 +61,9 @@ const NewReport = () => {
     const [newReportPages, setnewReportPages] = useState([]);
     const [searchVal , setsearchVal] = useState(null);
     const [treearr, setTreearr] = useState([])
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [yearIndex, setyearIndex] = useState(0);
+    const [conversiontype, setConversionType] = useState('Dynamic')
     const [commentsData, setCommentsData] = useState({
       currentQuestion: 1,
       currentQuestionId: "",
@@ -105,10 +113,87 @@ const NewReport = () => {
         'Grocery':<GiFruitBowl/>,
         'Shortform Video':<GiVideoConference/>,
         'OTT_Video':<AiTwotoneVideoCamera/>,
-        'OTT_Audio':<FaRegFileAudio/>,
+        'OTT Audio':<FaRegFileAudio/>,
         'Content S&M':<BiBookContent/>,
+        'Sector Summary (WIP)':<MdOutlineSummarize/>,
+        'Sector Summary 2.0 (WIP)':<MdOutlineSummarize/>,
+        'Company Profile (WIP)':<ImProfile />,
+        'Overall (WIP)':<SiCoveralls/>,
+        'Category (WIP)':<BiCategory/>,
+        'Amazon Specific (WIP)':<FaAmazon />,
+        'Traffic (WIP)':<FaTrafficLight/>,
+        'Engagement (WIP)':<FaUsers/>,
+        'Streams Analysis (WIP)':<SiSimpleanalytics/>,
+        'Monetization (WIP)':<MdMonetizationOn/>,
+        'User Profile (WIP)':<FiUsers/>,
+        'Engagement Profile (WIP)':<AiOutlineFileSearch/>,
+        'Sector Insights (WIP)':<MdInsights/>,
+        'Content (WIP)':<BiBookContent/>,
+        'Top Line Estimates (WIP)':<FaDeezer/>,
+        'Fulfilment Metrics (WIP)':<FaAlignLeft/>,
+        'Unit Economics (WIP)':<MdMonetizationOn/>,
+        'Keyboard (WIP)':<FaKeyboard/>,
+        'Dashboard (WIP)':<MdDashboard/>,
+        'City Split (WIP)':<FaCity/>,
+        'Supply Chain Metrics (WIP)':<GiBreakingChain/>,
+        'Revenue Metrics (WIP)':<RiMoneyDollarBoxFill/>,
+        'Operational Metrics (WIP)':<BiCartAlt/>,
+        'Online Retail (WIP)':<BiCartAlt/>,
+        'Online Retail (WIP) (WIP)':<BiCartAlt/>,
+        'Social Commerce Specific (WIP)':<MdMonetizationOn/>,
+        'Food Tech (WIP)':<IoFastFood/>,
+        'Used Cars (WIP)':<FaCarAlt/>,
+        'Real Money Gaming (WIP)':<RiMoneyDollarBoxFill/>,
+        'EdTech (WIP)':<BiBookContent/>,
+        'eHealth (WIP)':<GiHealthNormal/>,
+        'Mobility (WIP)':<GiCarWheel/>,
+        'D2C Omni (WIP)':<GoFileSymlinkDirectory/>,
+        'eB2B (WIP)':<FaBusinessTime/>,
+        'Consumer Internet (WIP)':<ImConnection/>,
+        'Baby Care (WIP)':<FaBabyCarriage/>,
+        'Mobile (WIP)':<AiOutlineMobile/>,
+        'Fashion (WIP)':<GiClothes/>,
+        'Electronics & Large/Small appliances (WIP)':<BiFridge/>,
+        'Epharma (WIP)':<GiMedicines/>,
+        'Grocery (WIP)':<GiFruitBowl/>,
+        'Shortform Video (WIP)':<GiVideoConference/>,
+        'OTT_Video (WIP)':<AiTwotoneVideoCamera/>,
+        'OTT Audio (WIP)':<FaRegFileAudio/>,
+        'Content S&M (WIP)':<BiBookContent/>,
       })
-      let subtitle;
+      let subtitle
+      // let window.reports = [];
+
+      useEffect(()=>{
+        setInterval(function () {
+          console.log("check token");
+          let prop_token = window.localStorage.getItem("token")
+          let prop_email = window.localStorage.getItem("email")
+          fetch(`${process.env.REACT_APP_API_ENDPOINT}/validateToken/?email=${prop_email}`,{
+            method:'GET',
+            headers:{
+              'Content-Type': 'application/json',
+              Authorization: `Token ${prop_token}`
+            }
+          }).then((res) => {
+            if (res.ok) {
+              return res.json();
+            }else{
+              localStorage.clear();
+              window.location.href='/'
+            }
+          })
+          .then(
+            res => {
+                console.log('tokenValidation= ', res)
+            }
+            )
+            .catch( error => {
+              console.error(error)
+            })
+        }, 1000*60*5);
+      },[])
+            
 
       useEffect(()=>{
         // console.log('props=', props)
@@ -288,7 +373,6 @@ const NewReport = () => {
         .then(res=>res.json())
         .then(
           res=>{
-            console.log(res.length)
             let arr = []
             // executeAfterLoop(res,arr)
             // for(var i = 0; i<res.length; i++){
@@ -314,8 +398,6 @@ const NewReport = () => {
             //     .catch( error => console.error(error))
 
             // }
-            console.log('tree=',res)
-            console.log('arr=',arr)
             setnewReportPages(res)
           }
         )
@@ -327,13 +409,11 @@ const NewReport = () => {
       }
 
       let getNodeName = (key,all_nodes) =>{
-        console.log('node-id=', key)
-        console.log('allnodes = ', all_nodes)
         let nodes = all_nodes
         for(let i =0; i<nodes.length;i++){
           // search in top layer
           if(nodes[i].key==key){
-            console.log('lognode=',nodes[i])
+            // console.log('lognode=',nodes[i])
             return nodes[i].label
           }else{
             if(nodes[i].nodes.length>0){
@@ -351,9 +431,7 @@ const NewReport = () => {
       }
 
       const getParents = (props)=>{
-        console.log('nodes=',props)
         let parent_string_arr = props.parent.split('/')
-        console.log('parent_string_arr=',parent_string_arr )
         // ['9', '25', '26', '44']
         let parents = []
         let all_nodes = allNodes
@@ -366,7 +444,6 @@ const NewReport = () => {
             }
           }
         }
-        console.log('parents = ', parents)
         return parents
       }
       const DEFAULT_PADDING = 16;
@@ -398,6 +475,7 @@ const NewReport = () => {
             position: 'relative',
             backgroundColor:'#18183E',
             border:'none',
+            zIndex:10
             // '&:hover':{
             //   backgroundColor:'red'
             // }
@@ -406,9 +484,13 @@ const NewReport = () => {
             // this onclick conflicts with oclick defined below
             // make your get parents function here
             let parent_arr = getParents(props)
-            console.log('parent-arr=', parent_arr)
             parent_arr.push(label)
             setTreearr(parent_arr)
+
+            if(hasNodes===false){
+              setSelectedPage(label)
+            }
+
 
             if(hasNodes && toggleNode){
               toggleNode()
@@ -621,10 +703,12 @@ const NewReport = () => {
       }
       function afterOpenModal() {
         // references are now sync'd and can be accessed.
-        subtitle.style.color = '#f00';
+        // subtitle.style.color = '#f00';
+        console.log('modalopen')
       }
       function closeModal() {
         setIsOpen(false);
+        setMoneyModalIsOpen(false);
       }
       let inputChanged = (e) => {
         setComment(e.target.value);
@@ -775,6 +859,255 @@ const NewReport = () => {
       let handleSearch=(e)=>{
         setsearchVal(e.target.value);
       }
+      let handleCurrencyClick = (index) => {
+        setActiveIndex(index);
+        if(index===0){
+          window.localStorage.setItem('currency', 'INR')
+          console.log(window.localStorage.getItem('currency'))
+          setCurrencyType('INR')
+        }else{
+          window.localStorage.setItem('currency', 'USD')
+          console.log(window.localStorage.getItem('currency'))
+          setCurrencyType('USD')
+        }
+
+        const money_converter = {
+          $schema: "http://powerbi.com/product/schema#advanced",
+          target: {
+              table: "Currency Table",
+              column: "Currency"
+          },
+          filterType: models.FilterType.Advanced,
+          logicalOperator: "Is",
+          conditions: [
+              {
+                  operator: "Is",
+                  value: window.localStorage.getItem('currency')
+              }
+          ] 
+        }
+        console.log('wrs=', window.reports)
+        for(let i = 0; i<window.reports.length; i++){
+          window.reports[i].getActivePage().then(
+            (activePage=>{
+              activePage.getVisuals().then(
+                (visuals=>{
+                  let slicers = visuals.filter(function (visual) {
+                    return visual.type === "slicer";
+                });
+                  slicers.forEach(async (slicer) => {
+                  const state = await slicer.getSlicerState();  
+                  
+                  if(state.targets[0].column==='Currency'){
+                    let target_slicer = visuals.filter(function (visual) {
+                      return visual.type === "slicer" && visual.name === slicer.name;             
+                  })[0];
+                    await target_slicer.setSlicerState({ filters: [money_converter] });
+                  }
+              })      
+                })
+              )
+            })
+          )
+        }
+
+      };
+      let handleYearClick = (index) =>{
+        setyearIndex(index);
+        if(index===0){
+          window.localStorage.setItem('year', 'CY')
+        }else{
+          window.localStorage.setItem('year', 'FY')
+        }
+
+        const year_converter = {
+          $schema: "http://powerbi.com/product/schema#advanced",
+          target: {
+              table: "Date Parameter",
+              column: "Year_Type"
+          },
+          filterType: models.FilterType.Advanced,
+          logicalOperator: "Is",
+          conditions: [
+              {
+                  operator: "Is",
+                  value: window.localStorage.getItem('year')
+              }
+          ]
+        }
+        console.log('wrs = ', window.reports)
+        for(let i= 0;i<window.reports.length; i++){
+          window.reports[i].getActivePage().then(
+            (activePage=>{
+              activePage.getVisuals().then(
+                (visuals=>{
+                  let slicers = visuals.filter(function (visual) {
+                    return visual.type === "slicer";
+                });
+                  slicers.forEach(async (slicer) => {
+                  const state = await slicer.getSlicerState();  
+  
+                  if(state.targets[0].column==='Year_Type'){
+                    let target_slicer = visuals.filter(function (visual) {
+                      return visual.type === "slicer" && visual.name === slicer.name;             
+                  })[0];
+                    await target_slicer.setSlicerState({ filters: [year_converter] });
+                  }
+              })      
+                })
+              )
+            })
+          )
+        }
+
+
+      }
+      let handleGearClick = ()=>{
+        setMoneyModalIsOpen(true)
+      }
+
+      let incCurrency = ()=>{
+        let new_curr = currencyval+1
+        if(new_curr>85){
+          new_curr=85
+        }
+        setCurrencyVal(new_curr)
+      }
+      let decCurrency = ()=>{
+        let new_curr = currencyval-1
+        if(new_curr<65){
+          new_curr = 65
+        }
+        setCurrencyVal(new_curr)
+
+      }
+
+      let handlemodalSubmitClicked = ()=>{
+        if(conversiontype==='Custom'){
+          console.log('custom')
+          // console.log(currencyval)
+          const currency_valuation = {
+            $schema: "http://powerbi.com/product/schema#advanced",
+            target: {
+                table: "Currency input",
+                column: "Currency input"
+            },
+            filterType: models.FilterType.Advanced,
+            logicalOperator: "Is",
+            conditions: [
+                {
+                    operator: "Is",
+                    value: currencyval
+                }
+            ] 
+          }
+          const usd_selector  = {
+            $schema: "http://powerbi.com/product/schema#advanced",
+            target: {
+                table: "Currency_USD_Type",
+                column: "Type"
+            },
+            filterType: models.FilterType.Advanced,
+            logicalOperator: "Is",
+            conditions: [
+                {
+                    operator: "Is",
+                    value: conversiontype
+                }
+            ] 
+          }
+          console.log('wrs=', window.reports)
+
+          for (let i =0;i<window.reports.length;i++){
+            window.reports[i].getActivePage().then(
+              (activePage=>{
+                activePage.getVisuals().then(
+                  (visuals=>{
+                    // console.log('visuals=',visuals)
+                    let slicers = visuals.filter(function (visual) {
+                      return visual.type === "slicer";
+                  }
+                  );
+                    slicers.forEach(async (slicer) => {
+                      const state = await slicer.getSlicerState();    
+                      console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+  
+                      //not using state as it will change on page load.page laod code for 1st
+                      
+                      if(state.targets[0].column==="Type"){
+                        let target_slicer = visuals.filter(function (visual) {
+                          return visual.type === "slicer" && visual.name === slicer.name;             
+                      })[0];
+                        await target_slicer.setSlicerState({ filters: [usd_selector] });
+                      }
+
+                      if(state.targets[0].column==="Currency input"){
+                        let custom_usd_slicer = visuals.filter(function (visual) {
+                          return visual.type === "slicer" && visual.name === slicer.name;             
+                      })[0]
+                        await custom_usd_slicer.setSlicerState({ filters: [currency_valuation] });
+                      }
+  
+                })      
+                    // console.log('slicer=', slicers)
+                  })
+                )
+              })
+            )
+          }
+        }else{
+          const usd_selector  = {
+            $schema: "http://powerbi.com/product/schema#advanced",
+            target: {
+                table: "Currency_USD_Type",
+                column: "Type"
+            },
+            filterType: models.FilterType.Advanced,
+            logicalOperator: "Is",
+            conditions: [
+                {
+                    operator: "Is",
+                    value: conversiontype
+                }
+            ] 
+          }
+          for(let i=0;i<window.reports.length;i++){
+            window.reports[i].getActivePage().then(
+              (activePage=>{
+                activePage.getVisuals().then(
+                  (visuals=>{
+                    // console.log('visuals=',visuals)
+                    let slicers = visuals.filter(function (visual) {
+                      return visual.type === "slicer";
+                  }
+                  );
+                    slicers.forEach(async (slicer) => {
+                      const state = await slicer.getSlicerState();    
+                      console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+  
+                      //not using state as it will change on page load.page laod code for 1st
+                      
+                      if(state.targets[0].column==="Type"){
+                        let target_slicer = visuals.filter(function (visual) {
+                          return visual.type === "slicer" && visual.name === slicer.name;             
+                      })[0];
+                        await target_slicer.setSlicerState({ filters: [usd_selector] });
+                      }
+  
+                })      
+                    // console.log('slicer=', slicers)
+                  })
+                )
+              })
+            )
+          }
+        }
+        setMoneyModalIsOpen(false);
+      }
+
+      if(window.localStorage.getItem('loginStatus')!=='true'){
+        return <Navigate to = "/signin"/>
+      }
   return (
     <>
         {/* <PageHeader>
@@ -808,48 +1141,9 @@ const NewReport = () => {
             </ProSidebarContainer> */}
 
             <SideMenuContainer>
-              {/* <TreeMenu data={myPages}
-              // matchSearch = {({label, searchTerm})=>{
-              //   console.log('searchTerm = ', searchTerm)
-              //   console.log('label = ', label)
-              //   console.log(label.toLowerCase().includes(searchTerm.toLowerCase()))
-              //   label.toLowerCase().includes(searchTerm.toLowerCase())
-              // }}
-               onClickItem={({ key, label, ...props }) => {
-                let arr = treearr
-                if(props.hasNodes === false){
-                  arr.pop()
-                  arr.push(label)
-                }else if(arr.includes(label)){
-                  var index = arr.indexOf(label);
-                  arr.splice(index, 1);
-                  arr.push(label)
-                }
-                else{
-                  arr.push(label)
-                }
-                // let currNode = props
-                // while (currNode.parent) {                  
-                //   const parent = treearr.find((n) => n.id === currNode.parent);
-                //   parents.unshift(parent);
-                //   currNode = parent;
-                // }
-                // console.log('parents=',parents)
-                // let parents = props.parent.split('/')
-                // let all_nodes= myPages
-                // for(let i= 0; i<parents.length; i++){
-                //   let parent_name = all_nodes.find((n)=>n.id===)
-                // }
-
-                // console.log('allnodes=', myPages)
-                setTreearr(arr)
-                if(props.hasNodes === false){
-                  handleClickTree(label)
-                }
-              }
-              }/> */}
               <TreeMenu
               data={myPages}
+              initialOpenNodes = {['9']}
               onClickItem={({ key, label, ...props }) => {
                 console.log('init') 
                 // let arr = treearr
@@ -891,11 +1185,31 @@ const NewReport = () => {
             {/* // Use any third-party UI framework */}
             <PowerbiContainer>
                 <BreadCrumbTop>
-                  <h2 style={{'marginLeft':'3.5vw', 'marginTop':'1vh'}}>Consumer Internet</h2>
-                  <div  style={{'marginLeft':'3.5vw'}}>
+                  <div style = {{'marginLeft':'3.5vw', 'marginTop':'1vh','fontSize':'35px', 'fontWeight':'bold'}}>{selectedpage}</div>
+                  <div  style={{'marginLeft':'3.5vw' ,'marginBottom':'10px'}}>
                   {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
-                  <a href='/newmainpage'>Home</a> / {treearr.length>0?<>{treearr.join(" / ")}</>:<></>}
+                  Products/ {treearr.length>0?<>{treearr.join(" / ")}</>:<>Consumer Internet</>}
                   </div>
+                  <Currency>
+                    <Descurr>Please select your desired currency</Descurr>
+                    <Inr>
+                      <Currencybutton bgcolor={activeIndex === 0 ? '#26CDCC' : '#EAEAEA'}
+                       color={activeIndex === 1 ? '#333333' : '#333333'}
+                      onClick={() => handleCurrencyClick(0)}>INR</Currencybutton>
+                      <Currencybutton bgcolor={activeIndex === 1 ? '#26CDCC' : '#EAEAEA'}
+                      color={activeIndex === 0 ? '#333333' : '#333333'}
+                      onClick={() => handleCurrencyClick(1)}>USD</Currencybutton>
+                    </Inr>
+                    <Gear><BsGear style={{ 'fontSize': "20px" }} onClick={()=>handleGearClick()}/></Gear>
+                    <Cyfy>
+                    <Currencybutton bgcolor={yearIndex === 0 ? '#26CDCC' : '#EAEAEA'}
+                       color={yearIndex === 1 ? '#333333' : '#333333'}
+                      onClick={() => handleYearClick(0)}>CY</Currencybutton>
+                      <Currencybutton bgcolor={yearIndex === 1 ? '#26CDCC' : '#EAEAEA'}
+                      color={yearIndex === 0 ? '#333333' : 'white'}
+                      onClick={() => handleYearClick(1)}>FY</Currencybutton>
+                    </Cyfy>
+                  </Currency>
                   <div>
                   {/* <Modal
                         isOpen={modalIsOpen}
@@ -924,6 +1238,38 @@ const NewReport = () => {
                           <button onClick={(e)=>addComment(e)}>Submit</button>
                         </form>
                     </Modal> */}
+                    <Modal
+                    isOpen={moneymodalIsOpen}
+                    onAfterOpen={afterOpenModal}
+                    onRequestClose={closeModal}
+                    style={customStyles}
+                    contentLabel="Example Modal"
+                  >
+                    <div>Please select USD conversion rate</div>
+                    <form>
+                    <input type="radio" id="html" name="fav_language" value="HTML" onClick={()=>{setConversionType('Dynamic')}}/>
+                    <label  style={{'marginLeft':'5px'}}>Dynamic</label><br/>
+                    <input type="radio" id="css" name="fav_language" value="CSS" onClick={()=>{setConversionType('Custom')}} checked="checked"/>
+                    <label  style={{'marginLeft':'5px'}}> Custom</label><br/>
+                    </form>
+                    <div>
+                      <button style={{'marginRight':'5px', 'borderRadius':'5px', 'width':'30px'}} onClick = {decCurrency}>-</button>
+                      <input  value={currencyval}/>
+                      <button style={{'marginLeft':'5px', 'borderRadius':'5px', 'width':'30px'}} onClick = {incCurrency}>+</button>
+                    </div>
+                    {/* <input></input> */}
+                    {/* <h2>Hello</h2>
+                    <button onClick={closeModal}>close</button>
+                    <div>I am a modal</div>
+                    <form>
+                      <input />
+                      <button>tab navigation</button>
+                      <button>stays</button>
+                      <button>inside</button>
+                      <button>the modal</button>
+                    </form> */}
+                    <button style={{'color':'white', 'backgroundColor':'#4867AA','marginTop':'10px', 'borderRadius':'6px'}} onClick={handlemodalSubmitClicked}>Submit</button>
+                  </Modal>
                   </div>
                 </BreadCrumbTop>
               <PowerBiDiv>
@@ -940,6 +1286,10 @@ const NewReport = () => {
                     tokenType: models.TokenType.Embed,
                     filters: [datefilter],
                     settings: {
+                      layoutType:models.LayoutType.Custom,
+                      customLayout:{
+                        displayOption:models.DisplayOption.FitToPage
+                      },
                       panes: {
                         filters: {
                           expanded: false,
@@ -951,7 +1301,7 @@ const NewReport = () => {
                   }}
                   eventHandlers = {
                     new Map([
-                      ['loaded', function (event, report) {
+                      ['loaded', async function (event, report) {
                         console.log('Report loaded');
                         if(true){
                           const filter = {
@@ -985,14 +1335,100 @@ const NewReport = () => {
                                 }
                             ] 
                         }
-                        let company_name = ''
-                        window.report.getActivePage().then(
+
+                        const money_converter = {
+                          $schema: "http://powerbi.com/product/schema#advanced",
+                          target: {
+                              table: "Currency Table",
+                              column: "Currency"
+                          },
+                          filterType: models.FilterType.Advanced,
+                          logicalOperator: "Is",
+                          conditions: [
+                              {
+                                  operator: "Is",
+                                  value: window.localStorage.getItem('currency')
+                              }
+                          ] 
+                        }
+
+                        const year_converter = {
+                          $schema: "http://powerbi.com/product/schema#advanced",
+                          target: {
+                              table: "Date Parameter",
+                              column: "Year_Type"
+                          },
+                          filterType: models.FilterType.Advanced,
+                          logicalOperator: "Is",
+                          conditions: [
+                              {
+                                  operator: "Is",
+                                  value: 'FY'
+                              }
+                          ]
+                        }
+
+                        const currency_valuation = {
+                          $schema: "http://powerbi.com/product/schema#advanced",
+                          target: {
+                              table: "Currency input",
+                              column: "Currency input"
+                          },
+                          filterType: models.FilterType.Advanced,
+                          logicalOperator: "Is",
+                          conditions: [
+                              {
+                                  operator: "Is",
+                                  value: 71
+                              }
+                          ] 
+                        }
+
+                        const usd_selector  = {
+                          $schema: "http://powerbi.com/product/schema#advanced",
+                          target: {
+                              table: "Currency_USD_Type",
+                              column: "Type"
+                          },
+                          filterType: models.FilterType.Advanced,
+                          logicalOperator: "Is",
+                          conditions: [
+                              {
+                                  operator: "Is",
+                                  value: 'Custom'
+                              }
+                          ] 
+                        }
+                        
+                        // let window_reports = window.reports
+                        // console.log('wr',window_reports)
+                        // let pages_arr = await window.report.getPages()
+                        // console.log('newreps=',index)
+                        // pages_arr.map((element, i)=>{
+                        //   console.log(element,i)
+                        // })
+                        report.getActivePage().then(
                           (activePage=>{
+                            let active_ht = activePage.defaultSize.height
+                            let active_width = activePage.defaultSize.width
+                            console.log('ac-ht = ', active_ht, active_width)
+                            let width = document.getElementsByClassName('report-style-class-newreport'+i)[0].offsetWidth;
+                            console.log('wide=', width)
+                            let ht = ((active_ht/active_width)*width)+14
+                            console.log('newht= ', ht)
+                            console.log(document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0])
+                            document.getElementsByClassName('report-style-class-newreport'+i)[0].style.height = ht+'px';
+                            document.getElementsByClassName('report-style-class-newreport'+i)[0].style.backgroundColor = '#F5F8FC'
+                            document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0].style.border = '0px';
+                            document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0].style.backgroundColor = '#F5F8FC';
+                            // document.getElementsByClassName('report-style-class-newreport'+i)[0].style.width = activePage.defaultSize.width+'px';
                             activePage.getVisuals().then(
                               (visuals=>{
+                                // console.log('visuals=',visuals)
                                 let slicers = visuals.filter(function (visual) {
                                   return visual.type === "slicer";
-                              });
+                              }
+                              );
                                 slicers.forEach(async (slicer) => {
                                   const state = await slicer.getSlicerState();    
                                   console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
@@ -1011,85 +1447,109 @@ const NewReport = () => {
                                   })[0];
                                     await target_slicer.setSlicerState({ filters: [filter_player_dropdown] });
                                   }
-                        
+
+                                  if(state.targets[0].column==='Currency'){
+                                    let target_slicer = visuals.filter(function (visual) {
+                                      return visual.type === "slicer" && visual.name === slicer.name;             
+                                  })[0];
+                                    await target_slicer.setSlicerState({ filters: [money_converter] });
+                                  }
+
+                                  if(state.targets[0].column==='Year_Type'){
+                                    let target_slicer = visuals.filter(function (visual) {
+                                      return visual.type === "slicer" && visual.name === slicer.name;             
+                                  })[0];
+                                    await target_slicer.setSlicerState({ filters: [year_converter] });
+                                  }
+                                  
+                                  // if(state.targets[0].column==="Type"){
+                                  //   let target_slicer = visuals.filter(function (visual) {
+                                  //     return visual.type === "slicer" && visual.name === slicer.name;             
+                                  // })[0];
+                                  //   await target_slicer.setSlicerState({ filters: [usd_selector] });
+
+                                  //   let custom_usd_slicer = visuals.filter(function (visual) {
+                                  //     return visual.type === "slicer" && visual.name === slicer.name;             
+                                  // })[0]
+                                  //   await custom_usd_slicer.setSlicerState({ filters: [currency_valuation] });
+                                  // }
+
                             })      
                                 // console.log('slicer=', slicers)
                               })
                             )
                           })
                         )
-                        }else{
-                          const filter = {
-  
-                            $schema: "http://powerbi.com/product/schema#basic",
-                        
-                            target: {
-                        
-                                table: "date_table",
-                        
-                                column: "date"
-                        
-                            },
-                        
-                            filterType: models.FilterType.Advanced,
-                        
-                            logicalOperator: "And",
-                        
-                            conditions: [
-                        
-                                {
-                        
-                                    operator: "GreaterThanOrEqual",
-                        
-                                    value: "2020-10-12T21:00:00.000Z"
-                        
-                                },
-                        
-                                {
-                        
-                                    operator: "LessThan",
-                        
-                                    value: "2021-11-28T22:00:00.000Z"
-                        
-                                }
-                        
-                            ]
-                        
-                        };
-                        try{
-                          report.updateFilters(models.FiltersOperations.Add, [filter]).then(
-                            console.log("Report filter was added.")
-                          );
-                        }catch(error){
-                          console.log(error)
-                        }
                         }
                       }],
                       ['rendered', function () {
                         console.log('report render')
-                        window.report.getActivePage().then(
-                          (activePage=>{
-                            activePage.getVisuals().then(
-                              (visuals=>{
-                                let slicers = visuals.filter(function (visual) {
-                                  return visual.type === "slicer";
-                              });
-                                slicers.forEach(async (slicer) => {
-                                const state = await slicer.getSlicerState();    
-                                if(state.targets[0].column==="player_name"){
-                                  console.log('slicer_name=',slicer)
-                                //   let target_slicer = visuals.filter(function (visual) {
-                                //     return visual.type === "slicer" && visual.name === slicer.name;             
-                                // })[0];
-                                //   await target_slicer.setSlicerState({ filters: [filter] });
-                                }
+                        // const money_converter = {
+                        //   $schema: "http://powerbi.com/product/schema#advanced",
+                        //   target: {
+                        //       table: "Currency Table",
+                        //       column: "Currency"
+                        //   },
+                        //   filterType: models.FilterType.Advanced,
+                        //   logicalOperator: "Is",
+                        //   conditions: [
+                        //       {
+                        //           operator: "Is",
+                        //           value: window.localStorage.getItem('currency')
+                        //       }
+                        //   ] 
+                        // }
+
+                        // const year_converter = {
+                        //   $schema: "http://powerbi.com/product/schema#advanced",
+                        //   target: {
+                        //       table: "Date Parameter",
+                        //       column: "Year_Type"
+                        //   },
+                        //   filterType: models.FilterType.Advanced,
+                        //   logicalOperator: "Is",
+                        //   conditions: [
+                        //       {
+                        //           operator: "Is",
+                        //           value: window.localStorage.getItem('year')
+                        //       }
+                        //   ]
+                        // }
+                        // win.getActivePage().then(
+                        //   (activePage=>{
+                        //     activePage.getVisuals().then(
+                        //       (visuals=>{
+                        //         let slicers = visuals.filter(function (visual) {
+                        //           return visual.type === "slicer";
+                        //       });
+                        //         slicers.forEach(async (slicer) => {
+                        //         const state = await slicer.getSlicerState();  
+                        //         if(state.targets[0].column==="player_name"){
+                        //           console.log('slicer_name=',slicer)
+                        //         //   let target_slicer = visuals.filter(function (visual) {
+                        //         //     return visual.type === "slicer" && visual.name === slicer.name;             
+                        //         // })[0];
+                        //         //   await target_slicer.setSlicerState({ filters: [filter] });
+                        //         }
                                 
-                        
-                            })      
-                              })
-                            )
-                          })
-                        )
+                        //         // if(state.targets[0].column==='Currency'){
+                        //         //   let target_slicer = visuals.filter(function (visual) {
+                        //         //     return visual.type === "slicer" && visual.name === slicer.name;             
+                        //         // })[0];
+                        //         //   await target_slicer.setSlicerState({ filters: [money_converter] });
+                        //         // }
+
+                        //         // if(state.targets[0].column==='Year_Type'){
+                        //         //   let target_slicer = visuals.filter(function (visual) {
+                        //         //     return visual.type === "slicer" && visual.name === slicer.name;             
+                        //         // })[0];
+                        //         //   await target_slicer.setSlicerState({ filters: [year_converter] });
+                        //         // }
+                        //     })      
+                        //       })
+                        //     )
+                        //   })
+                        // )
                       }],
                       ['buttonClicked', function(event, report){
                         let ques_name = event.detail['title']
@@ -1121,10 +1581,14 @@ const NewReport = () => {
                     ])
                   }
                 
-                  cssClassName = { "report-style-class-newreport" }
+                  cssClassName = { "report-style-class-newreport"+i}
                   getEmbeddedComponent = {async(embeddedReport) => {
                     // console.log('winRow=', window.report)
-                    window.report = embeddedReport ;
+                    if(window.reports === undefined) {
+                      window.reports=[]
+                    }
+                    window.reports.push(embeddedReport);
+                    console.log('wr = ',window.reports)
                     // window.report.getActivePage().then(
                     //   (activePage=>{console.log(activePage)})
                     // )
@@ -1186,9 +1650,51 @@ const PowerbiContainer = styled.div`
     display:flex;
     flex-direction:column;
     min-height:90vh;
+    background-color:#F5F8FC;
+    margin-left:-30px;
+    /* z-index:-10; */
+    margin-right:-22px;
 `
 const BreadCrumbTop = styled.div`
   min-height:10vh;
+  background-color:#F5F8FC;
+  /* font-family:'segoe ui' */
+`
+const Currency = styled.div`
+  margin-left:3.3vw;
+  margin-bottom:10px;
+  display: grid; 
+  grid-auto-rows: 1fr; 
+  grid-template-columns: 2fr 0.15fr 0.85fr 0.1fr 0.4fr 0.8fr 2.55fr 1.15fr; 
+  grid-template-rows: 1fr; 
+  gap: 0px 0px; 
+  grid-template-areas: 
+    "Descurr . Inr . Gear . . Cyfy";
+`
+const Descurr = styled.div`
+  grid-area:Descurr;
+  line-height:34px;
+`
+const Inr = styled.div`
+  grid-area:Inr;
+`
+const Gear = styled.div`
+  grid-area:Gear;
+  line-height:34px;
+  /* background-color:Blue; */
+`
+const Cyfy = styled.div`
+  grid-area:Cyfy;
+  /* background-color:Green; */
+`
+
+const Currencybutton = styled.button`
+background-color: ${props => props.bgcolor};
+color:${props => props.color};
+border: 1px solid black;
+width:58px;
+height:34px;
+font-size:14px;
 `
 const PowerBiDiv = styled.div`
 /* prevent overflow on select somehow */
@@ -1237,6 +1743,7 @@ const SideMenuContainer = styled.div`
   width:25vw;
   background-color:#18183E;
   color:white;
+  z-index:10;
 `
 
 
@@ -1255,7 +1762,8 @@ const customStyles = {
     left: '55%',
     right: '45%',
     bottom: 'auto',
-    height: 340,
+    height: 230,
+    width:400,
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
     overflow:'scroll',
