@@ -40,6 +40,8 @@ const NewReport = () => {
     const [allNodes,setallNodes] = useState([])
     const [selectedpage, setSelectedPage] = useState('Consumer Internet')
     const [ toggle, setToggle ] = useState(false);
+    const [treemenucollapse, settreeMenuColapse] = useState(true);
+    const [showcurrencybar, setshowCurrencyBar] = useState(false);
     const [ reportId, setReportId ] = useState('');
     const [ newUrl, setNewUrl ] = useState('');
     const [ EmbedToken, setEmbedToken ] = useState('');
@@ -105,12 +107,12 @@ const NewReport = () => {
         'D2C Omni':<GoFileSymlinkDirectory/>,
         'Eb2b':<FaBusinessTime/>,
         'Consumer Internet':<ImConnection/>,
-        'Baby Care':<FaBabyCarriage/>,
-        'Mobile':<AiOutlineMobile/>,
-        'Fashion':<GiClothes/>,
+        // 'Baby Care':<FaBabyCarriage/>,
+        // 'Mobile':<AiOutlineMobile/>,
+        // 'Fashion':<GiClothes/>,
         'Electronics & Large/Small appliances':<BiFridge/>,
         'Epharma':<GiMedicines/>,
-        'Grocery':<GiFruitBowl/>,
+        // 'Grocery':<GiFruitBowl/>,
         'Shortform Video':<GiVideoConference/>,
         'OTT_Video':<AiTwotoneVideoCamera/>,
         'OTT Audio':<FaRegFileAudio/>,
@@ -163,36 +165,6 @@ const NewReport = () => {
       })
       let subtitle
       // let window.reports = [];
-
-      useEffect(()=>{
-        setInterval(function () {
-          console.log("check token");
-          let prop_token = window.localStorage.getItem("token")
-          let prop_email = window.localStorage.getItem("email")
-          fetch(`${process.env.REACT_APP_API_ENDPOINT}/validateToken/?email=${prop_email}`,{
-            method:'GET',
-            headers:{
-              'Content-Type': 'application/json',
-              Authorization: `Token ${prop_token}`
-            }
-          }).then((res) => {
-            if (res.ok) {
-              return res.json();
-            }else{
-              localStorage.clear();
-              window.location.href='/'
-            }
-          })
-          .then(
-            res => {
-                console.log('tokenValidation= ', res)
-            }
-            )
-            .catch( error => {
-              console.error(error)
-            })
-        }, 1000*60*5);
-      },[])
             
 
       useEffect(()=>{
@@ -485,13 +457,18 @@ const NewReport = () => {
             // make your get parents function here
             let parent_arr = getParents(props)
             parent_arr.push(label)
-            setTreearr(parent_arr)
+            // setTreearr(parent_arr)
 
             if(hasNodes===false){
               setSelectedPage(label)
+              setTreearr(parent_arr)
             }
-
-
+            console.log('props=', props.finalized)
+            if(props.finalized){
+              setshowCurrencyBar(true)
+            }else{
+              setshowCurrencyBar(false)
+            }
             if(hasNodes && toggleNode){
               toggleNode()
             }else{
@@ -1105,9 +1082,9 @@ const NewReport = () => {
         setMoneyModalIsOpen(false);
       }
 
-      if(window.localStorage.getItem('loginStatus')!=='true'){
-        return <Navigate to = "/signin"/>
-      }
+      // if(window.localStorage.getItem('loginStatus')!=='true'){
+      //   return <Navigate to = "/signin"/>
+      // }
   return (
     <>
         {/* <PageHeader>
@@ -1140,7 +1117,7 @@ const NewReport = () => {
               </Menu>
             </ProSidebarContainer> */}
 
-            <SideMenuContainer>
+            <SideMenuContainer display={treemenucollapse ? 'block' : 'none'}>
               <TreeMenu
               data={myPages}
               initialOpenNodes = {['9']}
@@ -1185,12 +1162,16 @@ const NewReport = () => {
             {/* // Use any third-party UI framework */}
             <PowerbiContainer>
                 <BreadCrumbTop>
-                  <div style = {{'marginLeft':'3.5vw', 'marginTop':'1vh','fontSize':'35px', 'fontWeight':'bold'}}>{selectedpage}</div>
+                  <div style={{'marginLeft':'3.5vw', 'marginTop':'1vh',}}>
+                    <button style={{'height':'40px'}} onClick = {()=>{settreeMenuColapse(!treemenucollapse)}}>TGL</button>
+                    <span style = {{'fontSize':'35px', 'fontWeight':'bold'}}> {selectedpage}</span>
+                  </div>
                   <div  style={{'marginLeft':'3.5vw' ,'marginBottom':'10px'}}>
                   {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
                   Products/ {treearr.length>0?<>{treearr.join(" / ")}</>:<>Consumer Internet</>}
                   </div>
-                  <Currency>
+
+                  {showcurrencybar?<Currency>
                     <Descurr>Please select your desired currency</Descurr>
                     <Inr>
                       <Currencybutton bgcolor={activeIndex === 0 ? '#26CDCC' : '#EAEAEA'}
@@ -1209,7 +1190,7 @@ const NewReport = () => {
                       color={yearIndex === 0 ? '#333333' : 'white'}
                       onClick={() => handleYearClick(1)}>FY</Currencybutton>
                     </Cyfy>
-                  </Currency>
+                  </Currency>:<></>}
                   <div>
                   {/* <Modal
                         isOpen={modalIsOpen}
@@ -1286,6 +1267,7 @@ const NewReport = () => {
                     tokenType: models.TokenType.Embed,
                     filters: [datefilter],
                     settings: {
+                      // background:models.BackgroundType.Transparent,
                       layoutType:models.LayoutType.Custom,
                       customLayout:{
                         displayOption:models.DisplayOption.FitToPage
@@ -1411,12 +1393,11 @@ const NewReport = () => {
                           (activePage=>{
                             let active_ht = activePage.defaultSize.height
                             let active_width = activePage.defaultSize.width
-                            console.log('ac-ht = ', active_ht, active_width)
                             let width = document.getElementsByClassName('report-style-class-newreport'+i)[0].offsetWidth;
-                            console.log('wide=', width)
-                            let ht = ((active_ht/active_width)*width)+14
-                            console.log('newht= ', ht)
-                            console.log(document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0])
+                            let ht = ((active_ht/active_width)*width)
+                            if(i==0){
+                              document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-42px';
+                            }
                             document.getElementsByClassName('report-style-class-newreport'+i)[0].style.height = ht+'px';
                             document.getElementsByClassName('report-style-class-newreport'+i)[0].style.backgroundColor = '#F5F8FC'
                             document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0].style.border = '0px';
@@ -1652,13 +1633,11 @@ const PowerbiContainer = styled.div`
     min-height:90vh;
     background-color:#F5F8FC;
     margin-left:-30px;
-    /* z-index:-10; */
     margin-right:-22px;
 `
 const BreadCrumbTop = styled.div`
   min-height:10vh;
   background-color:#F5F8FC;
-  /* font-family:'segoe ui' */
 `
 const Currency = styled.div`
   margin-left:3.3vw;
@@ -1744,6 +1723,8 @@ const SideMenuContainer = styled.div`
   background-color:#18183E;
   color:white;
   z-index:10;
+  display:${props=>props.display}
+  /* background-color: ${props => props.bgcolor}; */
 `
 
 
