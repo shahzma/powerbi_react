@@ -9,7 +9,7 @@ import { ImProfile } from "react-icons/im";
 import {SiCoveralls, SiSimpleanalytics} from "react-icons/si"
 import {FiUsers} from "react-icons/fi"
 import {AiOutlineFileSearch, AiOutlineMobile , AiTwotoneVideoCamera} from 'react-icons/ai'
-import { GiBreakingChain, GiConsoleController, GiEvilFork, GiHealthNormal, GiCarWheel, GiClothes,GiMedicines,GiFruitBowl, GiVideoConference } from "react-icons/gi";
+import { GiBreakingChain, GiConsoleController, GiEvilFork, GiHealthNormal, GiCarWheel, GiClothes,GiMedicines,GiFruitBowl, GiVideoConference, GiHamburgerMenu } from "react-icons/gi";
 import { RiMoneyDollarBoxFill } from "react-icons/ri";
 import {GoFileSymlinkDirectory} from 'react-icons/go'
 import { BiCategory, BiBookContent, BiCartAlt, BiFridge } from "react-icons/bi";
@@ -1082,6 +1082,22 @@ const NewReport = () => {
         setMoneyModalIsOpen(false);
       }
 
+      let handleTreeMenuCollapse = ()=>{
+        settreeMenuColapse(!treemenucollapse)
+        
+        for(let i = 0; i<window.reports.length;i++){
+          window.reports[i].getActivePage().then(
+            (activePage=>{
+              let active_ht = activePage.defaultSize.height
+              let active_width = activePage.defaultSize.width
+              let width = document.getElementsByClassName('report-style-class-newreport'+i)[0].offsetWidth;
+              let ht = ((active_ht/active_width)*width)
+              console.log(active_ht,active_width, width,ht)
+              document.getElementsByClassName('report-style-class-newreport'+i)[0].style.height = ht+'px';
+              }))
+  
+        }
+        }
       // if(window.localStorage.getItem('loginStatus')!=='true'){
       //   return <Navigate to = "/signin"/>
       // }
@@ -1117,7 +1133,7 @@ const NewReport = () => {
               </Menu>
             </ProSidebarContainer> */}
 
-            <SideMenuContainer display={treemenucollapse ? 'block' : 'none'}>
+            <SideMenuContainer width={treemenucollapse ? '25vw' : '11px'}>
               <TreeMenu
               data={myPages}
               initialOpenNodes = {['9']}
@@ -1162,8 +1178,8 @@ const NewReport = () => {
             {/* // Use any third-party UI framework */}
             <PowerbiContainer>
                 <BreadCrumbTop>
-                  <div style={{'marginLeft':'3.5vw', 'marginTop':'1vh',}}>
-                    <button style={{'height':'40px'}} onClick = {()=>{settreeMenuColapse(!treemenucollapse)}}>TGL</button>
+                  <div>
+                    <button onClick = {handleTreeMenuCollapse} style={{'color':'white', 'backgroundColor':'#18183E'}}><GiHamburgerMenu/></button>
                     <span style = {{'fontSize':'35px', 'fontWeight':'bold'}}> {selectedpage}</span>
                   </div>
                   <div  style={{'marginLeft':'3.5vw' ,'marginBottom':'10px'}}>
@@ -1632,8 +1648,6 @@ const PowerbiContainer = styled.div`
     flex-direction:column;
     min-height:90vh;
     background-color:#F5F8FC;
-    margin-left:-30px;
-    margin-right:-22px;
 `
 const BreadCrumbTop = styled.div`
   min-height:10vh;
@@ -1719,12 +1733,10 @@ const ProMenuDivItem = styled.div`
 `
 const SideMenuContainer = styled.div`
   overflow-y:hidden;
-  width:25vw;
+  width:${props=>props.width};
   background-color:#18183E;
   color:white;
   z-index:10;
-  display:${props=>props.display}
-  /* background-color: ${props => props.bgcolor}; */
 `
 
 
