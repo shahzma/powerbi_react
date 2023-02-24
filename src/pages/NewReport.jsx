@@ -66,7 +66,7 @@ const NewReport = () => {
     const [treearr, setTreearr] = useState([])
     const [activeIndex, setActiveIndex] = useState(0);
     const [yearIndex, setyearIndex] = useState(0);
-    const [conversiontype, setConversionType] = useState('Dynamic')
+    const [conversiontype, setConversionType] = useState('Custom')
     const [commentsData, setCommentsData] = useState({
       currentQuestion: 1,
       currentQuestionId: "",
@@ -478,35 +478,50 @@ const NewReport = () => {
             // setTreearr(parent_arr)
             if(hasNodes===false){
               window.localStorage.setItem('report', label)
+              if(props.finalized){
+                setshowCurrencyBar(true)
+                window.localStorage.setItem('finalized', 'true')
+              }else{
+                setshowCurrencyBar(false)
+                window.localStorage.setItem('finalized', 'false')
+              }
               setSelectedPage(label)
               setTreearr(parent_arr)
               let arr = currencyarr
-              for (let i= 0; i<arr.length;i++){
-                if(arr[i].report===label){
-                  if(arr[i].currency==='USD'){
-                    setActiveIndex(0)
-                    window.localStorage.setItem('currency', 'USD')
-                  }else{
-                    setActiveIndex(1)
-                    window.localStorage.setItem('currency', 'INR')
-                  }
-                  if(arr[i].year==='CY'){
-                    setyearIndex(1)
-                    window.localStorage.setItem('year','CY')
-                  }else{
-                    setyearIndex(0)
-                    window.localStorage.setItem('year','FY')
-                  }
-                break
-                }
+              let currency_type = window.localStorage.getItem('currency')
+              if(currency_type==='USD'){
+                setActiveIndex(1)
+              }else{
+                setActiveIndex(0)
               }
+              let year_type = window.localStorage.getItem('year')
+              if(year_type==='CY'){
+                setyearIndex(0)
+              }else{
+                setyearIndex(1)
+              }
+              // for (let i= 0; i<arr.length;i++){
+              //   if(arr[i].report===label){
+              //     if(arr[i].currency==='USD'){
+              //       setActiveIndex(1)
+              //       window.localStorage.setItem('currency', 'USD')
+              //     }else{
+              //       setActiveIndex(0)
+              //       window.localStorage.setItem('currency', 'INR')
+              //     }
+              //     if(arr[i].year==='CY'){
+              //       setyearIndex(0)
+              //       window.localStorage.setItem('year','CY')
+              //     }else{
+              //       setyearIndex(1)
+              //       window.localStorage.setItem('year','FY')
+              //     }
+              //   break
+              //   }
+              // }
             }
             //console.log('props=', props.finalized)
-            if(props.finalized){
-              setshowCurrencyBar(true)
-            }else{
-              setshowCurrencyBar(false)
-            }
+            
             if(hasNodes && toggleNode){
               toggleNode()
             }else{
@@ -997,6 +1012,21 @@ const NewReport = () => {
 
       }
       let handleGearClick = ()=>{
+        let val = window.localStorage.getItem('currency_val')
+        console.log(val)
+        let conversion_type = window.localStorage.getItem('conversion_type')
+        console.log('ct=',conversion_type)
+        if(conversion_type!==null){
+          setConversionType(conversion_type)
+        }else{
+          setConversionType('custom')
+        }
+        if(val!==null){
+          console.log(val)
+          setCurrencyVal(val)
+        }else{
+          setCurrencyVal(75)
+        }
         setMoneyModalIsOpen(true)
       }
 
@@ -1017,9 +1047,14 @@ const NewReport = () => {
       }
 
       let handlemodalSubmitClicked = ()=>{
+
         if(conversiontype==='Custom'){
           //console.log('custom')
           // //console.log(currencyval)
+          window.localStorage.setItem('conversion_type', 'Custom')
+          console(window.localStorage.getItem('conversion_type'))
+          console.log(currencyval)
+          window.localStorage.setItem('currency_val', currencyval)
           const currency_valuation = {
             $schema: "http://powerbi.com/product/schema#advanced",
             target: {
@@ -1090,6 +1125,8 @@ const NewReport = () => {
             )
           }
         }else{
+          window.localStorage.setItem('conversion_type', 'Dynamic')
+          console.log(window.localStorage.getItem('conversion_type'))
           const usd_selector  = {
             $schema: "http://powerbi.com/product/schema#advanced",
             target: {
@@ -1217,9 +1254,10 @@ const NewReport = () => {
                 {({ search, items, searchTerm }) => {
                   // const nodesForRender = getNodesForRender(items, searchTerm);
                   return (
-                  <div style={{padding:'10px'}}>
+                  <div style={{paddingLeft:'10px'}}>
                     {/* <Input onChange={(e) => handleSearch(e)} placeholder="Type and search"/> */}
-                    <Input onChange={e => search(e.target.value)} placeholder="Type and search" />
+                    <Input style = {{'padding':'5px', 'width':'14vw'}}onChange={e => search(e.target.value)} placeholder="Type and search" />
+                    <button style={{'marginLeft':'10px', 'height':'42px', 'borderRadius':'8px', 'width':'50px', 'backgroundColor':'white'}} onClick = {handleTreeMenuCollapse}><GiHamburgerMenu/></button>
                     <ListGroup>
                       {items.map(props => (
                         //  listitem is functional component. this is same as when you create a seprate react file which 
@@ -1235,16 +1273,16 @@ const NewReport = () => {
             {/* // Use any third-party UI framework */}
             <PowerbiContainer>
                 <BreadCrumbTop>
-                  <div>
-                    <button onClick = {handleTreeMenuCollapse} style={{ 'backgroundColor':'#F5F8FC', 'height':'70px', 'borderRadius':'0px 10px 10px 0px', 'border':'1px solid #18183E', 'fontSize':'20px'}}>{treemenucollapse?<BsArrowBarLeft/>:<BsArrowBarRight/>}</button>
-                    <span style = {{'fontSize':'35px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}> {selectedpage}</span>
+                  <div style={{'marginLeft':'3.3vw', 'display':'flex', 'alignItems':'center'}}>
+                    {treemenucollapse?<></>:<button  style={{'height':'42px', 'borderRadius':'8px', 'width':'50px', 'backgroundColor':'white', }} onClick={handleTreeMenuCollapse}><GiHamburgerMenu/></button>}
+                    <span style = {{ 'marginLeft':'5px','fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}>{selectedpage}</span>
                   </div>
-                  <div  style={{'marginLeft':'3.5vw' ,'marginBottom':'10px'}}>
+                  <div  style={{'marginLeft':'3.3vw' ,'marginBottom':'10px'}}>
                   {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
                   Products/ {treearr.length>0?<>{treearr.join(" / ")}</>:<>Consumer Internet</>}
                   </div>
 
-                  {showcurrencybar?<Currency>
+                  {showcurrencybar?<Currency grid-template-columns = {treemenucollapse}>
                     <Descurr>Please select your desired currency</Descurr>
                     <Inr>
                       <Currencybutton bgcolor={activeIndex === 0 ? '#26CDCC' : '#EAEAEA'}
@@ -1305,9 +1343,9 @@ const NewReport = () => {
                   >
                     <div>Please select USD conversion rate</div>
                     <form>
-                    <input type="radio" id="html" name="fav_language" value="HTML" onClick={()=>{setConversionType('Dynamic')}}/>
+                    <input type="radio" id="html" name="fav_language"  onClick={()=>{setConversionType('Dynamic')}} value = 'Dynamic'checked={conversiontype === 'Dynamic'}/>
                     <label  style={{'marginLeft':'5px'}}>Dynamic</label><br/>
-                    <input type="radio" id="css" name="fav_language" value="CSS" onClick={()=>{setConversionType('Custom')}} checked="checked"/>
+                    <input type="radio" id="css" name="fav_language" onClick={()=>{setConversionType('Custom')}} value="Custom" checked={conversiontype === 'Custom'}/>
                     <label  style={{'marginLeft':'5px'}}> Custom</label><br/>
                     </form>
                     <div>
@@ -1473,7 +1511,9 @@ const NewReport = () => {
                             let width = document.getElementsByClassName('report-style-class-newreport'+i)[0].offsetWidth;
                             let ht = ((active_ht/active_width)*width)
                             if(i==0){
-                              document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-42px';
+                              if(window.localStorage.getItem('finalized')==='false'){
+                                document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-44px';
+                              }
                             }
                             document.getElementsByClassName('report-style-class-newreport'+i)[0].style.height = ht+'px';
                             document.getElementsByClassName('report-style-class-newreport'+i)[0].style.backgroundColor = '#F5F8FC'
@@ -1719,7 +1759,7 @@ const Currency = styled.div`
   margin-bottom:10px;
   display: grid; 
   grid-auto-rows: 1fr; 
-  grid-template-columns: 2fr 0.15fr 0.85fr 0.1fr 0.4fr 0.8fr 2.55fr 1.15fr; 
+  grid-template-columns: 2fr 0.15fr 0.85fr 0.1fr 0.4fr 3.35fr 1fr 0.15fr; 
   grid-template-rows: 1fr; 
   gap: 0px 0px; 
   grid-template-areas: 
