@@ -15,7 +15,7 @@ import {GoFileSymlinkDirectory} from 'react-icons/go'
 import { BiCategory, BiBookContent, BiCartAlt, BiFridge } from "react-icons/bi";
 import { IoFastFood } from "react-icons/io5";
 import {FaCarAlt, FaBusinessTime ,FaBabyCarriage, FaRegFileAudio} from 'react-icons/fa';
-import {BsGear} from 'react-icons/bs'
+import {BsGear, BsArrowBarRight, BsArrowBarLeft} from 'react-icons/bs'
 import{ImConnection} from 'react-icons/im'
 import { ProSidebar, SubMenu} from 'react-pro-sidebar';
 import './NewReport.scss';
@@ -52,6 +52,7 @@ const NewReport = () => {
     const [moneymodalIsOpen, setMoneyModalIsOpen] = useState(false);
     const [currencytype, setCurrencyType] = useState('')
     const [currencyval, setCurrencyVal] = useState(75)
+    const [currencyarr, setCurrencyArr] = useState([])
     const [comments, setComments] = useState({});
     const [comment, setComment] = useState("Hello");
     const [ AccessToken, setAccessToken ] = useState('');
@@ -168,15 +169,15 @@ const NewReport = () => {
             
 
       useEffect(()=>{
-        // console.log('props=', props)
+        // //console.log('props=', props)
         // let propsrep = window.localStorage.getItem("ReportName")
         // // propsrep = window.localStorage.getItem("ReportName")
         // let prop_token = window.localStorage.getItem("token")
         // let pseudo_email = 'Gladebrook@redseerconsulting.com'
         // // let pseudo_email = window.localStorage.getItem("pseudo_email")
-        // console.log('pseudo_email=', pseudo_email)
+        // //console.log('pseudo_email=', pseudo_email)
     
-        // console.log('email=', window.localStorage.getItem("email"))
+        // //console.log('email=', window.localStorage.getItem("email"))
         // fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}&email=${pseudo_email}`, {
         // method: 'GET',
         // headers: {
@@ -193,8 +194,8 @@ const NewReport = () => {
         //     setReportUrl(data['report_url'])
         //     setPages(data['pages'])
         //     setReportId(data['report_id'])
-        //     console.log('report_id=', data['report_id'])
-        //     // console.log(reportUrl+'&pageName=ReportSection7446fb261ebfdaa647fa')
+        //     //console.log('report_id=', data['report_id'])
+        //     // //console.log(reportUrl+'&pageName=ReportSection7446fb261ebfdaa647fa')
         //     if(window.localStorage.getItem("player_name")){
         //       let player_name = window.localStorage.getItem("player_name")
         //       fetch(`https://api.benchmarks.digital/player/?name=${player_name}`, {
@@ -206,8 +207,8 @@ const NewReport = () => {
         //       .then(res=>res.json())
         //       .then(
         //         res=>{
-        //           console.log('reportUrl=', data['report_url'])
-        //           console.log('res=',res.powerbi_page)
+        //           //console.log('reportUrl=', data['report_url'])
+        //           //console.log('res=',res.powerbi_page)
         //           setNewUrl(data['report_url']+'&pageName='+res.powerbi_page)
         //           // window.sessionStorage.setItem('powerbi_page', res.powerbi_page)
         //         }
@@ -229,7 +230,7 @@ const NewReport = () => {
         // .then(res=>res.json())
         // .then(
         //   res=>{
-        //     console.log('tree=',res)
+        //     //console.log('tree=',res)
         //     setMyPages(res)
         //   }
         // )
@@ -243,7 +244,7 @@ const NewReport = () => {
         .then(res=>res.json())
         .then(
           res=>{
-            console.log('tree=',res)
+            //console.log('tree=',res)
             setMyPages(res)
             setallNodes(res)
           }
@@ -252,9 +253,9 @@ const NewReport = () => {
     const isMount = useIsMount();
     useEffect(()=>{
       if (isMount){
-        console.log('First Render')
+        //console.log('First Render')
       }else{
-        console.log('selected_month=',selectedMonth)
+        //console.log('selected_month=',selectedMonth)
         let month = selectedMonth
         var months = ['Zero',"January","February","March","April","May","June","July","August","September","October","November","December"];
         for(var i in months){
@@ -264,7 +265,7 @@ const NewReport = () => {
         }
         let firstDate = '1/'+month+'/22'
         let lastDate = '30/'+month+'/22'
-        console.log('firstDate=', firstDate)
+        //console.log('firstDate=', firstDate)
         const uploadData = new FormData();
         uploadData.append('company_name', 'Swiggy');
         uploadData.append('question_name', "Business Metrics");
@@ -275,24 +276,41 @@ const NewReport = () => {
           body: uploadData
         }).then(data => data.json())
         .then((data) => {
-          console.log('data=',data)
+          //console.log('data=',data)
           setBdata(data)
-          // setFormId(data.report_version_id,()=>{console.log(form_id)})
+          // setFormId(data.report_version_id,()=>{//console.log(form_id)})
           setIsOpen(true);
           let ques_id = data.question_id
           let form_id = data.report_version_id
-          console.log('ques_id=', ques_id)
-          console.log('new_form_id=', form_id)
+          //console.log('ques_id=', ques_id)
+          //console.log('new_form_id=', form_id)
           onClickComments(1, ques_id,form_id);
           })
         .catch(error => {
           // setSignIn(false);
           alert('System Error.Contact Admin')
-          console.log(error)
+          //console.log(error)
         })
       }
     }
     ,[selectedMonth])
+
+    useEffect(()=>{
+      let email = window.localStorage.getItem('email')
+      fetch(`${process.env.REACT_APP_API_ENDPOINT}/usercurrency/?email=${email}`, {
+        method:'GET',
+        headers:{
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(res=>res.json())
+      .then(
+        res=>{
+          //console.log('email_arr',res)
+          setCurrencyArr(res)
+        }
+      )
+    }, [])
 
       let gotoMainPage = ()=>{
         window.location.href='/mainpage'
@@ -300,7 +318,7 @@ const NewReport = () => {
       let handleClick = (Name, NameVerbose)=>{
         setPageName(Name)
         setPageNameVerbose(NameVerbose)
-        console.log('name=',Name)
+        //console.log('name=',Name)
         setNewUrl(reportUrl+'&pageName='+Name)
       }
 
@@ -322,8 +340,8 @@ const NewReport = () => {
                 .then( data => data.json())
                 .then(
                 data => {
-                  // console.log(res[0])
-                  // console.log(data['embed_token'])
+                  // //console.log(res[0])
+                  // //console.log(data['embed_token'])
                   res[i]['embed_token'] = data['embed_token']
                   arr.push(data['embed_token'])
                 }
@@ -332,7 +350,7 @@ const NewReport = () => {
           }
           resolve();
         });
-        console.log('Loop finished');
+        //console.log('Loop finished');
       }
 
       let handleClickTree = (reportname)=>{
@@ -363,7 +381,7 @@ const NewReport = () => {
             //     .then( data => data.json())
             //     .then(
             //     data => {
-            //       // console.log(res[0])
+            //       // //console.log(res[0])
             //       arr.push(data['embed_token'])
             //     }
             //     )
@@ -373,7 +391,7 @@ const NewReport = () => {
             setnewReportPages(res)
           }
         )
-        console.log(reportname)
+        //console.log(reportname)
       }
 
       let handleToggle = ()=>{
@@ -385,7 +403,7 @@ const NewReport = () => {
         for(let i =0; i<nodes.length;i++){
           // search in top layer
           if(nodes[i].key==key){
-            // console.log('lognode=',nodes[i])
+            // //console.log('lognode=',nodes[i])
             return nodes[i].label
           }else{
             if(nodes[i].nodes.length>0){
@@ -394,7 +412,7 @@ const NewReport = () => {
                 return node_name
               }
             }else{
-              console.log('node array was empty')
+              //console.log('node array was empty')
             }
           }
 
@@ -458,12 +476,32 @@ const NewReport = () => {
             let parent_arr = getParents(props)
             parent_arr.push(label)
             // setTreearr(parent_arr)
-
             if(hasNodes===false){
+              window.localStorage.setItem('report', label)
               setSelectedPage(label)
               setTreearr(parent_arr)
+              let arr = currencyarr
+              for (let i= 0; i<arr.length;i++){
+                if(arr[i].report===label){
+                  if(arr[i].currency==='USD'){
+                    setActiveIndex(0)
+                    window.localStorage.setItem('currency', 'USD')
+                  }else{
+                    setActiveIndex(1)
+                    window.localStorage.setItem('currency', 'INR')
+                  }
+                  if(arr[i].year==='CY'){
+                    setyearIndex(1)
+                    window.localStorage.setItem('year','CY')
+                  }else{
+                    setyearIndex(0)
+                    window.localStorage.setItem('year','FY')
+                  }
+                break
+                }
+              }
             }
-            console.log('props=', props.finalized)
+            //console.log('props=', props.finalized)
             if(props.finalized){
               setshowCurrencyBar(true)
             }else{
@@ -498,14 +536,14 @@ const NewReport = () => {
       );
 
       const postComment = async(comment, formId, instanceId, questionId)=>{
-        console.log('comment=', comment)
+        //console.log('comment=', comment)
         if (comment?.length){
           // let { author, author_email, author_display_picture, message } = comment;
           let author_display_picture = "https://lh3.googleusercontent.com/a/AATXAJx2Vaf3laKf8D7hz6W6c9YgjOK8rEqLsZEk9mzS=s96-c"
           // let author_email = 'shahzmaalif@gmail.com'
           let author_email = window.localStorage.getItem("email")
           let author = author_email.split('@')[0]
-          console.log('author=', author)
+          //console.log('author=', author)
           const commentObj = {
               id: `RC_${uuid()?.replace(/-/g, "_")}`,
               author,
@@ -516,19 +554,19 @@ const NewReport = () => {
               replies: [],
           };
       
-        // console.log('comentObj=',{ commentObj });
+        // //console.log('comentObj=',{ commentObj });
       
         const commentsRef = database.ref(
             `comments/${formId}/${instanceId}/${questionId}`
         );
-          // console.log('commentref=', commentsRef)
-          console.log('com_form_id=',comments[formId])
-          console.log('com_ques_id=',comments[formId][questionId])
+          // //console.log('commentref=', commentsRef)
+          //console.log('com_form_id=',comments[formId])
+          //console.log('com_ques_id=',comments[formId][questionId])
         if (comments[formId] && comments[formId][questionId]){
-          console.log('works')
+          //console.log('works')
           commentsRef.set([...comments[formId][questionId], commentObj]);
         }else{
-          console.log('skip')
+          //console.log('skip')
         }
       
         }
@@ -543,8 +581,8 @@ const NewReport = () => {
         e.preventDefault();
         let form_curr_instance_id = 851
         let curr_ques_id = 107
-        console.log('sub_form_id=', bdata.report_version_id)
-        console.log('sub_ques_id=', bdata.question_id)
+        //console.log('sub_form_id=', bdata.report_version_id)
+        //console.log('sub_ques_id=', bdata.question_id)
         postComment(
           comment,
           bdata.report_version_id,
@@ -559,26 +597,26 @@ const NewReport = () => {
         instanceId,
         callback
       ) => {
-        console.log('formId_call=', formId.length)
-        console.log('run_condn=',questionId?.toString().length)
+        //console.log('formId_call=', formId.length)
+        //console.log('run_condn=',questionId?.toString().length)
         if (formId?.length && questionId?.toString().length) {
           const prevFormComments = comments[formId];
-          console.log('prevFormComm=', prevFormComments)
+          //console.log('prevFormComm=', prevFormComments)
           if (false) {
             if (prevFormComments[questionId]?.length) {
-              console.log("Yes found");
+              //console.log("Yes found");
               callback(prevFormComments[questionId]);
             }
           } else {
-            console.log('formRef_url=',`/comments/${formId}/${instanceId}/${questionId}`)
+            //console.log('formRef_url=',`/comments/${formId}/${instanceId}/${questionId}`)
             const formRef = database.ref(
               `/comments/${formId}/${instanceId}/${questionId}`
             );
-            console.log('formRef_CommentList=', formRef)
+            //console.log('formRef_CommentList=', formRef)
             formRef.on("value", async (snap) => {
               const commentsData = (await snap.val()) ?? [];
-              console.log('comData=',{ commentsData });
-              // console.log("Not found");
+              //console.log('comData=',{ commentsData });
+              // //console.log("Not found");
               if (prevFormComments) {
                 setComments((curr) => ({
                   ...curr,
@@ -606,9 +644,9 @@ const NewReport = () => {
           comments: [],
         });
         let form_curr_instance_id = 851
-        console.log('commetns = ',  questionId)
-        console.log('form_id = ',  formId)
-        console.log('curr_instance_id = ', form_curr_instance_id)
+        //console.log('commetns = ',  questionId)
+        //console.log('form_id = ',  formId)
+        //console.log('curr_instance_id = ', form_curr_instance_id)
         // if (!commentsOpen) {
         await getFormQuestionComments(
           formId.toString(),
@@ -623,14 +661,14 @@ const NewReport = () => {
             }));
           }
         );
-        console.log('commentsData = ',commentsData)
-        // console.log({ questionId, form_id });
+        //console.log('commentsData = ',commentsData)
+        // //console.log({ questionId, form_id });
         // }
       };
 
       function openModal(company_name, ques_name) {
-        console.log('company=', company_name)
-        console.log('ques=', ques_name)
+        //console.log('company=', company_name)
+        //console.log('ques=', ques_name)
         var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
         const d = new Date();
         let month_digit = d.getMonth();
@@ -644,7 +682,7 @@ const NewReport = () => {
         let lastDate = '30/'+month+'/22'
         // var s = new Date(2022, month, 1);
         // var e = new Date(2022, ++month, 0);
-        // console.log(s+"\n"+e);
+        // //console.log(s+"\n"+e);
         const uploadData = new FormData();
         uploadData.append('company_name', company_name);
         uploadData.append('question_name', ques_name);
@@ -655,33 +693,33 @@ const NewReport = () => {
           body: uploadData
         }).then(data => data.json())
         .then((data) => {
-          console.log('data=',data)
+          //console.log('data=',data)
           setBdata(data)
-          console.log('back_data=', bdata)
-          // setFormId(data.report_version_id,()=>{console.log(form_id)})
+          //console.log('back_data=', bdata)
+          // setFormId(data.report_version_id,()=>{//console.log(form_id)})
           const temp_ques_id = data.question_id
-          console.log('temp_ques_id=',temp_ques_id)
+          //console.log('temp_ques_id=',temp_ques_id)
           setFormId('851')
           setQuesId(temp_ques_id)
-          console.log('back_rep_ver_id=', formId)
-          console.log('back_ques_id=', quesId)
+          //console.log('back_rep_ver_id=', formId)
+          //console.log('back_ques_id=', quesId)
           setIsOpen(true);
           let ques_id = data.question_id
           let form_id = data.report_version_id
-          console.log('ques_id=', ques_id)
-          console.log('new_form_id=', form_id)
+          //console.log('ques_id=', ques_id)
+          //console.log('new_form_id=', form_id)
           onClickComments(1, ques_id,form_id);
           })
         .catch(error => {
           // setSignIn(false);
           alert('System Error.Contact Admin')
-          console.log(error)
+          //console.log(error)
       })
       }
       function afterOpenModal() {
         // references are now sync'd and can be accessed.
         // subtitle.style.color = '#f00';
-        console.log('modalopen')
+        //console.log('modalopen')
       }
       function closeModal() {
         setIsOpen(false);
@@ -692,14 +730,14 @@ const NewReport = () => {
       }
 
       let setDropDownValue = (e)=>{
-        console.log('value=', e.value)
+        //console.log('value=', e.value)
         let val  = e.value
         // setselectedMonth(val, ()=>{
-        //   console.log(selectedMonth)
+        //   //console.log(selectedMonth)
         // })
         setselectedMonth(val)
-        console.log('month=', selectedMonth)
-        console.log('bdata=', bdata)
+        //console.log('month=', selectedMonth)
+        //console.log('bdata=', bdata)
       }
       function lastSiXMonths(){
         var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -813,7 +851,7 @@ const NewReport = () => {
 
       const getNodesForRender = (nodes, searchTerm = null) => {
         const nodesForRender = [];
-        console.log('searchval=', searchVal)
+        //console.log('searchval=', searchVal)
         if (searchVal) {
 
           for (let itemIdx = 0; itemIdx < nodes.length; itemIdx++) {
@@ -826,7 +864,7 @@ const NewReport = () => {
 
           }
         // const filteredData = nodes.filter(node => node.name.includes(searchVal));
-        console.log(nodesForRender)
+        //console.log(nodesForRender)
         return nodesForRender
         } else {
          return nodes
@@ -840,11 +878,11 @@ const NewReport = () => {
         setActiveIndex(index);
         if(index===0){
           window.localStorage.setItem('currency', 'INR')
-          console.log(window.localStorage.getItem('currency'))
+          //console.log(window.localStorage.getItem('currency'))
           setCurrencyType('INR')
         }else{
           window.localStorage.setItem('currency', 'USD')
-          console.log(window.localStorage.getItem('currency'))
+          //console.log(window.localStorage.getItem('currency'))
           setCurrencyType('USD')
         }
 
@@ -863,7 +901,7 @@ const NewReport = () => {
               }
           ] 
         }
-        console.log('wrs=', window.reports)
+        //console.log('wrs=', window.reports)
         for(let i = 0; i<window.reports.length; i++){
           window.reports[i].getActivePage().then(
             (activePage=>{
@@ -887,6 +925,25 @@ const NewReport = () => {
             })
           )
         }
+        // let curr = window.localStorage.getItem('currency')
+        // let year = window.localStorage.getItem('year')
+        // let email = window.localStorage.getItem('email')
+        // const uploadData = new FormData();
+        // uploadData.append('email', email);
+        // uploadData.append('year', year);
+        // uploadData.append('currency', curr)
+        // fetch(`${process.env.REACT_APP_API_ENDPOINT}/usercurrency/`, {
+        //     method: 'POST',
+        //     body: uploadData
+        //   }).then(data => data.json())
+        //   .then( data => {
+        //         console.log(data)
+        //     })
+        //   .catch(error => {
+        //     // setSignIn(false);
+        //     alert('System Error.Contact Admin')
+        //     console.log(error)
+        // })
 
       };
       let handleYearClick = (index) =>{
@@ -912,7 +969,7 @@ const NewReport = () => {
               }
           ]
         }
-        console.log('wrs = ', window.reports)
+        //console.log('wrs = ', window.reports)
         for(let i= 0;i<window.reports.length; i++){
           window.reports[i].getActivePage().then(
             (activePage=>{
@@ -961,8 +1018,8 @@ const NewReport = () => {
 
       let handlemodalSubmitClicked = ()=>{
         if(conversiontype==='Custom'){
-          console.log('custom')
-          // console.log(currencyval)
+          //console.log('custom')
+          // //console.log(currencyval)
           const currency_valuation = {
             $schema: "http://powerbi.com/product/schema#advanced",
             target: {
@@ -993,21 +1050,21 @@ const NewReport = () => {
                 }
             ] 
           }
-          console.log('wrs=', window.reports)
+          //console.log('wrs=', window.reports)
 
           for (let i =0;i<window.reports.length;i++){
             window.reports[i].getActivePage().then(
               (activePage=>{
                 activePage.getVisuals().then(
                   (visuals=>{
-                    // console.log('visuals=',visuals)
+                    // //console.log('visuals=',visuals)
                     let slicers = visuals.filter(function (visual) {
                       return visual.type === "slicer";
                   }
                   );
                     slicers.forEach(async (slicer) => {
                       const state = await slicer.getSlicerState();    
-                      console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+                      //console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
   
                       //not using state as it will change on page load.page laod code for 1st
                       
@@ -1026,7 +1083,7 @@ const NewReport = () => {
                       }
   
                 })      
-                    // console.log('slicer=', slicers)
+                    // //console.log('slicer=', slicers)
                   })
                 )
               })
@@ -1053,14 +1110,14 @@ const NewReport = () => {
               (activePage=>{
                 activePage.getVisuals().then(
                   (visuals=>{
-                    // console.log('visuals=',visuals)
+                    // //console.log('visuals=',visuals)
                     let slicers = visuals.filter(function (visual) {
                       return visual.type === "slicer";
                   }
                   );
                     slicers.forEach(async (slicer) => {
                       const state = await slicer.getSlicerState();    
-                      console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+                      //console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
   
                       //not using state as it will change on page load.page laod code for 1st
                       
@@ -1072,7 +1129,7 @@ const NewReport = () => {
                       }
   
                 })      
-                    // console.log('slicer=', slicers)
+                    // //console.log('slicer=', slicers)
                   })
                 )
               })
@@ -1092,7 +1149,7 @@ const NewReport = () => {
               let active_width = activePage.defaultSize.width
               let width = document.getElementsByClassName('report-style-class-newreport'+i)[0].offsetWidth;
               let ht = ((active_ht/active_width)*width)
-              console.log(active_ht,active_width, width,ht)
+              //console.log(active_ht,active_width, width,ht)
               document.getElementsByClassName('report-style-class-newreport'+i)[0].style.height = ht+'px';
               }))
   
@@ -1133,12 +1190,12 @@ const NewReport = () => {
               </Menu>
             </ProSidebarContainer> */}
 
-            <SideMenuContainer width={treemenucollapse ? '25vw' : '11px'}>
+            <SideMenuContainer width={treemenucollapse ? '25vw' : '10px'}>
               <TreeMenu
               data={myPages}
               initialOpenNodes = {['9']}
               onClickItem={({ key, label, ...props }) => {
-                console.log('init') 
+                //console.log('init') 
                 // let arr = treearr
                 // if(props.hasNodes === false){
                 //   arr.pop()
@@ -1179,8 +1236,8 @@ const NewReport = () => {
             <PowerbiContainer>
                 <BreadCrumbTop>
                   <div>
-                    <button onClick = {handleTreeMenuCollapse} style={{'color':'white', 'backgroundColor':'#18183E'}}><GiHamburgerMenu/></button>
-                    <span style = {{'fontSize':'35px', 'fontWeight':'bold'}}> {selectedpage}</span>
+                    <button onClick = {handleTreeMenuCollapse} style={{ 'backgroundColor':'#F5F8FC', 'height':'70px', 'borderRadius':'0px 10px 10px 0px', 'border':'1px solid #18183E', 'fontSize':'20px'}}>{treemenucollapse?<BsArrowBarLeft/>:<BsArrowBarRight/>}</button>
+                    <span style = {{'fontSize':'35px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}> {selectedpage}</span>
                   </div>
                   <div  style={{'marginLeft':'3.5vw' ,'marginBottom':'10px'}}>
                   {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
@@ -1192,10 +1249,14 @@ const NewReport = () => {
                     <Inr>
                       <Currencybutton bgcolor={activeIndex === 0 ? '#26CDCC' : '#EAEAEA'}
                        color={activeIndex === 1 ? '#333333' : '#333333'}
-                      onClick={() => handleCurrencyClick(0)}>INR</Currencybutton>
+                      onClick={() => handleCurrencyClick(0)}>
+                        INR
+                      </Currencybutton>
                       <Currencybutton bgcolor={activeIndex === 1 ? '#26CDCC' : '#EAEAEA'}
-                      color={activeIndex === 0 ? '#333333' : '#333333'}
-                      onClick={() => handleCurrencyClick(1)}>USD</Currencybutton>
+                      color={activeIndex === 1 ? '#333333' : '#333333'}
+                      onClick={() => handleCurrencyClick(1)}>
+                        USD
+                      </Currencybutton>
                     </Inr>
                     <Gear><BsGear style={{ 'fontSize': "20px" }} onClick={()=>handleGearClick()}/></Gear>
                     <Cyfy>
@@ -1203,7 +1264,7 @@ const NewReport = () => {
                        color={yearIndex === 1 ? '#333333' : '#333333'}
                       onClick={() => handleYearClick(0)}>CY</Currencybutton>
                       <Currencybutton bgcolor={yearIndex === 1 ? '#26CDCC' : '#EAEAEA'}
-                      color={yearIndex === 0 ? '#333333' : 'white'}
+                      color={yearIndex === 0 ? '#333333' : '#333333'}
                       onClick={() => handleYearClick(1)}>FY</Currencybutton>
                     </Cyfy>
                   </Currency>:<></>}
@@ -1300,7 +1361,7 @@ const NewReport = () => {
                   eventHandlers = {
                     new Map([
                       ['loaded', async function (event, report) {
-                        console.log('Report loaded');
+                        //console.log('Report loaded');
                         if(true){
                           const filter = {
                             $schema: "http://powerbi.com/product/schema#advanced",
@@ -1361,7 +1422,7 @@ const NewReport = () => {
                           conditions: [
                               {
                                   operator: "Is",
-                                  value: 'FY'
+                                  value: window.localStorage.getItem('year')
                               }
                           ]
                         }
@@ -1399,11 +1460,11 @@ const NewReport = () => {
                         }
                         
                         // let window_reports = window.reports
-                        // console.log('wr',window_reports)
+                        // //console.log('wr',window_reports)
                         // let pages_arr = await window.report.getPages()
-                        // console.log('newreps=',index)
+                        // //console.log('newreps=',index)
                         // pages_arr.map((element, i)=>{
-                        //   console.log(element,i)
+                        //   //console.log(element,i)
                         // })
                         report.getActivePage().then(
                           (activePage=>{
@@ -1421,16 +1482,16 @@ const NewReport = () => {
                             // document.getElementsByClassName('report-style-class-newreport'+i)[0].style.width = activePage.defaultSize.width+'px';
                             activePage.getVisuals().then(
                               (visuals=>{
-                                // console.log('visuals=',visuals)
+                                // //console.log('visuals=',visuals)
                                 let slicers = visuals.filter(function (visual) {
                                   return visual.type === "slicer";
                               }
                               );
                                 slicers.forEach(async (slicer) => {
                                   const state = await slicer.getSlicerState();    
-                                  console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+                                  //console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
                                   if(state.targets[0].column==="player_name"){
-                                    console.log('slicer_name=',slicer)
+                                    //console.log('slicer_name=',slicer)
                                     let target_slicer = visuals.filter(function (visual) {
                                       return visual.type === "slicer" && visual.name === slicer.name;             
                                   })[0];
@@ -1472,7 +1533,7 @@ const NewReport = () => {
                                   // }
 
                             })      
-                                // console.log('slicer=', slicers)
+                                // //console.log('slicer=', slicers)
                               })
                             )
                           })
@@ -1480,7 +1541,7 @@ const NewReport = () => {
                         }
                       }],
                       ['rendered', function () {
-                        console.log('report render')
+                        //console.log('report render')
                         // const money_converter = {
                         //   $schema: "http://powerbi.com/product/schema#advanced",
                         //   target: {
@@ -1522,7 +1583,7 @@ const NewReport = () => {
                         //         slicers.forEach(async (slicer) => {
                         //         const state = await slicer.getSlicerState();  
                         //         if(state.targets[0].column==="player_name"){
-                        //           console.log('slicer_name=',slicer)
+                        //           //console.log('slicer_name=',slicer)
                         //         //   let target_slicer = visuals.filter(function (visual) {
                         //         //     return visual.type === "slicer" && visual.name === slicer.name;             
                         //         // })[0];
@@ -1560,7 +1621,7 @@ const NewReport = () => {
                               });
                                 slicers.forEach(async (slicer) => {
                                 const state = await slicer.getSlicerState();    
-                                // console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+                                // //console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
                                 if(state.targets[0].column==="player_name"){
                                   company_name=state.filters[0].values[0]
                                   // company_name=window.sessionStorage.getItem("player_name")
@@ -1568,7 +1629,7 @@ const NewReport = () => {
                                 }
                         
                             })      
-                                // console.log('slicer=', slicers)
+                                // //console.log('slicer=', slicers)
                               })
                             )
                           })
@@ -1580,28 +1641,28 @@ const NewReport = () => {
                 
                   cssClassName = { "report-style-class-newreport"+i}
                   getEmbeddedComponent = {async(embeddedReport) => {
-                    // console.log('winRow=', window.report)
+                    // //console.log('winRow=', window.report)
                     if(window.reports === undefined) {
                       window.reports=[]
                     }
                     window.reports.push(embeddedReport);
-                    console.log('wr = ',window.reports)
+                    //console.log('wr = ',window.reports)
                     // window.report.getActivePage().then(
-                    //   (activePage=>{console.log(activePage)})
+                    //   (activePage=>{//console.log(activePage)})
                     // )
-                    // console.log('winRow1=', window.report)
+                    // //console.log('winRow1=', window.report)
                     // const pages = awa(embeddedReport).getPages();
                     // setReport(embeddedReport)
-                    // console.log('embedReport=',embeddedReport)
+                    // //console.log('embedReport=',embeddedReport)
                     // const pages = embeddedReport.getPages();
-                    // console.log('pages1=',pages)
+                    // //console.log('pages1=',pages)
                     // const getPages= async (embeddedReport) => {
-                    //   console.log('start')
+                    //   //console.log('start')
                     //   const pagesgp = await embeddedReport.getPages()
-                    //   console.log('pagegp=', pagesgp)
+                    //   //console.log('pagegp=', pagesgp)
                     //   setReportPages(pagesgp);
-                    //   console.log('rp=', ReportPages)
-                    //   console.log('done')
+                    //   //console.log('rp=', ReportPages)
+                    //   //console.log('done')
                     // };
                   
                     // getPages(window.report);
@@ -1662,7 +1723,7 @@ const Currency = styled.div`
   grid-template-rows: 1fr; 
   gap: 0px 0px; 
   grid-template-areas: 
-    "Descurr . Inr . Gear . . Cyfy";
+    "Descurr . Inr . Gear .  Cyfy .";
 `
 const Descurr = styled.div`
   grid-area:Descurr;

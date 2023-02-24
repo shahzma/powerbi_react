@@ -6,6 +6,7 @@ import { MdHouseSiding , MdOutlineCasino} from "react-icons/md";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { GiHealthNormal } from "react-icons/gi";
 import { TbBooks } from "react-icons/tb";
+import { get } from 'jquery';
 
 const Head = () => {
     let today = new Date();
@@ -14,6 +15,27 @@ const Head = () => {
     const handleSignOut = ()=>{
         console.log('signout')
         window.localStorage.setItem('loginStatus','false')
+        let curr = window.localStorage.getItem('currency')
+        let year = window.localStorage.getItem('year')
+        let email = window.localStorage.getItem('email')
+        let report = window.localStorage.getItem('report')
+        const uploadData = new FormData();
+        uploadData.append('email', email);
+        uploadData.append('year', year);
+        uploadData.append('currency', curr)
+        uploadData.append('report', report)
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/usercurrency/`, {
+            method: 'POST',
+            body: uploadData
+          }).then(data => data.json())
+          .then( data => {
+                console.log(data)
+            })
+          .catch(error => {
+            // setSignIn(false);
+            // alert('System Error.Contact Admin')
+            console.log(error)
+        })
         window.location.reload()
     }
   return (  <>
