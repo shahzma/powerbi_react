@@ -1019,7 +1019,7 @@ const NewReport = () => {
         if(conversion_type!==null){
           setConversionType(conversion_type)
         }else{
-          setConversionType('custom')
+          setConversionType('Custom')
         }
         if(val!==null){
           console.log(val)
@@ -1052,7 +1052,7 @@ const NewReport = () => {
           //console.log('custom')
           // //console.log(currencyval)
           window.localStorage.setItem('conversion_type', 'Custom')
-          console(window.localStorage.getItem('conversion_type'))
+          console.log(window.localStorage.getItem('conversion_type'))
           console.log(currencyval)
           window.localStorage.setItem('currency_val', currencyval)
           const currency_valuation = {
@@ -1273,16 +1273,16 @@ const NewReport = () => {
             {/* // Use any third-party UI framework */}
             <PowerbiContainer>
                 <BreadCrumbTop>
-                  <div style={{'marginLeft':'3.3vw', 'display':'flex', 'alignItems':'center'}}>
+                  <div style={treemenucollapse?{'marginLeft':'2.9vw', 'display':'flex', 'alignItems':'center'}:{'marginLeft':'3.8vw', 'display':'flex', 'alignItems':'center'}}>
                     {treemenucollapse?<></>:<button  style={{'height':'42px', 'borderRadius':'8px', 'width':'50px', 'backgroundColor':'white', }} onClick={handleTreeMenuCollapse}><GiHamburgerMenu/></button>}
                     <span style = {{ 'marginLeft':'5px','fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}>{selectedpage}</span>
                   </div>
-                  <div  style={{'marginLeft':'3.3vw' ,'marginBottom':'10px'}}>
+                  <div  style={treemenucollapse?{'marginLeft':'3.3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.8vw' ,'marginBottom':'10px'}}>
                   {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
                   Products/ {treearr.length>0?<>{treearr.join(" / ")}</>:<>Consumer Internet</>}
                   </div>
 
-                  {showcurrencybar?<Currency grid-template-columns = {treemenucollapse}>
+                  {showcurrencybar?<Currency marginLeft = {treemenucollapse?'3.3vw':'3.8vw'}columns={treemenucollapse?'2fr 0.15fr 0.85fr 0.1fr 0.4fr 3.35fr 1fr 0.15fr':'2fr 0.15fr 0.85fr 0.1fr 0.4fr 3.5fr 0.85fr 0.15fr'}>
                     <Descurr>Please select your desired currency</Descurr>
                     <Inr>
                       <Currencybutton bgcolor={activeIndex === 0 ? '#26CDCC' : '#EAEAEA'}
@@ -1755,11 +1755,11 @@ const BreadCrumbTop = styled.div`
   background-color:#F5F8FC;
 `
 const Currency = styled.div`
-  margin-left:3.3vw;
+  margin-left:${props => props.marginLeft};
   margin-bottom:10px;
   display: grid; 
   grid-auto-rows: 1fr; 
-  grid-template-columns: 2fr 0.15fr 0.85fr 0.1fr 0.4fr 3.35fr 1fr 0.15fr; 
+  grid-template-columns: ${props => props.columns}; 
   grid-template-rows: 1fr; 
   gap: 0px 0px; 
   grid-template-areas: 
