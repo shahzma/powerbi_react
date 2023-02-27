@@ -32,6 +32,7 @@ import TreeMenu from 'react-simple-tree-menu';
 import '../../node_modules/react-simple-tree-menu/dist/main.css'
 import Head from '../components/Head/Head';
 import { ListGroupItem, Input, ListGroup } from 'reactstrap';
+import { TailSpin } from  'react-loader-spinner'
 import {Link, Navigate} from 'react-router-dom';
 
 const NewReport = () => {
@@ -67,6 +68,7 @@ const NewReport = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [yearIndex, setyearIndex] = useState(0);
     const [conversiontype, setConversionType] = useState('Custom')
+    const [showLoader, setshowLoader] = useState(false);
     const [commentsData, setCommentsData] = useState({
       currentQuestion: 1,
       currentQuestionId: "",
@@ -354,6 +356,7 @@ const NewReport = () => {
       }
 
       let handleClickTree = (reportname)=>{
+        setshowLoader(true)
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep=${reportname}`, {
           method:'GET',
           headers:{
@@ -389,6 +392,7 @@ const NewReport = () => {
 
             // }
             setnewReportPages(res)
+            setshowLoader(false)
           }
         )
         //console.log(reportname)
@@ -437,8 +441,8 @@ const NewReport = () => {
         return parents
       }
       const DEFAULT_PADDING = 16;
-      const ICON_SIZE = 8;
-      const LEVEL_SPACE = 16
+      const ICON_SIZE = 3;
+      const LEVEL_SPACE = 8
 
       const ToggleIcon = ({ on }) => <span style={{ marginRight: 8 }}>{on ? <IoIosArrowDown/> : <IoIosArrowForward/>}</span>;
       // listitem is functional component
@@ -458,7 +462,7 @@ const NewReport = () => {
         // props enabling clicking/navigating nodes
           {...props}
           style={{
-            paddingLeft: DEFAULT_PADDING + ICON_SIZE + level * LEVEL_SPACE,
+            paddingLeft:  ICON_SIZE + level * LEVEL_SPACE,
             cursor: 'pointer',
             boxShadow: focused ? '0px 0px 5px 0px #222' : 'none',
             zIndex: focused ? 999 : 'unset',
@@ -836,6 +840,19 @@ const NewReport = () => {
       
       
       };
+      const currencyFilter = {$schema:"http://powerbi.com/product/schema#basic",target:{table:"CurrencyTable", "column":"Currency"},operator:"In",values:["INR"],filterType:models.FilterType.BasicFilter};
+      
+      const basicFilter = {
+        $schema: "http://powerbi.com/product/schema#basic",
+        target: {
+          table: "content_data main_data",
+        "column": "Players"},
+      
+        operator: "In",
+        values: [window.localStorage.getItem('report')],
+        filterType: models.FilterType.BasicFilter
+      };
+
       const treeData = [
         {
           key: 'first-level-node-1',
@@ -1013,9 +1030,7 @@ const NewReport = () => {
       }
       let handleGearClick = ()=>{
         let val = window.localStorage.getItem('currency_val')
-        console.log(val)
         let conversion_type = window.localStorage.getItem('conversion_type')
-        console.log('ct=',conversion_type)
         if(conversion_type!==null){
           setConversionType(conversion_type)
         }else{
@@ -1192,9 +1207,9 @@ const NewReport = () => {
   
         }
         }
-      // if(window.localStorage.getItem('loginStatus')!=='true'){
-      //   return <Navigate to = "/signin"/>
-      // }
+      if(window.localStorage.getItem('loginStatus')!=='true'){
+        return <Navigate to = "/signin"/>
+      }
   return (
     <>
         {/* <PageHeader>
@@ -1202,30 +1217,6 @@ const NewReport = () => {
         </PageHeader> */}
         <Head/>
         <BodyContainer>
-            {/* <ProSidebarContainer collapsed={toggle}>
-              <Menu>
-                <MenuItem></MenuItem>
-                <MenuItem><button onClick={()=>handleToggle()}><img src = "/Images/menu.png" style={{width: '20px', height:'15px'}}/></button></MenuItem>
-                <MenuItem></MenuItem>
-                {myPages.map((repver)=>{
-                  return repver.children_page_name.length===0?(
-                    <ProMenuItem icon={iconDict[repver.page_name]} onClick={()=>handleClick(repver.link, repver.page_name)}>
-                      {repver.page_name}
-                    </ProMenuItem>
-                  ):(
-                    <ProSubMenu title={repver.page_name} icon={iconDict[repver.page_name]}>
-                      {repver.children_page_name.map(i=>{
-                          return(
-                            <ProMenuItem key={i.id} onClick={()=>handleClick(i.link, i.page_name)}>
-                                <div style = {{fontFamily:'Arial'}}>{'\u2022'}&nbsp;{i.page_name}</div>
-                            </ProMenuItem>
-                          )
-                        })}
-                    </ProSubMenu>
-                  )
-                })}
-              </Menu>
-            </ProSidebarContainer> */}
 
             <SideMenuContainer width={treemenucollapse ? '25vw' : '10px'}>
               <TreeMenu
@@ -1271,449 +1262,338 @@ const NewReport = () => {
             </SideMenuContainer>
             
             {/* // Use any third-party UI framework */}
-            <PowerbiContainer>
-                <BreadCrumbTop>
-                  <div style={treemenucollapse?{'marginLeft':'2.9vw', 'display':'flex', 'alignItems':'center'}:{'marginLeft':'3.8vw', 'display':'flex', 'alignItems':'center'}}>
-                    {treemenucollapse?<></>:<button  style={{'height':'42px', 'borderRadius':'8px', 'width':'50px', 'backgroundColor':'white', }} onClick={handleTreeMenuCollapse}><GiHamburgerMenu/></button>}
-                    <span style = {{ 'marginLeft':'5px','fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}>{selectedpage}</span>
-                  </div>
-                  <div  style={treemenucollapse?{'marginLeft':'3.3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.8vw' ,'marginBottom':'10px'}}>
-                  {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
-                  Products/ {treearr.length>0?<>{treearr.join(" / ")}</>:<>Consumer Internet</>}
-                  </div>
-
-                  {showcurrencybar?<Currency marginLeft = {treemenucollapse?'3.3vw':'3.8vw'}columns={treemenucollapse?'2fr 0.15fr 0.85fr 0.1fr 0.4fr 3.35fr 1fr 0.15fr':'2fr 0.15fr 0.85fr 0.1fr 0.4fr 3.5fr 0.85fr 0.15fr'}>
-                    <Descurr>Please select your desired currency</Descurr>
-                    <Inr>
-                      <Currencybutton bgcolor={activeIndex === 0 ? '#26CDCC' : '#EAEAEA'}
-                       color={activeIndex === 1 ? '#333333' : '#333333'}
-                      onClick={() => handleCurrencyClick(0)}>
-                        INR
-                      </Currencybutton>
-                      <Currencybutton bgcolor={activeIndex === 1 ? '#26CDCC' : '#EAEAEA'}
-                      color={activeIndex === 1 ? '#333333' : '#333333'}
-                      onClick={() => handleCurrencyClick(1)}>
-                        USD
-                      </Currencybutton>
-                    </Inr>
-                    <Gear><BsGear style={{ 'fontSize': "20px" }} onClick={()=>handleGearClick()}/></Gear>
-                    <Cyfy>
-                    <Currencybutton bgcolor={yearIndex === 0 ? '#26CDCC' : '#EAEAEA'}
-                       color={yearIndex === 1 ? '#333333' : '#333333'}
-                      onClick={() => handleYearClick(0)}>CY</Currencybutton>
-                      <Currencybutton bgcolor={yearIndex === 1 ? '#26CDCC' : '#EAEAEA'}
-                      color={yearIndex === 0 ? '#333333' : '#333333'}
-                      onClick={() => handleYearClick(1)}>FY</Currencybutton>
-                    </Cyfy>
-                  </Currency>:<></>}
-                  <div>
-                  {/* <Modal
-                        isOpen={modalIsOpen}
-                        onAfterOpen={afterOpenModal}
-                        onRequestClose={closeModal}
-                        style={customStyles}
-                        contentLabel="Example Modal"
-                      >
-                        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Add comment</h2>
-                        <div>
-                          {commentsData.comments.map((comObj, index)=>{
-                          return (
-                            <>
-                              <Commenter>
-                                <img src = "/Images/user.svg" alt = ""/>
-                                {comObj.author}
-                              </Commenter>
-                              <CommentValue>{comObj.comment}</CommentValue>
-                            </>
-                            )
-                        })}
-                        </div>
-                        <form>
-                          <Dropdown options={options} onChange={(e)=>setDropDownValue(e)}  value={defaultOption} placeholder="Select an option" />
-                          <CommentTextInput onChange={(e) => inputChanged(e)}/>
-                          <button onClick={(e)=>addComment(e)}>Submit</button>
-                        </form>
-                    </Modal> */}
-                    <Modal
-                    isOpen={moneymodalIsOpen}
-                    onAfterOpen={afterOpenModal}
-                    onRequestClose={closeModal}
-                    style={customStyles}
-                    contentLabel="Example Modal"
-                  >
-                    <div>Please select USD conversion rate</div>
-                    <form>
-                    <input type="radio" id="html" name="fav_language"  onClick={()=>{setConversionType('Dynamic')}} value = 'Dynamic'checked={conversiontype === 'Dynamic'}/>
-                    <label  style={{'marginLeft':'5px'}}>Dynamic</label><br/>
-                    <input type="radio" id="css" name="fav_language" onClick={()=>{setConversionType('Custom')}} value="Custom" checked={conversiontype === 'Custom'}/>
-                    <label  style={{'marginLeft':'5px'}}> Custom</label><br/>
-                    </form>
-                    <div>
-                      <button style={{'marginRight':'5px', 'borderRadius':'5px', 'width':'30px'}} onClick = {decCurrency}>-</button>
-                      <input  value={currencyval}/>
-                      <button style={{'marginLeft':'5px', 'borderRadius':'5px', 'width':'30px'}} onClick = {incCurrency}>+</button>
+              {showLoader===false?<PowerbiContainer>
+                  <BreadCrumbTop>
+                    <div style={treemenucollapse?{'marginLeft':'2.9vw', 'display':'flex', 'alignItems':'center'}:{'marginLeft':'3.8vw', 'display':'flex', 'alignItems':'center'}}>
+                      {treemenucollapse?<></>:<button  style={{'height':'42px', 'borderRadius':'8px', 'width':'50px', 'backgroundColor':'white', }} onClick={handleTreeMenuCollapse}><GiHamburgerMenu/></button>}
+                      <span style = {{ 'marginLeft':'5px','fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}>{selectedpage}</span>
                     </div>
-                    {/* <input></input> */}
-                    {/* <h2>Hello</h2>
-                    <button onClick={closeModal}>close</button>
-                    <div>I am a modal</div>
-                    <form>
-                      <input />
-                      <button>tab navigation</button>
-                      <button>stays</button>
-                      <button>inside</button>
-                      <button>the modal</button>
-                    </form> */}
-                    <button style={{'color':'white', 'backgroundColor':'#4867AA','marginTop':'10px', 'borderRadius':'6px'}} onClick={handlemodalSubmitClicked}>Submit</button>
-                  </Modal>
-                  </div>
-                </BreadCrumbTop>
-              <PowerBiDiv>
-              {newReportPages.map((index,i) => {
-                return(
-                <div key={index.id}>
-                  <PowerBIEmbed
-                   embedConfig = {{
-                    type: 'report',   // Supported types: report, dashboard, tile, visual and qna
-                    id: index['powerbi_report_id'],
-                    //get from props
-                    embedUrl:index['url'],
-                    accessToken: index['embed'],
-                    tokenType: models.TokenType.Embed,
-                    filters: [datefilter],
-                    settings: {
-                      // background:models.BackgroundType.Transparent,
-                      layoutType:models.LayoutType.Custom,
-                      customLayout:{
-                        displayOption:models.DisplayOption.FitToPage
-                      },
-                      panes: {
-                        filters: {
-                          expanded: false,
-                          visible: false,
+                    <div  style={treemenucollapse?{'marginLeft':'3.3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.8vw' ,'marginBottom':'10px'}}>
+                    {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
+                    Products/ {treearr.length>0?<>{treearr.join(" / ")}</>:<>Consumer Internet</>}
+                    </div>
+                    {showcurrencybar?<Currency marginLeft = {treemenucollapse?'3.3vw':'3.8vw'}columns={treemenucollapse?'2fr 0.15fr 1fr 0.1fr 0.4fr 3.25fr 1fr 0.1fr':'2fr 0.15fr 1fr 0.1fr 0.4fr 3.39fr 0.85fr 0.11fr'}>
+                      <Descurr>Please select your desired currency</Descurr>
+                      <Inr>
+                        <Currencybutton bgcolor={activeIndex === 0 ? '#26CDCC' : '#EAEAEA'}
+                         color={activeIndex === 1 ? '#333333' : '#333333'}
+                        onClick={() => handleCurrencyClick(0)}>
+                          INR
+                        </Currencybutton>
+                        <Currencybutton bgcolor={activeIndex === 1 ? '#26CDCC' : '#EAEAEA'}
+                        color={activeIndex === 1 ? '#333333' : '#333333'}
+                        onClick={() => handleCurrencyClick(1)}>
+                          USD
+                        </Currencybutton>
+                      </Inr>
+                      <Gear><BsGear style={{ 'fontSize': "20px" }} onClick={()=>handleGearClick()}/></Gear>
+                      <Cyfy>
+                      <Currencybutton bgcolor={yearIndex === 0 ? '#26CDCC' : '#EAEAEA'}
+                         color={yearIndex === 1 ? '#333333' : '#333333'}
+                        onClick={() => handleYearClick(0)}>CY</Currencybutton>
+                        <Currencybutton bgcolor={yearIndex === 1 ? '#26CDCC' : '#EAEAEA'}
+                        color={yearIndex === 0 ? '#333333' : '#333333'}
+                        onClick={() => handleYearClick(1)}>FY</Currencybutton>
+                      </Cyfy>
+                    </Currency>:<></>}
+                    <div>
+                    {/* <Modal
+                          isOpen={modalIsOpen}
+                          onAfterOpen={afterOpenModal}
+                          onRequestClose={closeModal}
+                          style={customStyles}
+                          contentLabel="Example Modal"
+                        >
+                          <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Add comment</h2>
+                          <div>
+                            {commentsData.comments.map((comObj, index)=>{
+                            return (
+                              <>
+                                <Commenter>
+                                  <img src = "/Images/user.svg" alt = ""/>
+                                  {comObj.author}
+                                </Commenter>
+                                <CommentValue>{comObj.comment}</CommentValue>
+                              </>
+                              )
+                          })}
+                          </div>
+                          <form>
+                            <Dropdown options={options} onChange={(e)=>setDropDownValue(e)}  value={defaultOption} placeholder="Select an option" />
+                            <CommentTextInput onChange={(e) => inputChanged(e)}/>
+                            <button onClick={(e)=>addComment(e)}>Submit</button>
+                          </form>
+                      </Modal> */}
+                      <Modal
+                      isOpen={moneymodalIsOpen}
+                      onAfterOpen={afterOpenModal}
+                      onRequestClose={closeModal}
+                      style={customStyles}
+                      contentLabel="Example Modal"
+                    >
+                      <div>Please select USD conversion rate</div>
+                      <form>
+                      <input type="radio" id="html" name="fav_language"  onClick={()=>{setConversionType('Dynamic')}} value = 'Dynamic'checked={conversiontype === 'Dynamic'}/>
+                      <label  style={{'marginLeft':'5px'}}>Dynamic</label><br/>
+                      <input type="radio" id="css" name="fav_language" onClick={()=>{setConversionType('Custom')}} value="Custom" checked={conversiontype === 'Custom'}/>
+                      <label  style={{'marginLeft':'5px'}}> Custom</label><br/>
+                      </form>
+                      <div>
+                        <button style={{'marginRight':'5px', 'borderRadius':'5px', 'width':'30px'}} onClick = {decCurrency}>-</button>
+                        <input  value={currencyval}/>
+                        <button style={{'marginLeft':'5px', 'borderRadius':'5px', 'width':'30px'}} onClick = {incCurrency}>+</button>
+                      </div>
+                      <button style={{'color':'white', 'backgroundColor':'#4867AA','marginTop':'10px', 'borderRadius':'6px'}} onClick={handlemodalSubmitClicked}>Submit</button>
+                    </Modal>
+                    </div>
+                  </BreadCrumbTop>
+                <PowerBiDiv>
+                {newReportPages.map((index,i) => {
+                  return(
+                  <div key={index.id}>
+                    <PowerBIEmbed
+                     embedConfig = {{
+                      type: 'report',   // Supported types: report, dashboard, tile, visual and qna
+                      id: index['powerbi_report_id'],
+                      //get from props
+                      embedUrl:index['url'],
+                      accessToken: index['embed'],
+                      tokenType: models.TokenType.Embed,
+                      filters: [datefilter, currencyFilter, basicFilter],
+                      settings: {
+                        // background:models.BackgroundType.Transparent,
+                        layoutType:models.LayoutType.Custom,
+                        customLayout:{
+                          displayOption:models.DisplayOption.FitToPage
                         },
-                      },
-                      navContentPaneEnabled:false
-                    }
-                  }}
-                  eventHandlers = {
-                    new Map([
-                      ['loaded', async function (event, report) {
-                        //console.log('Report loaded');
-                        if(true){
-                          const filter = {
+                        panes: {
+                          filters: {
+                            expanded: false,
+                            visible: false,
+                          },
+                        },
+                        navContentPaneEnabled:false
+                      }
+                    }}
+                    eventHandlers = {
+                      new Map([
+                        ['loaded', async function (event, report) {
+                          //console.log('Report loaded');
+                          if(true){
+                            const filter = {
+                              $schema: "http://powerbi.com/product/schema#advanced",
+                              target: {
+                                  table: "content_data player",
+                                  column: "player_name"
+                              },
+                              filterType: models.FilterType.Advanced,
+                              logicalOperator: "Is",
+                              conditions: [
+                                  {
+                                      operator: "Is",
+                                      value: window.localStorage.getItem("player_name")
+                                  }
+                              ]
+                          };
+                          // filter if there is a player in dropdown menu instead of page
+                          const filter_player_dropdown = {
+                            $schema: "http://powerbi.com/product/schema#advanced",
+                              target: {
+                                  table: "content_data main_data",
+                                  column: "Players"
+                              },
+                              filterType: models.FilterType.Advanced,
+                              logicalOperator: "Is",
+                              conditions: [
+                                  {
+                                      operator: "Is",
+                                      value: window.localStorage.getItem('drop_dn_player_name')
+                                  }
+                              ]
+                          }
+                          const money_converter = {
                             $schema: "http://powerbi.com/product/schema#advanced",
                             target: {
-                                table: "content_data player",
-                                column: "player_name"
+                                table: "Currency Table",
+                                column: "Currency"
                             },
                             filterType: models.FilterType.Advanced,
                             logicalOperator: "Is",
                             conditions: [
                                 {
                                     operator: "Is",
-                                    value: window.localStorage.getItem("player_name")
+                                    value: window.localStorage.getItem('currency')
                                 }
-                            ]  
-                        };
-                        // filter if there is a player in dropdown menu instead of page
-                        const filter_player_dropdown = {
-                          $schema: "http://powerbi.com/product/schema#advanced",
+                            ]
+                          }
+                          const year_converter = {
+                            $schema: "http://powerbi.com/product/schema#advanced",
                             target: {
-                                table: "content_data main_data",
-                                column: "Players"
+                                table: "Date Parameter",
+                                column: "Year_Type"
                             },
                             filterType: models.FilterType.Advanced,
                             logicalOperator: "Is",
                             conditions: [
                                 {
                                     operator: "Is",
-                                    value: window.localStorage.getItem('drop_dn_player_name')
+                                    value: window.localStorage.getItem('year')
                                 }
-                            ] 
-                        }
-
-                        const money_converter = {
-                          $schema: "http://powerbi.com/product/schema#advanced",
-                          target: {
-                              table: "Currency Table",
-                              column: "Currency"
-                          },
-                          filterType: models.FilterType.Advanced,
-                          logicalOperator: "Is",
-                          conditions: [
-                              {
-                                  operator: "Is",
-                                  value: window.localStorage.getItem('currency')
+                            ]
+                          }
+                          const currency_valuation = {
+                            $schema: "http://powerbi.com/product/schema#advanced",
+                            target: {
+                                table: "Currency input",
+                                column: "Currency input"
+                            },
+                            filterType: models.FilterType.Advanced,
+                            logicalOperator: "Is",
+                            conditions: [
+                                {
+                                    operator: "Is",
+                                    value: 71
+                                }
+                            ]
+                          }
+                          const usd_selector  = {
+                            $schema: "http://powerbi.com/product/schema#advanced",
+                            target: {
+                                table: "Currency_USD_Type",
+                                column: "Type"
+                            },
+                            filterType: models.FilterType.Advanced,
+                            logicalOperator: "Is",
+                            conditions: [
+                                {
+                                    operator: "Is",
+                                    value: 'Custom'
+                                }
+                            ]
+                          }
+              
+                          // let window_reports = window.reports
+                          // //console.log('wr',window_reports)
+                          // let pages_arr = await window.report.getPages()
+                          // //console.log('newreps=',index)
+                          // pages_arr.map((element, i)=>{
+                          //   //console.log(element,i)
+                          // })
+                          report.getActivePage().then(
+                            (activePage=>{
+                              let active_ht = activePage.defaultSize.height
+                              let active_width = activePage.defaultSize.width
+                              let width = document.getElementsByClassName('report-style-class-newreport'+i)[0].offsetWidth;
+                              let ht = ((active_ht/active_width)*width)
+                              if(i==0){
+                                if(window.localStorage.getItem('finalized')==='false'){
+                                  document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-44px';
+                                }
                               }
-                          ] 
-                        }
-
-                        const year_converter = {
-                          $schema: "http://powerbi.com/product/schema#advanced",
-                          target: {
-                              table: "Date Parameter",
-                              column: "Year_Type"
-                          },
-                          filterType: models.FilterType.Advanced,
-                          logicalOperator: "Is",
-                          conditions: [
-                              {
-                                  operator: "Is",
-                                  value: window.localStorage.getItem('year')
-                              }
-                          ]
-                        }
-
-                        const currency_valuation = {
-                          $schema: "http://powerbi.com/product/schema#advanced",
-                          target: {
-                              table: "Currency input",
-                              column: "Currency input"
-                          },
-                          filterType: models.FilterType.Advanced,
-                          logicalOperator: "Is",
-                          conditions: [
-                              {
-                                  operator: "Is",
-                                  value: 71
-                              }
-                          ] 
-                        }
-
-                        const usd_selector  = {
-                          $schema: "http://powerbi.com/product/schema#advanced",
-                          target: {
-                              table: "Currency_USD_Type",
-                              column: "Type"
-                          },
-                          filterType: models.FilterType.Advanced,
-                          logicalOperator: "Is",
-                          conditions: [
-                              {
-                                  operator: "Is",
-                                  value: 'Custom'
-                              }
-                          ] 
-                        }
-                        
-                        // let window_reports = window.reports
-                        // //console.log('wr',window_reports)
-                        // let pages_arr = await window.report.getPages()
-                        // //console.log('newreps=',index)
-                        // pages_arr.map((element, i)=>{
-                        //   //console.log(element,i)
-                        // })
-                        report.getActivePage().then(
-                          (activePage=>{
-                            let active_ht = activePage.defaultSize.height
-                            let active_width = activePage.defaultSize.width
-                            let width = document.getElementsByClassName('report-style-class-newreport'+i)[0].offsetWidth;
-                            let ht = ((active_ht/active_width)*width)
-                            if(i==0){
-                              if(window.localStorage.getItem('finalized')==='false'){
-                                document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-44px';
-                              }
-                            }
-                            document.getElementsByClassName('report-style-class-newreport'+i)[0].style.height = ht+'px';
-                            document.getElementsByClassName('report-style-class-newreport'+i)[0].style.backgroundColor = '#F5F8FC'
-                            document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0].style.border = '0px';
-                            document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0].style.backgroundColor = '#F5F8FC';
-                            // document.getElementsByClassName('report-style-class-newreport'+i)[0].style.width = activePage.defaultSize.width+'px';
-                            activePage.getVisuals().then(
-                              (visuals=>{
-                                // //console.log('visuals=',visuals)
-                                let slicers = visuals.filter(function (visual) {
-                                  return visual.type === "slicer";
-                              }
-                              );
-                                slicers.forEach(async (slicer) => {
-                                  const state = await slicer.getSlicerState();    
-                                  //console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+                              document.getElementsByClassName('report-style-class-newreport'+i)[0].style.height = ht+'px';
+                              document.getElementsByClassName('report-style-class-newreport'+i)[0].style.backgroundColor = '#F5F8FC'
+                              document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0].style.border = '0px';
+                              document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0].style.backgroundColor = '#F5F8FC';
+                              // document.getElementsByClassName('report-style-class-newreport'+i)[0].style.width = activePage.defaultSize.width+'px';
+                              activePage.getVisuals().then(
+                                (visuals=>{
+                                  // //console.log('visuals=',visuals)
+                                  let slicers = visuals.filter(function (visual) {
+                                    return visual.type === "slicer";
+                                }
+                                );
+                                  slicers.forEach(async (slicer) => {
+                                    const state = await slicer.getSlicerState();
+                                    //console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+                                    if(state.targets[0].column==="player_name"){
+                                      //console.log('slicer_name=',slicer)
+                                      let target_slicer = visuals.filter(function (visual) {
+                                        return visual.type === "slicer" && visual.name === slicer.name;
+                                    })[0];
+                                      await target_slicer.setSlicerState({ filters: [filter] });
+                                    }
+                                    //not using state as it will change on page load.page laod code for 1st
+                                    if(state.targets[0].column==='Players' && window.localStorage.getItem('filter_on_company')==='true'){
+                                      let target_slicer = visuals.filter(function (visual) {
+                                        return visual.type === "slicer" && visual.name === slicer.name;
+                                    })[0];
+                                      await target_slicer.setSlicerState({ filters: [filter_player_dropdown] });
+                                    }
+                                    // if(state.targets[0].column==='Currency'){
+                                    //   let target_slicer = visuals.filter(function (visual) {
+                                    //     return visual.type === "slicer" && visual.name === slicer.name;
+                                    // })[0];
+                                    //   await target_slicer.setSlicerState({ filters: [money_converter] });
+                                    // }
+                                    // if(state.targets[0].column==='Year_Type'){
+                                    //   let target_slicer = visuals.filter(function (visual) {
+                                    //     return visual.type === "slicer" && visual.name === slicer.name;
+                                    // })[0];
+                                    //   await target_slicer.setSlicerState({ filters: [year_converter] });
+                                    // }
+                              })
+                                  // //console.log('slicer=', slicers)
+                                })
+                              )
+                            })
+                          )
+                          }
+                        }],
+                        ['rendered', function () {
+                        }],
+                        ['buttonClicked', function(event, report){
+                          let ques_name = event.detail['title']
+                          let company_name = ''
+                          window.report.getActivePage().then(
+                            (activePage=>{
+                              activePage.getVisuals().then(
+                                (visuals=>{
+                                  let slicers = visuals.filter(function (visual) {
+                                    return visual.type === "slicer";
+                                });
+                                  slicers.forEach(async (slicer) => {
+                                  const state = await slicer.getSlicerState();
+                                  // //console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
                                   if(state.targets[0].column==="player_name"){
-                                    //console.log('slicer_name=',slicer)
-                                    let target_slicer = visuals.filter(function (visual) {
-                                      return visual.type === "slicer" && visual.name === slicer.name;             
-                                  })[0];
-                                    await target_slicer.setSlicerState({ filters: [filter] });
+                                    company_name=state.filters[0].values[0]
+                                    // company_name=window.sessionStorage.getItem("player_name")
+                                    openModal(company_name, ques_name)
                                   }
-  
-                                  //not using state as it will change on page load.page laod code for 1st
-                                  if(state.targets[0].column==='Players' && window.localStorage.getItem('filter_on_company')==='true'){
-                                    let target_slicer = visuals.filter(function (visual) {
-                                      return visual.type === "slicer" && visual.name === slicer.name;             
-                                  })[0];
-                                    await target_slicer.setSlicerState({ filters: [filter_player_dropdown] });
-                                  }
-
-                                  if(state.targets[0].column==='Currency'){
-                                    let target_slicer = visuals.filter(function (visual) {
-                                      return visual.type === "slicer" && visual.name === slicer.name;             
-                                  })[0];
-                                    await target_slicer.setSlicerState({ filters: [money_converter] });
-                                  }
-
-                                  if(state.targets[0].column==='Year_Type'){
-                                    let target_slicer = visuals.filter(function (visual) {
-                                      return visual.type === "slicer" && visual.name === slicer.name;             
-                                  })[0];
-                                    await target_slicer.setSlicerState({ filters: [year_converter] });
-                                  }
-                                  
-                                  // if(state.targets[0].column==="Type"){
-                                  //   let target_slicer = visuals.filter(function (visual) {
-                                  //     return visual.type === "slicer" && visual.name === slicer.name;             
-                                  // })[0];
-                                  //   await target_slicer.setSlicerState({ filters: [usd_selector] });
-
-                                  //   let custom_usd_slicer = visuals.filter(function (visual) {
-                                  //     return visual.type === "slicer" && visual.name === slicer.name;             
-                                  // })[0]
-                                  //   await custom_usd_slicer.setSlicerState({ filters: [currency_valuation] });
-                                  // }
-
-                            })      
-                                // //console.log('slicer=', slicers)
+              
                               })
-                            )
-                          })
-                        )
-                        }
-                      }],
-                      ['rendered', function () {
-                        //console.log('report render')
-                        // const money_converter = {
-                        //   $schema: "http://powerbi.com/product/schema#advanced",
-                        //   target: {
-                        //       table: "Currency Table",
-                        //       column: "Currency"
-                        //   },
-                        //   filterType: models.FilterType.Advanced,
-                        //   logicalOperator: "Is",
-                        //   conditions: [
-                        //       {
-                        //           operator: "Is",
-                        //           value: window.localStorage.getItem('currency')
-                        //       }
-                        //   ] 
-                        // }
-
-                        // const year_converter = {
-                        //   $schema: "http://powerbi.com/product/schema#advanced",
-                        //   target: {
-                        //       table: "Date Parameter",
-                        //       column: "Year_Type"
-                        //   },
-                        //   filterType: models.FilterType.Advanced,
-                        //   logicalOperator: "Is",
-                        //   conditions: [
-                        //       {
-                        //           operator: "Is",
-                        //           value: window.localStorage.getItem('year')
-                        //       }
-                        //   ]
-                        // }
-                        // win.getActivePage().then(
-                        //   (activePage=>{
-                        //     activePage.getVisuals().then(
-                        //       (visuals=>{
-                        //         let slicers = visuals.filter(function (visual) {
-                        //           return visual.type === "slicer";
-                        //       });
-                        //         slicers.forEach(async (slicer) => {
-                        //         const state = await slicer.getSlicerState();  
-                        //         if(state.targets[0].column==="player_name"){
-                        //           //console.log('slicer_name=',slicer)
-                        //         //   let target_slicer = visuals.filter(function (visual) {
-                        //         //     return visual.type === "slicer" && visual.name === slicer.name;             
-                        //         // })[0];
-                        //         //   await target_slicer.setSlicerState({ filters: [filter] });
-                        //         }
-                                
-                        //         // if(state.targets[0].column==='Currency'){
-                        //         //   let target_slicer = visuals.filter(function (visual) {
-                        //         //     return visual.type === "slicer" && visual.name === slicer.name;             
-                        //         // })[0];
-                        //         //   await target_slicer.setSlicerState({ filters: [money_converter] });
-                        //         // }
-
-                        //         // if(state.targets[0].column==='Year_Type'){
-                        //         //   let target_slicer = visuals.filter(function (visual) {
-                        //         //     return visual.type === "slicer" && visual.name === slicer.name;             
-                        //         // })[0];
-                        //         //   await target_slicer.setSlicerState({ filters: [year_converter] });
-                        //         // }
-                        //     })      
-                        //       })
-                        //     )
-                        //   })
-                        // )
-                      }],
-                      ['buttonClicked', function(event, report){
-                        let ques_name = event.detail['title']
-                        let company_name = ''
-                        window.report.getActivePage().then(
-                          (activePage=>{
-                            activePage.getVisuals().then(
-                              (visuals=>{
-                                let slicers = visuals.filter(function (visual) {
-                                  return visual.type === "slicer";
-                              });
-                                slicers.forEach(async (slicer) => {
-                                const state = await slicer.getSlicerState();    
-                                // //console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
-                                if(state.targets[0].column==="player_name"){
-                                  company_name=state.filters[0].values[0]
-                                  // company_name=window.sessionStorage.getItem("player_name")
-                                  openModal(company_name, ques_name)
-                                }
-                        
-                            })      
-                                // //console.log('slicer=', slicers)
-                              })
-                            )
-                          })
-                        )
-                      }],
-                      ['error', function (event) {console.log('powerbi_error=',event.detail);}]
-                    ])
-                  }
-                
-                  cssClassName = { "report-style-class-newreport"+i}
-                  getEmbeddedComponent = {async(embeddedReport) => {
-                    // //console.log('winRow=', window.report)
-                    if(window.reports === undefined) {
-                      window.reports=[]
+                                  // //console.log('slicer=', slicers)
+                                })
+                              )
+                            })
+                          )
+                        }],
+                        ['error', function (event) {console.log('powerbi_error=',event.detail);}]
+                      ])
                     }
-                    window.reports.push(embeddedReport);
-                    //console.log('wr = ',window.reports)
-                    // window.report.getActivePage().then(
-                    //   (activePage=>{//console.log(activePage)})
-                    // )
-                    // //console.log('winRow1=', window.report)
-                    // const pages = awa(embeddedReport).getPages();
-                    // setReport(embeddedReport)
-                    // //console.log('embedReport=',embeddedReport)
-                    // const pages = embeddedReport.getPages();
-                    // //console.log('pages1=',pages)
-                    // const getPages= async (embeddedReport) => {
-                    //   //console.log('start')
-                    //   const pagesgp = await embeddedReport.getPages()
-                    //   //console.log('pagegp=', pagesgp)
-                    //   setReportPages(pagesgp);
-                    //   //console.log('rp=', ReportPages)
-                    //   //console.log('done')
-                    // };
-                  
-                    // getPages(window.report);
+              
+                    cssClassName = { "report-style-class-newreport"+i}
+                    getEmbeddedComponent = {async(embeddedReport) => {
+                      if(window.reports === undefined) {
+                        window.reports=[]
+                      }
+                      window.reports.push(embeddedReport);
+                    }
+              
                   }
-                
-                }
-                 /> 
-                </div>
-              )})}
-                </PowerBiDiv>
-            </PowerbiContainer>
+                   />
+                  </div>
+                )})}
+                  </PowerBiDiv>
+              </PowerbiContainer>:<TailSpin
+  height="80"
+  width="80"
+  color="#18183E"
+  ariaLabel="tail-spin-loading"
+  radius="1"
+  wrapperStyle={{ position: "fixed", top: "50%", left: "60%", transform: "translate(-50%, -50%)"}}
+  wrapperClass=""
+  visible={true}
+/>}
         </BodyContainer>
     </>
   )
@@ -1743,12 +1623,15 @@ const SidebarContainer = styled.div`
     
 `
 const PowerbiContainer = styled.div`
-    width:100%;
+    width:110%;
     /* overflow-y:hidden; */
     display:flex;
     flex-direction:column;
     min-height:90vh;
     background-color:#F5F8FC;
+    margin-left:-25px;
+    margin-right:-20px;
+    
 `
 const BreadCrumbTop = styled.div`
   min-height:10vh;
@@ -1793,6 +1676,7 @@ font-size:14px;
 const PowerBiDiv = styled.div`
 /* prevent overflow on select somehow */
   overflow-y:hidden;
+
 `
 
 const SideBarHeader = styled.div`
@@ -1834,6 +1718,7 @@ const ProMenuDivItem = styled.div`
 `
 const SideMenuContainer = styled.div`
   overflow-y:hidden;
+  overflow-x:hidden;
   width:${props=>props.width};
   background-color:#18183E;
   color:white;

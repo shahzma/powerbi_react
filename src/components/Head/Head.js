@@ -130,7 +130,7 @@ const Head = () => {
                 </ProductDiv>
                 <div>Articles</div>
                 <Man>
-                    {hour<15?'Good Morning ':'Good Evening '}<img src = "/Images/new_user.png" alt = "" style={{width: '3vw', borderRadius:'40px'}}/>
+                <img src = "/Images/new_user.png" alt = "" style={{width: '3vw', borderRadius:'40px'}}/>{hour<15?'Good Morning ':'Good Evening '}{window.localStorage.getItem('email').split('@')[0]}
                     <SignOut onClick={handleSignOut}>
                         <a>Sign Out</a>
                     </SignOut>
@@ -156,7 +156,7 @@ const SignOut = styled.div`
 display:none;
 position:absolute;
 top:8.8vh;
-right:110px;
+right:200px;
 background:#F6F6F6;
 border:1px solid black;
 border-radius: 0 0 5px 5px;
