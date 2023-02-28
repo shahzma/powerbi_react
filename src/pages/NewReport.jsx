@@ -531,7 +531,7 @@ const NewReport = () => {
 
             // check if page/report is actually availableto the user
             let available = true
-            
+
             if(hasNodes && toggleNode){
               toggleNode()
             }else{
@@ -1531,18 +1531,18 @@ const NewReport = () => {
                                     })[0];
                                       await target_slicer.setSlicerState({ filters: [filter_player_dropdown] });
                                     }
-                                    // if(state.targets[0].column==='Currency'){
-                                    //   let target_slicer = visuals.filter(function (visual) {
-                                    //     return visual.type === "slicer" && visual.name === slicer.name;
-                                    // })[0];
-                                    //   await target_slicer.setSlicerState({ filters: [money_converter] });
-                                    // }
-                                    // if(state.targets[0].column==='Year_Type'){
-                                    //   let target_slicer = visuals.filter(function (visual) {
-                                    //     return visual.type === "slicer" && visual.name === slicer.name;
-                                    // })[0];
-                                    //   await target_slicer.setSlicerState({ filters: [year_converter] });
-                                    // }
+                                    if(state.targets[0].column==='Currency'){
+                                      let target_slicer = visuals.filter(function (visual) {
+                                        return visual.type === "slicer" && visual.name === slicer.name;
+                                    })[0];
+                                      await target_slicer.setSlicerState({ filters: [money_converter] });
+                                    }
+                                    if(state.targets[0].column==='Year_Type'){
+                                      let target_slicer = visuals.filter(function (visual) {
+                                        return visual.type === "slicer" && visual.name === slicer.name;
+                                    })[0];
+                                      await target_slicer.setSlicerState({ filters: [year_converter] });
+                                    }
                               })
                                   // //console.log('slicer=', slicers)
                                 })
