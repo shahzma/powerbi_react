@@ -58,6 +58,7 @@ const NewFigmaSIgnIn = () => {
         //   props.setClientID(data['client_id'])
           window.localStorage.setItem("clientID", data['client_id'])
           window.localStorage.setItem('unregistered',data['unregistered'])
+          window.localStorage.setItem('user_name', data['user_name'])
           // this.props.navigate('/reportlist')
         }
       )

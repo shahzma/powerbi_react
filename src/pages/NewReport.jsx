@@ -65,6 +65,7 @@ const NewReport = () => {
     const [newReportPages, setnewReportPages] = useState([]);
     const [searchVal , setsearchVal] = useState(null);
     const [treearr, setTreearr] = useState([])
+    const [filterarr, setfilterarr] = useState([])
     const [activeIndex, setActiveIndex] = useState(0);
     const [yearIndex, setyearIndex] = useState(0);
     const [conversiontype, setConversionType] = useState('Custom')
@@ -482,6 +483,7 @@ const NewReport = () => {
             // setTreearr(parent_arr)
             if(hasNodes===false){
               window.localStorage.setItem('report', label)
+              console.log('report=', label)
               if(props.finalized){
                 setshowCurrencyBar(true)
                 window.localStorage.setItem('finalized', 'true')
@@ -526,9 +528,14 @@ const NewReport = () => {
             }
             //console.log('props=', props.finalized)
             
+
+            // check if page/report is actually availableto the user
+            let available = true
+            
             if(hasNodes && toggleNode){
               toggleNode()
             }else{
+              // 
               handleClickTree(label)
             }
             e.stopPropagation();
@@ -852,6 +859,11 @@ const NewReport = () => {
         values: [window.localStorage.getItem('report')],
         filterType: models.FilterType.BasicFilter
       };
+
+      let filter_arr = [datefilter]
+      if (['Amazon', 'Flipkart', 'Meesho', 'Paytm mall', 'Shopclues', 'Shoppee', 'Snapdeal', 'Tatacliq'].includes(window.localStorage.getItem('report'))){
+        filter_arr.push(basicFilter)
+      }
 
       const treeData = [
         {
@@ -1359,7 +1371,7 @@ const NewReport = () => {
                       embedUrl:index['url'],
                       accessToken: index['embed'],
                       tokenType: models.TokenType.Embed,
-                      filters: [datefilter, currencyFilter, basicFilter],
+                      filters: filter_arr,
                       settings: {
                         // background:models.BackgroundType.Transparent,
                         layoutType:models.LayoutType.Custom,
@@ -1672,6 +1684,7 @@ border: 1px solid black;
 width:58px;
 height:34px;
 font-size:14px;
+outline: none;
 `
 const PowerBiDiv = styled.div`
 /* prevent overflow on select somehow */

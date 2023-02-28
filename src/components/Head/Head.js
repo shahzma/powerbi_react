@@ -130,7 +130,7 @@ const Head = () => {
                 </ProductDiv>
                 <div>Articles</div>
                 <Man>
-                <img src = "/Images/new_user.png" alt = "" style={{width: '3vw', borderRadius:'40px'}}/>{hour<15?'Good Morning ':'Good Evening '}{window.localStorage.getItem('email').split('@')[0]}
+                <img src = "/Images/user.png" alt = "" style={{width: '3vw', borderRadius:'40px'}}/>{hour<15?'Good Morning ':'Good Evening '}{window.localStorage.getItem('user_name')!==undefined?window.localStorage.getItem('user_name'):window.localStorage.getItem('email').split('@')[0]}
                     <SignOut onClick={handleSignOut}>
                         <a>Sign Out</a>
                     </SignOut>
