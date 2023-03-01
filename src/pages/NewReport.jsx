@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ProSidebarProvider } from 'react-pro-sidebar';
 import {Menu, MenuItem } from 'react-pro-sidebar';
 import { FaAmazon, FaTrafficLight,FaUsers, FaDeezer,FaAlignLeft, FaKeyboard, FaCity } from 'react-icons/fa';
-import{MdOutlineSummarize, MdMonetizationOn, MdInsights, MdDashboard} from 'react-icons/md';
+import{MdOutlineSummarize, MdMonetizationOn, MdInsights, MdDashboard, MdOutlinePersonalVideo} from 'react-icons/md';
 import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
 import { ImProfile } from "react-icons/im";
 import {SiCoveralls, SiSimpleanalytics} from "react-icons/si"
@@ -63,6 +63,7 @@ const NewReport = () => {
     const [pagenameVerbose, setPageNameVerbose] = useState('');
     const [commentsOpen, setCommentsOpen] = useState(false);
     const [newReportPages, setnewReportPages] = useState([]);
+    const [reportarr, setNewReportArr] = useState([])
     const [searchVal , setsearchVal] = useState(null);
     const [treearr, setTreearr] = useState([])
     const [filterarr, setfilterarr] = useState([])
@@ -70,6 +71,7 @@ const NewReport = () => {
     const [yearIndex, setyearIndex] = useState(0);
     const [conversiontype, setConversionType] = useState('Custom')
     const [showLoader, setshowLoader] = useState(false);
+    const [showReport, setshowReport] = useState(false);
     const [commentsData, setCommentsData] = useState({
       currentQuestion: 1,
       currentQuestionId: "",
@@ -102,7 +104,7 @@ const NewReport = () => {
         'Operational Metrics':<BiCartAlt/>,
         'Online Retail':<BiCartAlt/>,
         'Social Commerce Specific':<MdMonetizationOn/>,
-        'Food Tech':<IoFastFood/>,
+        'Food Delivery':<IoFastFood/>,
         'Used Cars':<FaCarAlt/>,
         'Real Money Gaming':<RiMoneyDollarBoxFill/>,
         'Edtech':<BiBookContent/>,
@@ -134,7 +136,7 @@ const NewReport = () => {
         'User Profile (WIP)':<FiUsers/>,
         'Engagement Profile (WIP)':<AiOutlineFileSearch/>,
         'Sector Insights (WIP)':<MdInsights/>,
-        'Content (WIP)':<BiBookContent/>,
+        'Online Education (WIP)':<BiBookContent/>,
         'Top Line Estimates (WIP)':<FaDeezer/>,
         'Fulfilment Metrics (WIP)':<FaAlignLeft/>,
         'Unit Economics (WIP)':<MdMonetizationOn/>,
@@ -152,7 +154,7 @@ const NewReport = () => {
         'Real Money Gaming (WIP)':<RiMoneyDollarBoxFill/>,
         'EdTech (WIP)':<BiBookContent/>,
         'eHealth (WIP)':<GiHealthNormal/>,
-        'Mobility (WIP)':<GiCarWheel/>,
+        'Ride Hailing (WIP)':<GiCarWheel/>,
         'D2C Omni (WIP)':<GoFileSymlinkDirectory/>,
         'eB2B (WIP)':<FaBusinessTime/>,
         'Consumer Internet (WIP)':<ImConnection/>,
@@ -166,9 +168,10 @@ const NewReport = () => {
         'OTT_Video (WIP)':<AiTwotoneVideoCamera/>,
         'OTT Audio (WIP)':<FaRegFileAudio/>,
         'Content S&M (WIP)':<BiBookContent/>,
+        'Digital Content (WIP)':<MdOutlinePersonalVideo/>,
+
       })
       let subtitle
-      // let window.reports = [];
             
 
       useEffect(()=>{
@@ -250,6 +253,20 @@ const NewReport = () => {
             //console.log('tree=',res)
             setMyPages(res)
             setallNodes(res)
+          }
+        )
+
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportaccess/?client_id=1`, {
+          method:'GET',
+          headers:{
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(res=>res.json())
+        .then(
+          res=>{
+            console.log('reportarr=',res)
+            setNewReportArr(res)
           }
         )
     },[]);
@@ -392,8 +409,27 @@ const NewReport = () => {
             //     .catch( error => console.error(error))
 
             // }
+            for(let i = 0; i<reportarr.length; i++){
+              if(reportarr[i].report_name===reportname){
+                if(reportarr[i].report_pages.length===0){
+                  console.log('show_all_pages')
+                  setshowReport(true)
+                }else{
+                  let pages = reportarr[i].report_pages
+                  res = res.filter(value => pages.includes(value.id));  
+                  setshowReport(true)         
+                }
+                console.log('showit')
+                break
+              }else{
+                setshowReport(false)
+                console.log('notshowit')
+              }
+            }
             setnewReportPages(res)
             setshowLoader(false)
+            console.log('res=', res)
+            
           }
         )
         //console.log(reportname)
@@ -457,6 +493,7 @@ const NewReport = () => {
         toggleNode,
         matchSearch,
         focused,
+        key,
         ...props
       }) => (
         <ListGroupItem
@@ -478,6 +515,7 @@ const NewReport = () => {
           onClick={e => {
             // this onclick conflicts with oclick defined below
             // make your get parents function here
+            window.reports = []
             let parent_arr = getParents(props)
             parent_arr.push(label)
             // setTreearr(parent_arr)
@@ -945,7 +983,6 @@ const NewReport = () => {
               }
           ] 
         }
-        //console.log('wrs=', window.reports)
         for(let i = 0; i<window.reports.length; i++){
           window.reports[i].getActivePage().then(
             (activePage=>{
@@ -1235,23 +1272,6 @@ const NewReport = () => {
               data={myPages}
               initialOpenNodes = {['9']}
               onClickItem={({ key, label, ...props }) => {
-                //console.log('init') 
-                // let arr = treearr
-                // if(props.hasNodes === false){
-                //   arr.pop()
-                //   arr.push(label)
-                // }else if(arr.includes(label)){
-                //   var index = arr.indexOf(label);
-                //   arr.splice(index, 1);
-                //   arr.push(label)
-                // }
-                // else{
-                //   arr.push(label)
-                // }
-                // setTreearr(arr)
-                // if(props.hasNodes === false){
-                //   handleClickTree(label)
-                // }
               }}
               >
                 {({ search, items, searchTerm }) => {
@@ -1359,7 +1379,7 @@ const NewReport = () => {
                     </Modal>
                     </div>
                   </BreadCrumbTop>
-                <PowerBiDiv>
+                {showReport?<PowerBiDiv>
                 {newReportPages.map((index,i) => {
                   return(
                   <div key={index.id}>
@@ -1589,13 +1609,18 @@ const NewReport = () => {
                         window.reports=[]
                       }
                       window.reports.push(embeddedReport);
+                      console.log(window.reports)
                     }
               
                   }
                    />
                   </div>
                 )})}
-                  </PowerBiDiv>
+                  </PowerBiDiv>:<>
+                 <Subscription>
+                    Subscribe for report
+                 </Subscription>
+                  </>}
               </PowerbiContainer>:<TailSpin
   height="80"
   width="80"
@@ -1690,6 +1715,16 @@ const PowerBiDiv = styled.div`
 /* prevent overflow on select somehow */
   overflow-y:hidden;
 
+`
+
+const Subscription = styled.div`
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:black;
+  font-family:system-ui;
+  font-size:48px;
+  min-height:70vh;
 `
 
 const SideBarHeader = styled.div`

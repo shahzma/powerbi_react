@@ -59,6 +59,7 @@ const NewFigmaSIgnIn = () => {
           window.localStorage.setItem("clientID", data['client_id'])
           window.localStorage.setItem('unregistered',data['unregistered'])
           window.localStorage.setItem('user_name', data['user_name'])
+          console.log('name = ', window.localStorage.getItem('user_name'))
           // this.props.navigate('/reportlist')
         }
       )
