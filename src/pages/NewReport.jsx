@@ -32,8 +32,12 @@ import TreeMenu from 'react-simple-tree-menu';
 import '../../node_modules/react-simple-tree-menu/dist/main.css'
 import Head from '../components/Head/Head';
 import { ListGroupItem, Input, ListGroup } from 'reactstrap';
-import { TailSpin } from  'react-loader-spinner'
+import { FallingLines, TailSpin } from  'react-loader-spinner'
 import {Link, Navigate} from 'react-router-dom';
+import 'react-dropdown/style.css';
+import SelectSearch from 'react-select-search';
+import 'react-select-search/style.css'
+
 
 const NewReport = () => {
     // const { collapseSidebar } = useProSidebar();
@@ -72,6 +76,8 @@ const NewReport = () => {
     const [conversiontype, setConversionType] = useState('Custom')
     const [showLoader, setshowLoader] = useState(false);
     const [showReport, setshowReport] = useState(false);
+    const [showDropDown, setShowDropDown] = useState(false);
+    const [dropDownData, setDropDownData] = useState([])
     const [commentsData, setCommentsData] = useState({
       currentQuestion: 1,
       currentQuestionId: "",
@@ -250,13 +256,13 @@ const NewReport = () => {
         .then(res=>res.json())
         .then(
           res=>{
-            //console.log('tree=',res)
             setMyPages(res)
             setallNodes(res)
           }
         )
-
-        fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportaccess/?client_id=1`, {
+        let client_id = window.localStorage.getItem('clientID')
+        console.log('cid=', client_id)
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportaccess/?client_id=${client_id}`, {
           method:'GET',
           headers:{
             'Content-Type': 'application/json',
@@ -265,7 +271,6 @@ const NewReport = () => {
         .then(res=>res.json())
         .then(
           res=>{
-            console.log('reportarr=',res)
             setNewReportArr(res)
           }
         )
@@ -317,19 +322,19 @@ const NewReport = () => {
 
     useEffect(()=>{
       let email = window.localStorage.getItem('email')
-      fetch(`${process.env.REACT_APP_API_ENDPOINT}/usercurrency/?email=${email}`, {
-        method:'GET',
-        headers:{
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(res=>res.json())
-      .then(
-        res=>{
-          //console.log('email_arr',res)
-          setCurrencyArr(res)
-        }
-      )
+      // fetch(`${process.env.REACT_APP_API_ENDPOINT}/usercurrency/?email=${email}`, {
+      //   method:'GET',
+      //   headers:{
+      //     'Content-Type': 'application/json',
+      //   },
+      // })
+      // .then(res=>res.json())
+      // .then(
+      //   res=>{
+      //     //console.log('email_arr',res)
+      //     setCurrencyArr(res)
+      //   }
+      // )
     }, [])
 
       let gotoMainPage = ()=>{
@@ -373,8 +378,35 @@ const NewReport = () => {
         //console.log('Loop finished');
       }
 
-      let handleClickTree = (reportname)=>{
+      let handleClickTree = (reportname, key, node_type)=>{
         setshowLoader(true)
+        console.log('node_type', node_type)
+        if (reportname === 'Horizontals Home'){
+          fetch(`${process.env.REACT_APP_API_ENDPOINT}/nodechildren/?key=${71}`, {
+            method:'GET',
+            headers:{
+              'Content-Type': 'application/json',
+            },
+          })
+          .then(res=>res.json())
+          .then(
+            res =>{
+              console.log('res = ', res )
+              setShowDropDown(true)
+              setDropDownData(res)
+            }
+          )
+
+        }else if(key === -1){
+          console.log('report = ', reportname)
+          window.localStorage.setItem('report' , reportname)
+          setfilterarr(['1'])
+          // we want to continue showing drop down
+          setShowDropDown(true)
+        }
+        else{
+          setShowDropDown(false)
+        }
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep=${reportname}`, {
           method:'GET',
           headers:{
@@ -419,11 +451,9 @@ const NewReport = () => {
                   res = res.filter(value => pages.includes(value.id));  
                   setshowReport(true)         
                 }
-                console.log('showit')
                 break
               }else{
                 setshowReport(false)
-                console.log('notshowit')
               }
             }
             setnewReportPages(res)
@@ -521,13 +551,19 @@ const NewReport = () => {
             // setTreearr(parent_arr)
             if(hasNodes===false){
               window.localStorage.setItem('report', label)
-              console.log('report=', label)
               if(props.finalized){
                 setshowCurrencyBar(true)
                 window.localStorage.setItem('finalized', 'true')
               }else{
                 setshowCurrencyBar(false)
                 window.localStorage.setItem('finalized', 'false')
+              }
+              if(props.filter!==null && props.filter!==''){
+                setfilterarr(props.filter.split(','))
+                console.log('filter = ', props.filter.split(','))
+              }else{
+                setfilterarr([])
+                console.log('nofilter')
               }
               setSelectedPage(label)
               setTreearr(parent_arr)
@@ -574,7 +610,7 @@ const NewReport = () => {
               toggleNode()
             }else{
               // 
-              handleClickTree(label)
+              handleClickTree(label, props.key_val, props.node_type)
             }
             e.stopPropagation();
           }}
@@ -793,7 +829,7 @@ const NewReport = () => {
         setComment(e.target.value);
       }
 
-      let setDropDownValue = (e)=>{
+      let setDropDownValueMonth = (e)=>{
         //console.log('value=', e.value)
         let val  = e.value
         // setselectedMonth(val, ()=>{
@@ -802,6 +838,12 @@ const NewReport = () => {
         setselectedMonth(val)
         //console.log('month=', selectedMonth)
         //console.log('bdata=', bdata)
+      }
+
+      let applyPlayer = (e)=>{
+        let val = e.label
+        console.log('player=', val)
+
       }
       function lastSiXMonths(){
         var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -820,6 +862,20 @@ const NewReport = () => {
       const defaultOption = options.at(-1);
       let today = new Date();
       let hour = today.getHours();
+
+      const p_options = [
+        {name: 'Swedish', value: 'sv'},
+        {name: 'English', value: 'en'},
+        {
+            type: 'group',
+            name: 'Group name',
+            items: [
+                {name: 'Spanish', value: 'es'},
+            ]
+        },
+    ];
+      const platform_option = dropDownData
+      const defaultPlatformOption = platform_option[0];
 
       const datefilter = {
 
@@ -899,9 +955,17 @@ const NewReport = () => {
       };
 
       let filter_arr = [datefilter]
-      if (['Amazon', 'Flipkart', 'Meesho', 'Paytm mall', 'Shopclues', 'Shoppee', 'Snapdeal', 'Tatacliq'].includes(window.localStorage.getItem('report'))){
-        filter_arr.push(basicFilter)
+      for(let i=0; i<filterarr.length;i++){
+        console.log('val = ',filterarr[i])
+        if(filterarr[i]==1){
+          console.log('works')
+          filter_arr.push(basicFilter)
+        }
       }
+      console.log('filter_len=', filter_arr.length)
+      // if (['Amazon', 'Flipkart', 'Meesho', 'Paytm mall', 'Shopclues', 'Shoppee', 'Snapdeal', 'Tatacliq'].includes(window.localStorage.getItem('report'))){
+      //   filter_arr.push(basicFilter)
+      // }
 
       const treeData = [
         {
@@ -1298,7 +1362,9 @@ const NewReport = () => {
                   <BreadCrumbTop>
                     <div style={treemenucollapse?{'marginLeft':'2.9vw', 'display':'flex', 'alignItems':'center'}:{'marginLeft':'3.8vw', 'display':'flex', 'alignItems':'center'}}>
                       {treemenucollapse?<></>:<button  style={{'height':'42px', 'borderRadius':'8px', 'width':'50px', 'backgroundColor':'white', }} onClick={handleTreeMenuCollapse}><GiHamburgerMenu/></button>}
-                      <span style = {{ 'marginLeft':'5px','fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}>{selectedpage}</span>
+                      <span style = {{ 'marginLeft':'5px', 'marginRight':'15px','fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}>{selectedpage}</span>
+                      {/* {showDropDown?<Dropdown options={platform_option} onChange={(e)=>{handleClickTree(e.label, -1 , '-1')}}  placeholder="Select Platform" />:<></>} */}
+                      {showDropDown?<SelectSearch options={platform_option} name="language" search placeholder="Choose Platform"  onChange={(e)=>{handleClickTree(e, -1 , '-1')}}/>:<></>}
                     </div>
                     <div  style={treemenucollapse?{'marginLeft':'3.3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.8vw' ,'marginBottom':'10px'}}>
                     {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
@@ -1351,7 +1417,7 @@ const NewReport = () => {
                           })}
                           </div>
                           <form>
-                            <Dropdown options={options} onChange={(e)=>setDropDownValue(e)}  value={defaultOption} placeholder="Select an option" />
+                            <Dropdown options={options} onChange={(e)=>setDropDownValueMonth(e)}  value={defaultOption} placeholder="Select an option" />
                             <CommentTextInput onChange={(e) => inputChanged(e)}/>
                             <button onClick={(e)=>addComment(e)}>Submit</button>
                           </form>
@@ -1519,7 +1585,7 @@ const NewReport = () => {
                               let ht = ((active_ht/active_width)*width)
                               if(i==0){
                                 if(window.localStorage.getItem('finalized')==='false'){
-                                  document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-44px';
+                                  document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-6vh';
                                 }
                               }
                               document.getElementsByClassName('report-style-class-newreport'+i)[0].style.height = ht+'px';

@@ -24,18 +24,18 @@ const Head = () => {
         uploadData.append('year', year);
         uploadData.append('currency', curr)
         uploadData.append('report', report)
-        fetch(`${process.env.REACT_APP_API_ENDPOINT}/usercurrency/`, {
-            method: 'POST',
-            body: uploadData
-          }).then(data => data.json())
-          .then( data => {
-                console.log(data)
-            })
-          .catch(error => {
-            // setSignIn(false);
-            // alert('System Error.Contact Admin')
-            console.log(error)
-        })
+        // fetch(`${process.env.REACT_APP_API_ENDPOINT}/usercurrency/`, {
+        //     method: 'POST',
+        //     body: uploadData
+        //   }).then(data => data.json())
+        //   .then( data => {
+        //         console.log(data)
+        //     })
+        //   .catch(error => {
+        //     // setSignIn(false);
+        //     // alert('System Error.Contact Admin')
+        //     console.log(error)
+        // })
         window.location.reload()
     }
   return (  <>

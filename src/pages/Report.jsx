@@ -91,6 +91,8 @@ function Report(props) {
   let subtitle;
 
   useEffect(()=>{
+    console.log('sd = ', window.localStorage.getItem('start_date'))
+    console.log('ed = ', window.localStorage.getItem('end_date'))
     let email = window.localStorage.getItem("email")
     if (email.split('@')[1] in ['redseerconsulting.com','redseer.com' ,'redcore.co','benchmarks.digital','Beeroute.in'] === false){
     ReactGA.pageview(window.location.pathname)
@@ -793,15 +795,35 @@ target: {
 
 };
 
+// const datefilter_max = {
+//   $schema: "http://powerbi.com/product/schema#basic",
+// target: {
+//       table: "db_date_table",
+//       column: "DB_Date"
+//   },
+//   filterType: models.FilterType.Advanced,
+//   logicalOperator: "Is",
+//   conditions: [
+//       {
+//           operator: "LessThan",
+//           value: window.localStorage.getItem("end_date")+"T22:00:00.000Z"
+//       }
+//   ]
+// };
+
 const datefilter_max = {
   $schema: "http://powerbi.com/product/schema#basic",
 target: {
-      table: "db_date_table ",
+      table: "db_date_table",
       column: "DB_Date"
   },
   filterType: models.FilterType.Advanced,
-  logicalOperator: "Is",
+  logicalOperator: "And",
   conditions: [
+      {
+        operator: "GreaterThanOrEqual",
+        value: window.localStorage.getItem("start_date")+"T22:00:00.000Z"
+      },
       {
           operator: "LessThan",
           value: window.localStorage.getItem("end_date")+"T22:00:00.000Z"
