@@ -381,32 +381,41 @@ const NewReport = () => {
       let handleClickTree = (reportname, key, node_type)=>{
         setshowLoader(true)
         console.log('node_type', node_type)
-        if (reportname === 'Horizontals Home'){
-          fetch(`${process.env.REACT_APP_API_ENDPOINT}/nodechildren/?key=${71}`, {
-            method:'GET',
-            headers:{
-              'Content-Type': 'application/json',
-            },
-          })
-          .then(res=>res.json())
-          .then(
-            res =>{
-              console.log('res = ', res )
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/nodechildren/?key=${key}`, {
+          method:'GET',
+          headers:{
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(res=>res.json())
+        .then(
+          res =>{
+            console.log('res = ', res )
+            if (res.length>1){
               setShowDropDown(true)
               setDropDownData(res)
+            }else{
+              setShowDropDown(false)
             }
-          )
-
-        }else if(key === -1){
-          console.log('report = ', reportname)
+          }
+        )
+        if (key === -1){
           window.localStorage.setItem('report' , reportname)
           setfilterarr(['1'])
-          // we want to continue showing drop down
           setShowDropDown(true)
         }
-        else{
-          setShowDropDown(false)
-        }
+        // if (reportname === 'Horizontals Home'){
+        //     console.log('hello')
+        // }else if(key === -1){
+        //   console.log('report = ', reportname)
+        //   window.localStorage.setItem('report' , reportname)
+        //   setfilterarr(['1'])
+        //   // we want to continue showing drop down
+        //   setShowDropDown(true)
+        // }
+        // else{
+        //   setShowDropDown(false)
+        // }
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep=${reportname}`, {
           method:'GET',
           headers:{
@@ -863,7 +872,7 @@ const NewReport = () => {
       let today = new Date();
       let hour = today.getHours();
 
-      const p_options = [
+      const p_option = [
         {name: 'Swedish', value: 'sv'},
         {name: 'English', value: 'en'},
         {
