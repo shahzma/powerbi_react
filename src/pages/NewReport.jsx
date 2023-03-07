@@ -6,7 +6,7 @@ import { FaAmazon, FaTrafficLight,FaUsers, FaDeezer,FaAlignLeft, FaKeyboard, FaC
 import{MdOutlineSummarize, MdMonetizationOn, MdInsights, MdDashboard, MdOutlinePersonalVideo} from 'react-icons/md';
 import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
 import { ImProfile } from "react-icons/im";
-import {SiCoveralls, SiSimpleanalytics} from "react-icons/si"
+import {SiCoveralls, SiSimpleanalytics,SiFlipkart, SiPaytm, SiTata} from "react-icons/si"
 import {FiUsers} from "react-icons/fi"
 import {AiOutlineFileSearch, AiOutlineMobile , AiTwotoneVideoCamera} from 'react-icons/ai'
 import { GiBreakingChain, GiConsoleController, GiEvilFork, GiHealthNormal, GiCarWheel, GiClothes,GiMedicines,GiFruitBowl, GiVideoConference, GiHamburgerMenu } from "react-icons/gi";
@@ -36,7 +36,10 @@ import { FallingLines, TailSpin } from  'react-loader-spinner'
 import {Link, Navigate} from 'react-router-dom';
 import 'react-dropdown/style.css';
 import SelectSearch from 'react-select-search';
-import 'react-select-search/style.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCog, faFilter } from '@fortawesome/free-solid-svg-icons'
+import MyDropdown from '../components/DropDown/dropdown';
+// import 'react-select-search/style.css'
 
 
 const NewReport = () => {
@@ -91,11 +94,15 @@ const NewReport = () => {
         'Overall':<SiCoveralls/>,
         'Category':<BiCategory/>,
         'Amazon Specific':<FaAmazon />,
+        'Paytm mall':<SiPaytm/>,
+        'Flipkart':<SiFlipkart/>,
+        'Shopclues':<BiCartAlt/>,
         'Traffic':<FaTrafficLight/>,
         'Engagement':<FaUsers/>,
         'Streams Analysis':<SiSimpleanalytics/>,
         'Monetization':<MdMonetizationOn/>,
         'User Profile':<FiUsers/>,
+        'Tatacliq':<SiTata/>,
         'Engagement Profile':<AiOutlineFileSearch/>,
         'Sector Insights':<MdInsights/>,
         'Content':<BiBookContent/>,
@@ -135,6 +142,7 @@ const NewReport = () => {
         'Overall (WIP)':<SiCoveralls/>,
         'Category (WIP)':<BiCategory/>,
         'Amazon Specific (WIP)':<FaAmazon />,
+        'Amazon':<FaAmazon/>,
         'Traffic (WIP)':<FaTrafficLight/>,
         'Engagement (WIP)':<FaUsers/>,
         'Streams Analysis (WIP)':<SiSimpleanalytics/>,
@@ -177,6 +185,20 @@ const NewReport = () => {
         'Digital Content (WIP)':<MdOutlinePersonalVideo/>,
 
       })
+      const [selectedOption, setSelectedOption] = useState(null);
+
+      const onOptionSelect = (option) => {
+        if(selectedOption!==null){
+          treearr.pop()
+          treearr.push(option.label)
+        }else{
+          treearr.push(option.label)
+        }
+        setSelectedOption(option.label);
+        handleClickTree(option.label, -1 , '-1')
+        console.log(option)
+      };
+
       let subtitle
             
 
@@ -390,9 +412,16 @@ const NewReport = () => {
         .then(res=>res.json())
         .then(
           res =>{
-            console.log('res = ', res )
             if (res.length>1){
               setShowDropDown(true)
+              for(let i=0; i<res.length; i++){
+                if(iconDict[res[i].label]){
+                  res[i].icon = iconDict[res[i].label]
+                }else {
+                  res[i].icon = <GiHamburgerMenu/>
+                }
+              } 
+              console.log('res = ', res )
               setDropDownData(res)
             }else{
               setShowDropDown(false)
@@ -401,6 +430,7 @@ const NewReport = () => {
         )
         if (key === -1){
           window.localStorage.setItem('report' , reportname)
+          setSelectedPage(reportname)
           setfilterarr(['1'])
           setShowDropDown(true)
         }
@@ -643,7 +673,28 @@ const NewReport = () => {
           </div>
         </ListGroupItem>
       );
-
+      // const options_d= [
+      //   { id: 1, name: 'Option 1', icon: <GiHamburgerMenu/> },
+      //   { id: 2, name: 'Option 2', icon: <GiHamburgerMenu/> },
+      //   { id: 3, name: 'Option 3', icon: <GiHamburgerMenu/> }
+      // ];
+      const options_d= [
+        { value: 'one', label: 'One', icon: <GiHamburgerMenu/> },
+        { value: 'to', label: 'to', icon: <GiHamburgerMenu/> },
+        { value: 'thr', label: 'rhr', icon: <GiHamburgerMenu/> }
+      ];
+      const iconRenderer = (icon) => (
+        <span className={`icon ${icon}`} />
+      );
+      
+      const renderItem = (option) => {
+        return (
+          <div className="dropdown-item">
+            {iconRenderer(option.icon)}
+            <span className="dropdown-item-label">{option.label}</span>
+          </div>
+        );
+      };
       const postComment = async(comment, formId, instanceId, questionId)=>{
         //console.log('comment=', comment)
         if (comment?.length){
@@ -871,7 +922,10 @@ const NewReport = () => {
       const defaultOption = options.at(-1);
       let today = new Date();
       let hour = today.getHours();
-
+      const d_option = [
+        { value: 'settings', name: 'Settings', icon: <FontAwesomeIcon icon={faCog} /> },
+      { value: 'filter', name: 'Filter', icon: <FontAwesomeIcon icon={faFilter} /> },
+      ]
       const p_option = [
         {name: 'Swedish', value: 'sv'},
         {name: 'English', value: 'en'},
@@ -1372,15 +1426,13 @@ const NewReport = () => {
                     <div style={treemenucollapse?{'marginLeft':'2.9vw', 'display':'flex', 'alignItems':'center'}:{'marginLeft':'3.8vw', 'display':'flex', 'alignItems':'center'}}>
                       {treemenucollapse?<></>:<button  style={{'height':'42px', 'borderRadius':'8px', 'width':'50px', 'backgroundColor':'white', }} onClick={handleTreeMenuCollapse}><GiHamburgerMenu/></button>}
                       <span style = {{ 'marginLeft':'5px', 'marginRight':'15px','fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}>{selectedpage}</span>
-                      {/* {showDropDown?<Dropdown options={platform_option} onChange={(e)=>{handleClickTree(e.label, -1 , '-1')}}  placeholder="Select Platform" />:<></>} */}
-                      {showDropDown?<SelectSearch options={platform_option} name="language" search placeholder="Choose Platform"  onChange={(e)=>{handleClickTree(e, -1 , '-1')}}/>:<></>}
                     </div>
                     <div  style={treemenucollapse?{'marginLeft':'3.3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.8vw' ,'marginBottom':'10px'}}>
                     {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
                     Products/ {treearr.length>0?<>{treearr.join(" / ")}</>:<>Consumer Internet</>}
                     </div>
                     {showcurrencybar?<Currency marginLeft = {treemenucollapse?'3.3vw':'3.8vw'}columns={treemenucollapse?'2fr 0.15fr 1fr 0.1fr 0.4fr 3.25fr 1fr 0.1fr':'2fr 0.15fr 1fr 0.1fr 0.4fr 3.39fr 0.85fr 0.11fr'}>
-                      <Descurr>Please select your desired currency</Descurr>
+                      <Descurr>Currency</Descurr>
                       <Inr>
                         <Currencybutton bgcolor={activeIndex === 0 ? '#26CDCC' : '#EAEAEA'}
                          color={activeIndex === 1 ? '#333333' : '#333333'}
@@ -1402,6 +1454,23 @@ const NewReport = () => {
                         color={yearIndex === 0 ? '#333333' : '#333333'}
                         onClick={() => handleYearClick(1)}>FY</Currencybutton>
                       </Cyfy>
+                      <Dropdn>
+                      {/* {showDropDown?<SelectSearch options={platform_option} name="language" search placeholder="Choose Platform"  onChange={(e)=>{handleClickTree(e, -1 , '-1')}}/>:<></>} */}
+                      {/* {showDropDown?<Dropdown options={options_d} onChange={(e)=>{handleClickTree(e.label, -1 , '-1')}}  placeholder="Select Platform" />:<></>} */}
+                      {/* <Dropdown
+                        options={options_d}
+                        placeholder="Select an option"
+                        arrowClosed={<span className="arrow-closed" />}
+                        arrowOpen={<span className="arrow-open" />}
+                        valueRenderer={(option) => renderItem(option)}
+                        optionRenderer={(option) => renderItem(option)}
+                      /> */}
+                      {showDropDown?<MyDropdown options={platform_option}
+                      // onChange = {(e)=>{console.log(e)}}
+                      // selected={selectedOption}
+                      onOptionSelect={onOptionSelect}
+                      />:null}
+                      </Dropdn>
                     </Currency>:<></>}
                     <div>
                     {/* <Modal
@@ -1754,27 +1823,39 @@ const Currency = styled.div`
   margin-bottom:10px;
   display: grid; 
   grid-auto-rows: 1fr; 
-  grid-template-columns: ${props => props.columns}; 
+  /* grid-template-columns: ${props => props.columns};  */
+  grid-template-columns: 0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 2.07fr 2.08fr 0.3fr;
   grid-template-rows: 1fr; 
   gap: 0px 0px; 
   grid-template-areas: 
-    "Descurr . Inr . Gear .  Cyfy .";
+    "Descurr . Inr . Gear Cyfy . Dropdn .";
 `
 const Descurr = styled.div`
   grid-area:Descurr;
   line-height:34px;
+  display:flex;
+  align-items:center;
 `
 const Inr = styled.div`
   grid-area:Inr;
+  display:flex;
+  align-items:center;
 `
 const Gear = styled.div`
   grid-area:Gear;
   line-height:34px;
+  display:flex;
+  align-items:center;
   /* background-color:Blue; */
 `
 const Cyfy = styled.div`
   grid-area:Cyfy;
+  display:flex;
+  align-items:center;
   /* background-color:Green; */
+`
+const Dropdn = styled.div`
+  grid-area:Dropdn;
 `
 
 const Currencybutton = styled.button`
@@ -1872,6 +1953,23 @@ const customStyles = {
   },
 };
 
+const customStylesDropdn = {
+  control: (provided, state) => ({
+    ...provided,
+    border: state.isFocused ? '2px solid #666' : '1px solid #ccc',
+    boxShadow: 'none',
+    '&:hover': { border: '2px solid #666' },
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? '#666' : 'white',
+    color: state.isSelected ? 'white' : '#333',
+    '&:hover': {
+      backgroundColor: state.isSelected ? '#666' : '#f2f2f2',
+      color: state.isSelected ? 'white' : '#333',
+    },
+  }),
+};
 const Commenter = styled.h4`
 img{
   border-radius:50%;

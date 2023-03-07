@@ -1,0 +1,98 @@
+.dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-toggle {
+    border: 1px solid black;
+    background-color: white;
+    color: black;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    min-width: 180px;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    background-color: white;
+    border: 1px solid gray;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  }
+  
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .dropdown-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  
+
+  .dropdown {
+    position: relative;
+  }
+  
+  .menu {
+    position: absolute;
+  
+    list-style-type: none;
+    margin: 5px 0;
+    padding: 0;
+    max-height: 180px;
+    overflow-y: scroll;
+    border: 1px solid black;
+    width:180px;
+  }
+  
+  .menu > li {
+    margin: 0;
+  
+    background-color: white;
+  }
+  
+  .menu > li:hover {
+    background-color: lightgray;
+  }
+  
+  .menu > li > button {
+    width: 100%;
+    height: 100%;
+    text-align: left;
+  
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 5px;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+  }
+
+.selected-icon,
+.option-icon {
+  margin-right: 8px;
+  margin-left: 10px;
+}
+
+.selected-text,
+.option-text {
+  margin-right: 4px;
+}
+
+
+  .dropdown-option {
+    display: flex;
+    align-items: center;
+  }  
