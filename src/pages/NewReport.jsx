@@ -1431,7 +1431,7 @@ const NewReport = () => {
                     {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
                     Products/ {treearr.length>0?<>{treearr.join(" / ")}</>:<>Consumer Internet</>}
                     </div>
-                    {showcurrencybar?<Currency marginLeft = {treemenucollapse?'3.3vw':'3.8vw'}columns={treemenucollapse?'2fr 0.15fr 1fr 0.1fr 0.4fr 3.25fr 1fr 0.1fr':'2fr 0.15fr 1fr 0.1fr 0.4fr 3.39fr 0.85fr 0.11fr'}>
+                    {showcurrencybar?<Currency marginLeft = {treemenucollapse?'3.3vw':'3.8vw'}columns={treemenucollapse?'0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 2.95fr 1.2fr 0.3fr':'0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 3.95fr 1.2fr 0.3fr'}>
                       <Descurr>Currency</Descurr>
                       <Inr>
                         <Currencybutton bgcolor={activeIndex === 0 ? '#26CDCC' : '#EAEAEA'}
@@ -1823,8 +1823,8 @@ const Currency = styled.div`
   margin-bottom:10px;
   display: grid; 
   grid-auto-rows: 1fr; 
-  /* grid-template-columns: ${props => props.columns};  */
-  grid-template-columns: 0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 2.07fr 2.08fr 0.3fr;
+  grid-template-columns: ${props => props.columns}; 
+  /* grid-template-columns: 0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 2.95fr 1.2fr 0.3fr; */
   grid-template-rows: 1fr; 
   gap: 0px 0px; 
   grid-template-areas: 
