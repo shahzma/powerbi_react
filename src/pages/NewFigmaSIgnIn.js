@@ -50,16 +50,20 @@ const NewFigmaSIgnIn = () => {
       .then(
         data => {
           // this.props.userLogin(data.token);
-          setLoggedIn(true)
-          console.log(loggedIn)
-          console.log('data=',data['pseudo_email'])
-        //   props.userLogin(data['pseudo_email'])
-          window.localStorage.setItem("pseudo_email", data['pseudo_email'])
-        //   props.setClientID(data['client_id'])
-          window.localStorage.setItem("clientID", data['client_id'])
-          window.localStorage.setItem('unregistered',data['unregistered'])
-          window.localStorage.setItem('user_name', data['user_name'])
-          console.log('name = ', window.localStorage.getItem('user_name'))
+          if(data['otp_access']===true){
+            setLoggedIn(true)
+            console.log(loggedIn)
+            console.log('data=',data['pseudo_email'])
+          //   props.userLogin(data['pseudo_email'])
+            window.localStorage.setItem("pseudo_email", data['pseudo_email'])
+          //   props.setClientID(data['client_id'])
+            window.localStorage.setItem("clientID", data['client_id'])
+            window.localStorage.setItem('unregistered',data['unregistered'])
+            window.localStorage.setItem('user_name', data['user_name'])
+            console.log('name = ', window.localStorage.getItem('user_name'))
+          }else{
+            alert('You need to sign in with microsoft or gmail')
+          }
           // this.props.navigate('/reportlist')
         }
       )
@@ -289,7 +293,7 @@ const Login = styled.div`
 /* margin-top: 10vh; */
 text-align:center;
 background-color:white;
-width:65%;
+width:45%;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -389,6 +393,10 @@ const LoginInner = styled.div`
 
 const SideImg = styled.div`
 background-color:#1C1C6C;
-width:35%;
+width:55%;
 overflow:hidden;
+img{
+  height:100%;
+  width: 100%;
+}
 `

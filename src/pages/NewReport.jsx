@@ -203,72 +203,7 @@ const NewReport = () => {
             
 
       useEffect(()=>{
-        // //console.log('props=', props)
-        // let propsrep = window.localStorage.getItem("ReportName")
-        // // propsrep = window.localStorage.getItem("ReportName")
-        // let prop_token = window.localStorage.getItem("token")
-        // let pseudo_email = 'Gladebrook@redseerconsulting.com'
-        // // let pseudo_email = window.localStorage.getItem("pseudo_email")
-        // //console.log('pseudo_email=', pseudo_email)
-    
-        // //console.log('email=', window.localStorage.getItem("email"))
-        // fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}&email=${pseudo_email}`, {
-        // method: 'GET',
-        // headers: {
-        //     'Content-Type': 'application/json',
-        //     Authorization: `Token ${prop_token}`
-        // },
-        // })
-        // .then( data => data.json())
-        // .then(
-        // data => {
-    
-        //     setAccessToken(data['access_token'])
-        //     setEmbedToken(data['embed_token'])
-        //     setReportUrl(data['report_url'])
-        //     setPages(data['pages'])
-        //     setReportId(data['report_id'])
-        //     //console.log('report_id=', data['report_id'])
-        //     // //console.log(reportUrl+'&pageName=ReportSection7446fb261ebfdaa647fa')
-        //     if(window.localStorage.getItem("player_name")){
-        //       let player_name = window.localStorage.getItem("player_name")
-        //       fetch(`https://api.benchmarks.digital/player/?name=${player_name}`, {
-        //         method:'GET',
-        //         headers:{
-        //           'Content-Type': 'application/json',
-        //         },
-        //       })
-        //       .then(res=>res.json())
-        //       .then(
-        //         res=>{
-        //           //console.log('reportUrl=', data['report_url'])
-        //           //console.log('res=',res.powerbi_page)
-        //           setNewUrl(data['report_url']+'&pageName='+res.powerbi_page)
-        //           // window.sessionStorage.setItem('powerbi_page', res.powerbi_page)
-        //         }
-        //       )
-        //     }else{
-        //       setNewUrl(data['report_url'])
-        //     }
-        // }
-        // )
-        // .catch( error => console.error(error))
-        
-        // replace ott audio below with propsrep
-        // fetch(`${process.env.REACT_APP_API_ENDPOINT}/PageReports/?rep=${propsrep}`, {
-        //   method:'GET',
-        //   headers:{
-        //     'Content-Type': 'application/json',
-        //   },
-        // })
-        // .then(res=>res.json())
-        // .then(
-        //   res=>{
-        //     //console.log('tree=',res)
-        //     setMyPages(res)
-        //   }
-        // )
-
+        // we are using consumer internet here because we want to show all  reports name but on click it will showsubscribe for report
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreports/?rep=Consumer Internet`, {
           method:'GET',
           headers:{
@@ -342,22 +277,68 @@ const NewReport = () => {
     }
     ,[selectedMonth])
 
+
+    let handleSignOut = ()=>{
+      console.log('signout')
+      let prop_email = window.localStorage.getItem("email")
+      let prop_token = window.localStorage.getItem("token")
+      fetch(`${process.env.REACT_APP_API_ENDPOINT}/logout/?email=${prop_email}`,{
+          method:'GET',
+          headers:{
+            'Content-Type': 'application/json',
+            Authorization: `Token ${prop_token}`
+          }
+        }).then((res) => res.json())
+        .then(
+          res => {
+              console.log('logout= ', res)
+          }
+          )
+          .catch( error => {
+            console.error(error)
+          })
+      localStorage.clear();
+      window.location.href='/signin'
+    }
     useEffect(()=>{
-      let email = window.localStorage.getItem('email')
-      // fetch(`${process.env.REACT_APP_API_ENDPOINT}/usercurrency/?email=${email}`, {
-      //   method:'GET',
-      //   headers:{
-      //     'Content-Type': 'application/json',
-      //   },
-      // })
-      // .then(res=>res.json())
-      // .then(
-      //   res=>{
-      //     //console.log('email_arr',res)
-      //     setCurrencyArr(res)
-      //   }
-      // )
-    }, [])
+      console.log('djtoken=  ', window.localStorage.getItem("token"))
+      const interval = setTimeout(() => {
+        console.log('Logs every minute');
+        handleSignOut()
+      }, 1000*60*90);
+    
+      return () => clearInterval(interval);
+    },[])
+
+    useEffect(()=>{
+      setInterval(function () {
+        console.log("check token");
+        let prop_token = window.localStorage.getItem("token")
+        let prop_email = window.localStorage.getItem("email")
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/validateToken/?email=${prop_email}`,{
+          method:'GET',
+          headers:{
+            'Content-Type': 'application/json',
+            Authorization: `Token ${prop_token}`
+          }
+        }).then((res) => {
+          if (res.ok) {
+            return res.json();
+          }else{
+            localStorage.clear();
+            window.location.href='/'
+          }
+        })
+        .then(
+          res => {
+              console.log('tokenValidation= ', res)
+          }
+          )
+          .catch( error => {
+            console.error(error)
+          })
+      }, 1000*60*5);
+    },[])
 
       let gotoMainPage = ()=>{
         window.location.href='/mainpage'
@@ -400,7 +381,7 @@ const NewReport = () => {
         //console.log('Loop finished');
       }
 
-      let handleClickTree = (reportname, key, node_type)=>{
+      let handleClickTree = (reportname, key, node_type, index = -1)=>{
         setshowLoader(true)
         console.log('node_type', node_type)
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/nodechildren/?key=${key}`, {
@@ -433,6 +414,16 @@ const NewReport = () => {
           setSelectedPage(reportname)
           setfilterarr(['1'])
           setShowDropDown(true)
+        }
+        if (key === -2){
+          window.localStorage.setItem('report' , reportname)
+          setSelectedPage(reportname)
+          setSelectedOption(null)
+          setfilterarr(['1'])
+          console.log('index = ', index)
+          for(let i = 0; i<index-1; i++){
+            treearr.pop()
+          }
         }
         // if (reportname === 'Horizontals Home'){
         //     console.log('hello')
@@ -1429,7 +1420,8 @@ const NewReport = () => {
                     </div>
                     <div  style={treemenucollapse?{'marginLeft':'3.3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.8vw' ,'marginBottom':'10px'}}>
                     {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
-                    Products/ {treearr.length>0?<>{treearr.join(" / ")}</>:<>Consumer Internet</>}
+                    {/* Products/ {treearr.length>0?<>{treearr.join(" / ")}</>:<>Consumer Internet</>} */}
+                    Products/ {treearr.length>0?<>{treearr.map(( val, i)=><span onClick={(e)=>{handleClickTree(val, -2 , '-1', i)}}>{val} / </span>)}</>:<>Consumer Internet</>}
                     </div>
                     {showcurrencybar?<Currency marginLeft = {treemenucollapse?'3.3vw':'3.8vw'}columns={treemenucollapse?'0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 2.95fr 1.2fr 0.3fr':'0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 3.95fr 1.2fr 0.3fr'}>
                       <Descurr>Currency</Descurr>
@@ -1466,9 +1458,8 @@ const NewReport = () => {
                         optionRenderer={(option) => renderItem(option)}
                       /> */}
                       {showDropDown?<MyDropdown options={platform_option}
-                      // onChange = {(e)=>{console.log(e)}}
-                      // selected={selectedOption}
                       onOptionSelect={onOptionSelect}
+                      prev_value = {selectedOption}
                       />:null}
                       </Dropdn>
                     </Currency>:<></>}

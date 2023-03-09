@@ -65,14 +65,18 @@ const FigmaLogin = (props) => {
           data => data.json(),        )
       .then(
         data => {
-          setLoggedIn(true)
-          console.log(loggedIn)
-          console.log('data=',data['pseudo_email'])
-          props.userLogin(data['pseudo_email'])
-          window.localStorage.setItem("pseudo_email", data['pseudo_email'])
-          props.setClientID(data['client_id'])
-          window.localStorage.setItem("clientID", data['client_id'])
-          window.localStorage.setItem('unregistered',data['unregistered'])
+          console.log(data)
+          if(data['otp_access']===true){
+            setLoggedIn(true)
+            console.log('data=',data['pseudo_email'])
+            props.userLogin(data['pseudo_email'])
+            window.localStorage.setItem("pseudo_email", data['pseudo_email'])
+            props.setClientID(data['client_id'])
+            window.localStorage.setItem("clientID", data['client_id'])
+            window.localStorage.setItem('unregistered',data['unregistered'])
+          }else{
+            alert('Login with Gmail or Microsoft only')
+          }
           // this.props.navigate('/reportlist')
         }
       )

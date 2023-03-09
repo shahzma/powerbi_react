@@ -14,7 +14,7 @@ function MyDropdown(props) {
 
   const handleOptionClick = (option) => {
     setSelectedOption(option);
-    window.localStorage.setItem('dropdnOption', option.label)
+    // window.localStorage.setItem('dropdnOption', option.label)
     // console.log('op=', option)
     props.onOptionSelect(option);
     // setIsOpen(false);
@@ -31,9 +31,14 @@ function MyDropdown(props) {
       </button>:<button className="dropdown-toggle" onClick={toggleDropdown}>
      { window.localStorage.getItem('dropdnOption')}
       </button>} */}
-      <button className="dropdown-toggle" onClick={toggleDropdown}>
+      {props.prev_value===null?<button className="dropdown-toggle" onClick={toggleDropdown}>
         Select Platform
-      </button>
+      </button>:<button className="dropdown-toggle" onClick={toggleDropdown}>
+     { props.prev_value}
+      </button>}
+      {/* <button className="dropdown-toggle" onClick={toggleDropdown}>
+        Select Platform
+      </button> */}
       {isOpen ? (
         <ul className="menu">
             {props.options.map((option) => (
