@@ -375,7 +375,7 @@ const NewMainPage = () => {
                     </TypesDiv>
                 </DropDiv>
               </ProductDiv>
-                <div>Articles</div><SignInDiv><button style ={{'border':'1px solid #15BEBE', 'backgroundColor':'white', 'width':'120px', 'height':'30px'}} onClick={()=>{navigate('/signin')}}>Login</button></SignInDiv>
+                <div>Articles</div><SignInDiv><button style ={{'border':'1px solid #15BEBE', 'backgroundColor':'white', 'width':'120px', 'height':'30px'}} onClick={()=>{navigate('/')}}>Login</button></SignInDiv>
         </PageHeader>:
         <PageHeader1>
           <div><img src = '/Images/benchmark_logo.png' alt = ''/></div>

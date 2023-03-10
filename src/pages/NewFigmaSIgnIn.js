@@ -103,11 +103,12 @@ const NewFigmaSIgnIn = () => {
                               }).then(data => data.json())
                               .then( data => {
                                 if (data.token){
+                                    window.localStorage.setItem('loginStatus', 'true')
                                     window.localStorage.setItem("token", data.token)
                                     window.localStorage.setItem("pseudo_email", data.pseudo_email)
                                     window.localStorage.setItem("clientID", data.client_id)
                                     window.localStorage.setItem("email", email)
-                                    window.location.href='/mainpage'
+                                    window.location.href='/newreport'
                                 }
                                 else{
                                 }
@@ -161,11 +162,12 @@ const NewFigmaSIgnIn = () => {
           }).then(data => data.json())
           .then( data => {
             if (data.token){
+              window.localStorage.setItem('loginStatus', 'true')
                 window.localStorage.setItem("token", data.token)
                 window.localStorage.setItem("pseudo_email", data.pseudo_email)
                 window.localStorage.setItem("clientID", data.client_id)
                 window.localStorage.setItem("email", email)
-                window.location.href='/mainpage'
+                window.location.href='/newreport'
             }
             else{
             }
@@ -293,7 +295,7 @@ const Login = styled.div`
 /* margin-top: 10vh; */
 text-align:center;
 background-color:white;
-width:45%;
+width:40%;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -393,7 +395,7 @@ const LoginInner = styled.div`
 
 const SideImg = styled.div`
 background-color:#1C1C6C;
-width:55%;
+width:60%;
 overflow:hidden;
 img{
   height:100%;

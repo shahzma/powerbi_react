@@ -190,7 +190,7 @@ const Login = styled.div`
 /* margin-top: 10vh; */
 text-align:center;
 background-color:white;
-width:65%;
+width:40%;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -287,6 +287,10 @@ const LoginInner = styled.div`
 
 const SideImg = styled.div`
 background-color:#1C1C6C;
-width:35%;
+width:60%;
 overflow:hidden;
+img{
+  height:100%;
+  width: 100%;
+}
 `

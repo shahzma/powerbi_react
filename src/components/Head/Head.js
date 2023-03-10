@@ -1,11 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom';
-import { BsTag } from "react-icons/bs";
+import { BsTag, BsFillCloudArrowDownFill } from "react-icons/bs";
 import { MdHouseSiding , MdOutlineCasino} from "react-icons/md";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { GiHealthNormal } from "react-icons/gi";
 import { TbBooks } from "react-icons/tb";
+import{ImConnection} from 'react-icons/im'
+import { RiMoneyDollarBoxFill } from "react-icons/ri";
 import { get } from 'jquery';
 
 const Head = () => {
@@ -36,7 +38,7 @@ const Head = () => {
         //     // alert('System Error.Contact Admin')
         //     console.log(error)
         // })
-        window.location.reload()
+        window.location.href='/'
     }
   return (  <>
             {window.localStorage.getItem('loginStatus')==='false'?<PageHeader>
@@ -83,48 +85,50 @@ const Head = () => {
                     </TypesDiv>
                 </DropDiv>
                 </ProductDiv>
-                <div>Articles</div><SignInDiv><button style ={{'border':'1px solid #15BEBE', 'backgroundColor':'white', 'width':'120px', 'height':'30px'}} onClick={()=>{navigate('/signin')}}>Login</button></SignInDiv>
+                <div>Articles</div><SignInDiv><button style ={{'border':'1px solid #15BEBE', 'backgroundColor':'white', 'width':'120px', 'height':'30px'}} onClick={()=>{navigate('/')}}>Login</button></SignInDiv>
             </PageHeader>:<PageHeader>
             <div><img src = '/Images/benchmark_logo.png' alt = ''/></div>
                 <ProductDiv>
                 Products
                 <DropDiv>
-                    <OverViewDiv onClick={()=>{navigate('/newmainpage')}}>
-                    <div className = 'ProductsText'>Products</div>
-                    <div className='ProductsTextBottom'>Hello World Hello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello </div>
+                    <OverViewDiv onClick={()=>{navigate('/mainpage')}}>
+                    <div className = 'ProductsText'>Legacy</div>
+                    <div className='Browse'>Users signed up before 1 March, 2023 , please click here</div>
                     <button className='OverViewButton'>OverView</button>
                     </OverViewDiv>
                     <TypesDiv>
                         <Brands onClick={()=>{
-                            navigate('/newmainpage')
+                            navigate('/newreport')
                         }}>
-                            <div className = 'Browse'>
+                            {/* <div className = 'Browse'>
                                 Browse by Type
-                            </div>
-                            <h6><BsTag style={{'color':'#15BEBE'}}/> Brands</h6>
-                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
-                        </Brands>
-                        <Sector onClick={()=>{navigate('/newmainpage/?tag=Real Money Gaming 2.0')}}>
-                            <div className='Browse'>Browse by Sector</div>
-                            <h6><MdOutlineCasino style={{'color':'#15BEBE'}}/>RMG</h6>
-                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
-                        </Sector>
-                        <HealthCare onClick={()=>{navigate('/newmainpage/?tag=Food Tech 2.0')}}>
+                            </div> */}
                             <br/>
-                            <h6><GiHealthNormal style={{'color':'#15BEBE'}}/>Food Tech</h6>
-                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                            <h6><ImConnection style={{'color':'#15BEBE'}}/>Consumer Internet</h6>
+                            <div className='Browse'>E-commerce, Food Delivery, Online education, Gaming and more</div>
+                        </Brands>
+                        <Sector onClick={()=>{navigate('/newreport')}}>
+                            {/* <div className='Browse'>Browse by Sector</div> */}
+                            <br/>
+                            <h6><RiMoneyDollarBoxFill style={{'color':'#15BEBE'}}/>Fintech</h6>
+                            <div className='Browse'> Payments, Loans, Insurance, Investments </div>
+                        </Sector>
+                        <HealthCare onClick={()=>{navigate('/newreport')}}>
+                            <br/>
+                            <h6><BsFillCloudArrowDownFill style={{'color':'#15BEBE'}}/>SAAS</h6>
+                            <div className='Browse'>B2B and B2C companies of India</div>
                         </HealthCare>
-                        <Company onClick={()=>{navigate('/newmainpage')}}>
-                            <h6><MdHouseSiding style={{'color':'#15BEBE'}}/> Company</h6>
-                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
+                        <Company onClick={()=>{navigate('/newreport')}}>
+                            <h6><BsTag style={{'color':'#15BEBE'}}/>Traditional Brands</h6>
+                            <div className='Browse'>Consumer brands in grocery, fashion and everything else</div>
                         </Company>
-                        <OnlineRetail onClick={()=>{navigate('/newmainpage/?tag=Online Retail 2.0')}}><h6> <AiOutlineShoppingCart style={{'color':'#15BEBE'}}/> OnlineRetail</h6>
-                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div></OnlineRetail>
-                        <EdTech onClick={()=>{navigate('/newmainpage/?tag=Mobility 2.0')}}>
+                        {/* <OnlineRetail onClick={()=>{navigate('/newmainpage/?tag=Online Retail 2.0')}}><h6> <AiOutlineShoppingCart style={{'color':'#15BEBE'}}/>SaaS</h6>
+                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div></OnlineRetail> */}
+                        {/* <EdTech onClick={()=>{navigate('/newmainpage/?tag=Mobility 2.0')}}>
                             <h6><TbBooks style={{'color':'#15BEBE'}}/> Mobility</h6>
                             <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
                             <div style={{'marginTop':'10px', 'marginLeft':'210px'}}><a style={{"text-decoration":"none", "fontSize":"12px"}}href="/newmainpage">Show More</a></div>
-                        </EdTech>
+                        </EdTech> */}
                     </TypesDiv>
                 </DropDiv>
                 </ProductDiv>
@@ -261,8 +265,8 @@ grid-template-columns: 1fr 1fr 1fr;
 grid-template-rows: 1fr 1fr; 
 gap: 10px 10px; 
 grid-template-areas: 
-"Brands Sector HealthCare"
-"Company OnlineRetail EdTech"; 
+"Brands Sector "
+"Company OnlineRetail"; 
 `
 
 const Brands = styled.div`

@@ -15,7 +15,7 @@ import {GoFileSymlinkDirectory} from 'react-icons/go'
 import { BiCategory, BiBookContent, BiCartAlt, BiFridge } from "react-icons/bi";
 import { IoFastFood } from "react-icons/io5";
 import {FaCarAlt, FaBusinessTime ,FaBabyCarriage, FaRegFileAudio} from 'react-icons/fa';
-import {BsGear, BsArrowBarRight, BsArrowBarLeft} from 'react-icons/bs'
+import {BsGear, BsArrowBarRight, BsArrowBarLeft, BsFillCloudArrowDownFill, BsTag} from 'react-icons/bs'
 import{ImConnection} from 'react-icons/im'
 import { ProSidebar, SubMenu} from 'react-pro-sidebar';
 import './NewReport.scss';
@@ -92,6 +92,8 @@ const NewReport = () => {
         'Sector Summary 2.0':<MdOutlineSummarize/>,
         'Company Profile':<ImProfile />,
         'Overall':<SiCoveralls/>,
+        'Traditional Brands':<BsTag/>,
+        'SAAS':<BsFillCloudArrowDownFill/>,
         'Category':<BiCategory/>,
         'Amazon Specific':<FaAmazon />,
         'Paytm mall':<SiPaytm/>,
@@ -114,6 +116,7 @@ const NewReport = () => {
         'City Split':<FaCity/>,
         'Supply Chain Metrics':<GiBreakingChain/>,
         'Revenue Metrics':<RiMoneyDollarBoxFill/>,
+        'Fintech':<RiMoneyDollarBoxFill/>,
         'Operational Metrics':<BiCartAlt/>,
         'Online Retail':<BiCartAlt/>,
         'Social Commerce Specific':<MdMonetizationOn/>,
@@ -204,7 +207,7 @@ const NewReport = () => {
 
       useEffect(()=>{
         // we are using consumer internet here because we want to show all  reports name but on click it will showsubscribe for report
-        fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreports/?rep=Consumer Internet`, {
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreports/`, {
           method:'GET',
           headers:{
             'Content-Type': 'application/json',
@@ -298,7 +301,7 @@ const NewReport = () => {
             console.error(error)
           })
       localStorage.clear();
-      window.location.href='/signin'
+      window.location.href='/'
     }
     useEffect(()=>{
       console.log('djtoken=  ', window.localStorage.getItem("token"))
@@ -567,8 +570,8 @@ const NewReport = () => {
             position: 'relative',
             backgroundColor:'#18183E',
             border:'none',
-            zIndex:10
-            // '&:hover':{
+            zIndex:10,
+            // '&:hover':{    does not work. Onhover does not work inline styling
             //   backgroundColor:'red'
             // }
           }}
@@ -578,9 +581,11 @@ const NewReport = () => {
             window.reports = []
             let parent_arr = getParents(props)
             parent_arr.push(label)
+            setSelectedOption(null)
             // setTreearr(parent_arr)
             if(hasNodes===false){
               window.localStorage.setItem('report', label)
+              console.log('clickprops = ', props)
               if(props.finalized){
                 setshowCurrencyBar(true)
                 window.localStorage.setItem('finalized', 'true')
@@ -588,6 +593,7 @@ const NewReport = () => {
                 setshowCurrencyBar(false)
                 window.localStorage.setItem('finalized', 'false')
               }
+              console.log('finalized = ', window.localStorage.getItem('finalized'))
               if(props.filter!==null && props.filter!==''){
                 setfilterarr(props.filter.split(','))
                 console.log('filter = ', props.filter.split(','))
@@ -1375,7 +1381,7 @@ const NewReport = () => {
         }
         }
       if(window.localStorage.getItem('loginStatus')!=='true'){
-        return <Navigate to = "/signin"/>
+        return <Navigate to = "/"/>
       }
   return (
     <>
@@ -1421,7 +1427,7 @@ const NewReport = () => {
                     <div  style={treemenucollapse?{'marginLeft':'3.3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.8vw' ,'marginBottom':'10px'}}>
                     {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
                     {/* Products/ {treearr.length>0?<>{treearr.join(" / ")}</>:<>Consumer Internet</>} */}
-                    Products/ {treearr.length>0?<>{treearr.map(( val, i)=><span onClick={(e)=>{handleClickTree(val, -2 , '-1', i)}}>{val} / </span>)}</>:<>Consumer Internet</>}
+                    Products/ {treearr.length>0?<>{treearr.map(( val, i)=><BreadCrumbSpan onClick={(e)=>{handleClickTree(val, -2 , '-1', i)}}>{val} / </BreadCrumbSpan>)}</>:<>Consumer Internet</>}
                     </div>
                     {showcurrencybar?<Currency marginLeft = {treemenucollapse?'3.3vw':'3.8vw'}columns={treemenucollapse?'0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 2.95fr 1.2fr 0.3fr':'0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 3.95fr 1.2fr 0.3fr'}>
                       <Descurr>Currency</Descurr>
@@ -1652,7 +1658,9 @@ const NewReport = () => {
                               let active_width = activePage.defaultSize.width
                               let width = document.getElementsByClassName('report-style-class-newreport'+i)[0].offsetWidth;
                               let ht = ((active_ht/active_width)*width)
+                              console.log('i= ', i)
                               if(i==0){
+                                console.log('rep_finalized = ', window.localStorage.getItem('finalized'))
                                 if(window.localStorage.getItem('finalized')==='false'){
                                   document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-6vh';
                                 }
@@ -1809,6 +1817,14 @@ const BreadCrumbTop = styled.div`
   min-height:10vh;
   background-color:#F5F8FC;
 `
+
+const BreadCrumbSpan = styled.span`
+  &:hover{
+    color:#2323C8;
+    cursor:pointer;
+}
+`
+
 const Currency = styled.div`
   margin-left:${props => props.marginLeft};
   margin-bottom:10px;

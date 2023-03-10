@@ -75,9 +75,9 @@ function App() {
     <Router>
       <Routes>
         {/* <Route path = "/" element = {<Login userLogin={userLogin}/>}></Route> */}
-        <Route path = "/" element = {<FigmaLogin userLogin={userLogin} getRealEmail={getRealEmail} setClientID={setClientID}/>}></Route>
+        <Route path = "/signin" element = {<FigmaLogin userLogin={userLogin} getRealEmail={getRealEmail} setClientID={setClientID}/>}></Route>
         <Route path = '/login' element = {<NewFigmaLogin/>}></Route>
-        <Route path = '/signin' element={<NewFigmaSIgnIn/>}  ></Route>
+        <Route path = '/' element={<NewFigmaSIgnIn/>}  ></Route>
         <Route path = '/otp' element = {<NewFigmaOTP/>}></Route>
         <Route path = '/frontpage' element = {<Frontpage/>}></Route>
         {/* <Route path = "/otp" element = {<Otp Token={Token} getReportName={getReportName}/>}/> */}
