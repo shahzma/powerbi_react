@@ -92,9 +92,9 @@ const Head = () => {
                 Products
                 <DropDiv>
                     <OverViewDiv onClick={()=>{navigate('/mainpage')}}>
-                    <div className = 'ProductsText'>Legacy</div>
+                    <div className = 'ProductsText'>Legacy Product</div>
                     <div className='Browse'>Users signed up before 1 March, 2023 , please click here</div>
-                    <button className='OverViewButton'>OverView</button>
+                    <button className='OverViewButton'>Redirect</button>
                     </OverViewDiv>
                     <TypesDiv>
                         <Brands onClick={()=>{

@@ -81,6 +81,7 @@ const NewReport = () => {
     const [showReport, setshowReport] = useState(false);
     const [showDropDown, setShowDropDown] = useState(false);
     const [dropDownData, setDropDownData] = useState([])
+    const [filterVal, setFilterVal] = useState(null)
     const [commentsData, setCommentsData] = useState({
       currentQuestion: 1,
       currentQuestionId: "",
@@ -596,9 +597,12 @@ const NewReport = () => {
               console.log('finalized = ', window.localStorage.getItem('finalized'))
               if(props.filter!==null && props.filter!==''){
                 setfilterarr(props.filter.split(','))
-                console.log('filter = ', props.filter.split(','))
+                window.localStorage.setItem('filterval', props.filter_value)
+                setFilterVal(props.filter_value)
+                console.log('filterval = ', props.filter_value)
               }else{
                 setfilterarr([])
+                setFilterVal(null)
                 console.log('nofilter')
               }
               setSelectedPage(label)
@@ -1013,19 +1017,21 @@ const NewReport = () => {
         values: [window.localStorage.getItem('report')],
         filterType: models.FilterType.BasicFilter
       };
+      
+      const categoryfilter = {$schema:"http://powerbi.com/product/schema#basic",
+      target:{table:"ss_content_data parameter",column:"Group_Categories"},
+      operator:"In",values:[filterVal]};
 
       let filter_arr = [datefilter]
       for(let i=0; i<filterarr.length;i++){
         console.log('val = ',filterarr[i])
         if(filterarr[i]==1){
-          console.log('works')
           filter_arr.push(basicFilter)
+        }else if(filterarr[i]==='categories'){
+          console.log('categories filter')
+          filter_arr.push(categoryfilter)
         }
       }
-      console.log('filter_len=', filter_arr.length)
-      // if (['Amazon', 'Flipkart', 'Meesho', 'Paytm mall', 'Shopclues', 'Shoppee', 'Snapdeal', 'Tatacliq'].includes(window.localStorage.getItem('report'))){
-      //   filter_arr.push(basicFilter)
-      // }
 
       const treeData = [
         {
@@ -1453,16 +1459,6 @@ const NewReport = () => {
                         onClick={() => handleYearClick(1)}>FY</Currencybutton>
                       </Cyfy>
                       <Dropdn>
-                      {/* {showDropDown?<SelectSearch options={platform_option} name="language" search placeholder="Choose Platform"  onChange={(e)=>{handleClickTree(e, -1 , '-1')}}/>:<></>} */}
-                      {/* {showDropDown?<Dropdown options={options_d} onChange={(e)=>{handleClickTree(e.label, -1 , '-1')}}  placeholder="Select Platform" />:<></>} */}
-                      {/* <Dropdown
-                        options={options_d}
-                        placeholder="Select an option"
-                        arrowClosed={<span className="arrow-closed" />}
-                        arrowOpen={<span className="arrow-open" />}
-                        valueRenderer={(option) => renderItem(option)}
-                        optionRenderer={(option) => renderItem(option)}
-                      /> */}
                       {showDropDown?<MyDropdown options={platform_option}
                       onOptionSelect={onOptionSelect}
                       prev_value = {selectedOption}
