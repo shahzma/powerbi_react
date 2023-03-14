@@ -207,8 +207,9 @@ const NewReport = () => {
             
 
       useEffect(()=>{
+        let client_id = window.localStorage.getItem('clientID')
         // we are using consumer internet here because we want to show all  reports name but on click it will showsubscribe for report
-        fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreports/`, {
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreports/?client_id=${client_id}`, {
           method:'GET',
           headers:{
             'Content-Type': 'application/json',
@@ -221,7 +222,6 @@ const NewReport = () => {
             setallNodes(res)
           }
         )
-        let client_id = window.localStorage.getItem('clientID')
         console.log('cid=', client_id)
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportaccess/?client_id=${client_id}`, {
           method:'GET',
@@ -305,7 +305,6 @@ const NewReport = () => {
       window.location.href='/'
     }
     useEffect(()=>{
-      console.log('djtoken=  ', window.localStorage.getItem("token"))
       const interval = setTimeout(() => {
         console.log('Logs every minute');
         handleSignOut()
@@ -418,6 +417,7 @@ const NewReport = () => {
           setSelectedPage(reportname)
           setfilterarr(['1'])
           setShowDropDown(true)
+          window.localStorage.setItem('finalized', 'true')
         }
         if (key === -2){
           window.localStorage.setItem('report' , reportname)
@@ -552,6 +552,7 @@ const NewReport = () => {
         hasNodes,
         isOpen,
         label,
+        subscribed = false,
         searchTerm,
         openNodes,
         toggleNode,
@@ -570,6 +571,8 @@ const NewReport = () => {
             zIndex: focused ? 999 : 'unset',
             position: 'relative',
             backgroundColor:'#18183E',
+            color:subscribed?'white':'grey',
+            fontWeight:subscribed?'bold':'normal',
             border:'none',
             zIndex:10,
             // '&:hover':{    does not work. Onhover does not work inline styling
@@ -577,13 +580,13 @@ const NewReport = () => {
             // }
           }}
           onClick={e => {
-            // this onclick conflicts with oclick defined below
-            // make your get parents function here
+              // this onclick conflicts with oclick defined below
+              // make your get parents function here
             window.reports = []
             let parent_arr = getParents(props)
             parent_arr.push(label)
             setSelectedOption(null)
-            // setTreearr(parent_arr)
+            setTreearr(parent_arr)
             if(hasNodes===false){
               window.localStorage.setItem('report', label)
               console.log('clickprops = ', props)
@@ -620,36 +623,14 @@ const NewReport = () => {
               }else{
                 setyearIndex(1)
               }
-              // for (let i= 0; i<arr.length;i++){
-              //   if(arr[i].report===label){
-              //     if(arr[i].currency==='USD'){
-              //       setActiveIndex(1)
-              //       window.localStorage.setItem('currency', 'USD')
-              //     }else{
-              //       setActiveIndex(0)
-              //       window.localStorage.setItem('currency', 'INR')
-              //     }
-              //     if(arr[i].year==='CY'){
-              //       setyearIndex(0)
-              //       window.localStorage.setItem('year','CY')
-              //     }else{
-              //       setyearIndex(1)
-              //       window.localStorage.setItem('year','FY')
-              //     }
-              //   break
-              //   }
-              // }
-            }
-            //console.log('props=', props.finalized)
-            
+            }            
 
-            // check if page/report is actually availableto the user
-            let available = true
+            // // check if page/report is actually availableto the user
+            // let available = true
 
             if(hasNodes && toggleNode){
               toggleNode()
             }else{
-              // 
               handleClickTree(label, props.key_val, props.node_type)
             }
             e.stopPropagation();
@@ -1048,6 +1029,7 @@ const NewReport = () => {
                   key: 'third-level-node-1',
                   label: 'code',
                   name:'purgatory',
+                  subscribed:true,
                   nodes: [] // you can remove the nodes property or leave it as an empty array
                 },
               ],
@@ -1057,7 +1039,8 @@ const NewReport = () => {
         {
           key: 'first-level-node-2',
           label: 'geass',
-          name:'plain'
+          name:'plain',
+          subscribed:true
         },
       ];
 
@@ -1438,12 +1421,12 @@ const NewReport = () => {
                     {showcurrencybar?<Currency marginLeft = {treemenucollapse?'3.3vw':'3.8vw'}columns={treemenucollapse?'0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 2.95fr 1.2fr 0.3fr':'0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 3.95fr 1.2fr 0.3fr'}>
                       <Descurr>Currency</Descurr>
                       <Inr>
-                        <Currencybutton bgcolor={activeIndex === 0 ? '#26CDCC' : '#EAEAEA'}
+                        <Currencybutton bgcolor={activeIndex === 0 ? '#26CDCC' : 'white'}
                          color={activeIndex === 1 ? '#333333' : '#333333'}
                         onClick={() => handleCurrencyClick(0)}>
                           INR
                         </Currencybutton>
-                        <Currencybutton bgcolor={activeIndex === 1 ? '#26CDCC' : '#EAEAEA'}
+                        <Currencybutton bgcolor={activeIndex === 1 ? '#26CDCC' : 'white'}
                         color={activeIndex === 1 ? '#333333' : '#333333'}
                         onClick={() => handleCurrencyClick(1)}>
                           USD
@@ -1451,10 +1434,10 @@ const NewReport = () => {
                       </Inr>
                       <Gear><BsGear style={{ 'fontSize': "20px" }} onClick={()=>handleGearClick()}/></Gear>
                       <Cyfy>
-                      <Currencybutton bgcolor={yearIndex === 0 ? '#26CDCC' : '#EAEAEA'}
+                      <Currencybutton bgcolor={yearIndex === 0 ? '#26CDCC' : 'white'}
                          color={yearIndex === 1 ? '#333333' : '#333333'}
                         onClick={() => handleYearClick(0)}>CY</Currencybutton>
-                        <Currencybutton bgcolor={yearIndex === 1 ? '#26CDCC' : '#EAEAEA'}
+                        <Currencybutton bgcolor={yearIndex === 1 ? '#26CDCC' : 'white'}
                         color={yearIndex === 0 ? '#333333' : '#333333'}
                         onClick={() => handleYearClick(1)}>FY</Currencybutton>
                       </Cyfy>
@@ -1868,7 +1851,7 @@ border: 1px solid black;
 width:58px;
 height:34px;
 font-size:14px;
-outline: none;
+outline: none !important;
 `
 const PowerBiDiv = styled.div`
 /* prevent overflow on select somehow */
