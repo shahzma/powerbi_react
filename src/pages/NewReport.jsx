@@ -82,6 +82,7 @@ const NewReport = () => {
     const [showDropDown, setShowDropDown] = useState(false);
     const [dropDownData, setDropDownData] = useState([])
     const [filterVal, setFilterVal] = useState(null)
+    const [labelSelected, setLabelSelected] = useState(null);
     const [commentsData, setCommentsData] = useState({
       currentQuestion: 1,
       currentQuestionId: "",
@@ -417,7 +418,7 @@ const NewReport = () => {
           setSelectedPage(reportname)
           setfilterarr(['1'])
           setShowDropDown(true)
-          window.localStorage.setItem('finalized', 'true')
+          window.localStorage.setItem('finalized', 'false')
         }
         if (key === -2){
           window.localStorage.setItem('report' , reportname)
@@ -543,7 +544,7 @@ const NewReport = () => {
       }
       const DEFAULT_PADDING = 16;
       const ICON_SIZE = 3;
-      const LEVEL_SPACE = 8
+      const LEVEL_SPACE = 15
 
       const ToggleIcon = ({ on }) => <span style={{ marginRight: 8 }}>{on ? <IoIosArrowDown/> : <IoIosArrowForward/>}</span>;
       // listitem is functional component
@@ -570,7 +571,7 @@ const NewReport = () => {
             boxShadow: focused ? '0px 0px 5px 0px #222' : 'none',
             zIndex: focused ? 999 : 'unset',
             position: 'relative',
-            backgroundColor:'#18183E',
+            backgroundColor:labelSelected===label?'blue':'#18183E',
             color:subscribed?'white':'grey',
             fontWeight:subscribed?'bold':'normal',
             border:'none',
@@ -586,6 +587,7 @@ const NewReport = () => {
             let parent_arr = getParents(props)
             parent_arr.push(label)
             setSelectedOption(null)
+            setLabelSelected(label)
             setTreearr(parent_arr)
             if(hasNodes===false){
               window.localStorage.setItem('report', label)
@@ -597,7 +599,6 @@ const NewReport = () => {
                 setshowCurrencyBar(false)
                 window.localStorage.setItem('finalized', 'false')
               }
-              console.log('finalized = ', window.localStorage.getItem('finalized'))
               if(props.filter!==null && props.filter!==''){
                 setfilterarr(props.filter.split(','))
                 window.localStorage.setItem('filterval', props.filter_value)
@@ -606,7 +607,6 @@ const NewReport = () => {
               }else{
                 setfilterarr([])
                 setFilterVal(null)
-                console.log('nofilter')
               }
               setSelectedPage(label)
               setTreearr(parent_arr)
@@ -630,6 +630,7 @@ const NewReport = () => {
 
             if(hasNodes && toggleNode){
               toggleNode()
+              handleClickTree(label, props.key_val, props.node_type)
             }else{
               handleClickTree(label, props.key_val, props.node_type)
             }
@@ -1641,7 +1642,7 @@ const NewReport = () => {
                               if(i==0){
                                 console.log('rep_finalized = ', window.localStorage.getItem('finalized'))
                                 if(window.localStorage.getItem('finalized')==='false'){
-                                  document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-6vh';
+                                  document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-12vh';
                                 }
                               }
                               document.getElementsByClassName('report-style-class-newreport'+i)[0].style.height = ht+'px';
