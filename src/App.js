@@ -17,6 +17,7 @@ import NewMainPage from './pages/NewMainPage';
 import Frontpage from './pages/Frontpage';
 import Article from './pages/Article';
 import ArticleDetail from './pages/ArticleDetail';
+import Searchpage from './pages/Searchpage';
 
 function App() {
 
@@ -87,6 +88,7 @@ function App() {
         <Route path = "/report" element = {<Report Token={Token} email = {RealEmail} pseudo_email={Email} ReportName = {Reportname}/>}/>
         <Route path = 'newreport' element = {<NewReport/>}></Route>
         <Route path = '/newmainpage' element = {<NewMainPage/>}></Route>
+        <Route path = '/search' element = {<Searchpage/>}></Route>
         <Route path = '/article' element = {<Article/>}></Route>
         <Route path='/articled' element = {<ArticleDetail/>}></Route>
       </Routes>

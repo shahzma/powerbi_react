@@ -457,7 +457,7 @@ const NewMainPage = () => {
             onFocus={handleOnFocus}
             autoFocus
             formatResult={formatResult}
-            styling = {{borderRadius: "5px", height: "40px",}}
+            styling = {{borderRadius: "5px", height: "4000px",}}
           />
           {/* <Autocomplete data={item_data} /> */}
         </div>

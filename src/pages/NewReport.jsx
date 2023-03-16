@@ -630,7 +630,11 @@ const NewReport = () => {
 
             if(hasNodes && toggleNode){
               toggleNode()
-              handleClickTree(label, props.key_val, props.node_type)
+              // console.log(label, props.key_val, props.node_type)
+              if(label==='Online Retail (WIP)'){
+                setSelectedPage(label)
+                handleClickTree(label, props.key_val, props.node_type)
+              }
             }else{
               handleClickTree(label, props.key_val, props.node_type)
             }
