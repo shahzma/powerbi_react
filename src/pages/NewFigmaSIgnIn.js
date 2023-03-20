@@ -212,7 +212,7 @@ const NewFigmaSIgnIn = () => {
   return (
     width>768 ?(<PageContainer>
         <SideImg>
-            <img src = '/Images/lhs.png' alt = ''/>
+            <img src = '/Images/sideimg.png' alt = ''/>
         </SideImg>
          <Login>
             <ImgDiv>

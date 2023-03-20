@@ -14,7 +14,7 @@ import { RiMoneyDollarBoxFill } from "react-icons/ri";
 import {GoFileSymlinkDirectory} from 'react-icons/go'
 import { BiCategory, BiBookContent, BiCartAlt, BiFridge } from "react-icons/bi";
 import { IoFastFood } from "react-icons/io5";
-import {FaCarAlt, FaBusinessTime ,FaBabyCarriage, FaRegFileAudio} from 'react-icons/fa';
+import {FaCarAlt, FaBusinessTime ,FaBabyCarriage, FaRegFileAudio, FaTruck} from 'react-icons/fa';
 import {BsGear, BsArrowBarRight, BsArrowBarLeft, BsFillCloudArrowDownFill, BsTag} from 'react-icons/bs'
 import{ImConnection} from 'react-icons/im'
 import { ProSidebar, SubMenu} from 'react-pro-sidebar';
@@ -188,7 +188,7 @@ const NewReport = () => {
         'OTT Audio (WIP)':<FaRegFileAudio/>,
         'Content S&M (WIP)':<BiBookContent/>,
         'Digital Content (WIP)':<MdOutlinePersonalVideo/>,
-
+        'eLogistics':<FaTruck/>
       })
       const [selectedOption, setSelectedOption] = useState(null);
 
@@ -430,18 +430,7 @@ const NewReport = () => {
             treearr.pop()
           }
         }
-        // if (reportname === 'Horizontals Home'){
-        //     console.log('hello')
-        // }else if(key === -1){
-        //   console.log('report = ', reportname)
-        //   window.localStorage.setItem('report' , reportname)
-        //   setfilterarr(['1'])
-        //   // we want to continue showing drop down
-        //   setShowDropDown(true)
-        // }
-        // else{
-        //   setShowDropDown(false)
-        // }
+        console.log('reportarr=', reportarr)
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep=${reportname}`, {
           method:'GET',
           headers:{
@@ -451,49 +440,33 @@ const NewReport = () => {
         .then(res=>res.json())
         .then(
           res=>{
-            let arr = []
-            // executeAfterLoop(res,arr)
-            // for(var i = 0; i<res.length; i++){
-            //   let pseudo_email = 'digital@redseerconsulting.com'
-            //   let prop_token = ''
-            //   // powerbireport name and not report name form table
-            //   // let propsrep = res[i].report_name
-            //   let propsrep = 'OTT Audio'
-            //   fetch(`${process.env.REACT_APP_API_ENDPOINT}/MSAccessToken/?rep=${propsrep}&email=${pseudo_email}`, {
-            //     method: 'GET',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         Authorization: `Token ${prop_token}`
-            //     },
-            //     })
-            //     .then( data => data.json())
-            //     .then(
-            //     data => {
-            //       // //console.log(res[0])
-            //       arr.push(data['embed_token'])
-            //     }
-            //     )
-            //     .catch( error => console.error(error))
-
-            // }
+            console.log(reportname,res)
             for(let i = 0; i<reportarr.length; i++){
-              if(reportarr[i].report_name===reportname){
-                if(reportarr[i].report_pages.length===0){
-                  console.log('show_all_pages')
-                  setshowReport(true)
-                }else{
-                  let pages = reportarr[i].report_pages
-                  res = res.filter(value => pages.includes(value.id));  
-                  setshowReport(true)         
-                }
-                break
+              if(key===-1){
+                    console.log('works')
+                    let pages = reportarr[i].report_pages
+                    res = res.filter(value => pages.includes(value.id)); 
+                    setshowReport(true)
+                    break      
               }else{
-                setshowReport(false)
+                if(reportarr[i].report_name===reportname){
+                  if(reportarr[i].report_pages.length===0){
+                    console.log('show_all_pages')
+                    setshowReport(true)
+                  }else{
+                    let pages = reportarr[i].report_pages
+                    res = res.filter(value => pages.includes(value.id)); 
+                    setshowReport(true)         
+                  }
+                  break
+                }else{
+                  setshowReport(false)
+                }
               }
             }
             setnewReportPages(res)
             setshowLoader(false)
-            console.log('res=', res)
+            // console.log('res=', res)
             
           }
         )
@@ -634,6 +607,7 @@ const NewReport = () => {
               if(label==='Online Retail (WIP)'){
                 setSelectedPage(label)
                 handleClickTree(label, props.key_val, props.node_type)
+                window.localStorage.setItem('finalized', 'false')
               }
             }else{
               handleClickTree(label, props.key_val, props.node_type)

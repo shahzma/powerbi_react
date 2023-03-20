@@ -6,9 +6,15 @@ import styled from 'styled-components'
 
 const Searchpage = () => {
     const [playerData, setPlayerData] = useState([]);
-    
+    const [savedPlayerData, setSavedPlayerData] = useState([]) 
+    const [subplayerData, setSubPlayerData] = useState([]);
+    const [savedsubPlayerData, setSavedSubPlayerData] = useState([]) 
     useEffect(()=>{
-        fetch(`${process.env.REACT_APP_API_ENDPOINT}/player/`, {
+        let client_id = window.localStorage.getItem('client_id')
+        if(client_id===null){
+            client_id = 1
+        }
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/player/?client_id=${client_id}`, {
             method:'GET',
             headers:{
               'Content-Type': 'application/json',
@@ -17,8 +23,22 @@ const Searchpage = () => {
           .then(res=>res.json())
           .then(
             res=>{
-                console.log('res=', res)
               setPlayerData(res)
+              setSavedPlayerData(res)
+
+            }
+          )
+          fetch(`${process.env.REACT_APP_API_ENDPOINT}/subplayer/?client_id=${client_id}`, {
+            method:'GET',
+            headers:{
+              'Content-Type': 'application/json',
+            },
+          })
+          .then(res=>res.json())
+          .then(
+            res=>{
+              setSubPlayerData(res)
+              setSavedSubPlayerData(res)
             }
           )
     },[]);
@@ -46,10 +66,16 @@ const Searchpage = () => {
         }
       ]
 
+    //   const onError = () => {
+    //     setImageSrc(fallbackSrc);
+    //   };
       const handleOnSearch = (string, results) => {
         // onSearch will have as the first callback parameter
         // the string searched and for the second the results.
+        setSubPlayerData(savedsubPlayerData.filter(x=>x.player_name.toLowerCase().includes(string.toLowerCase())))
+        setPlayerData(savedPlayerData.filter(x => x.player_name.toLowerCase().includes(string.toLowerCase())))
         console.log(string, results)
+        // console.log(savedPlayerData.filter(x => x.player_name.toLowerCase().includes(string.toLowerCase())))
       }
     
       const handleOnHover = (result) => {
@@ -69,6 +95,7 @@ const Searchpage = () => {
       const formatResult = (item) => {
         return (
           <>
+            
             <span style={{ display: 'block', textAlign: 'left' }}>{item.player_name}</span>
           </>
         )
@@ -89,6 +116,8 @@ const Searchpage = () => {
                 onSelect={handleOnSelect}
                 onFocus={handleOnFocus}
                 autoFocus
+                maxResults={0}
+                showNoResults = {false}
                 formatResult={formatResult}
                 // styles inside of search box
                 styling = {{borderRadius: "5px", height: "40px",}}
@@ -99,13 +128,24 @@ const Searchpage = () => {
                 Type in search box for available companies
             </TextBox>
         </SearchArea>
-        {/* <CompanyList>
-            {playerData.map((val, i)=>
-                <span>
-                    {val.player_name}
-                </span>
+        <CompanyList>
+            {subplayerData.map((val, i)=>
+                <SubCompanyBox>
+                   <img style = {{'height':'10px','width':'10px'}}src = {val.image===null?'http://0.0.0.0:8001/media/uploads/download.png':val.image.file} alt = {val} onError={({ currentTarget }) => {
+    currentTarget.onerror = null; // prevents looping
+    currentTarget.src="http://0.0.0.0:8001/media/uploads/download.png";
+  }}/> {val.player_name}  
+                </SubCompanyBox>
             )}
-        </CompanyList> */}
+            {playerData.map((val, i)=>
+                <CompanyBox>
+                   <img style = {{'height':'10px','width':'10px'}}src = {val.image===null?'http://0.0.0.0:8001/media/uploads/download.png':val.image.file} alt = {val} onError={({ currentTarget }) => {
+    currentTarget.onerror = null; // prevents looping
+    currentTarget.src="http://0.0.0.0:8001/media/uploads/download.png";
+  }}/> {val.player_name}  
+                </CompanyBox>
+            )}
+        </CompanyList>
     </div>
   )
 }
@@ -127,6 +167,23 @@ const TextBox = styled.div`
 `
 
 const CompanyList =styled.div`
+background-color: ${props => props.bgcolor};
 padding:40px;
 min-height:40vh;
+display:flex;
+flex-wrap:wrap;
+`
+const SubCompanyBox = styled.span`
+border:1px solid black;
+margin:5px;
+padding:5px;
+max-height:40px;
+background-color:#B6DCFE;
+`
+
+const CompanyBox = styled.span`
+border:1px solid black;
+margin:5px;
+padding:5px;
+max-height:40px;
 `

@@ -32,66 +32,7 @@ const NewMainPage = () => {
 
     let today = new Date();
     let hour = today.getHours();
-    const items = [
-        // {   
-        //     client_id
-        //     : 
-        //     41,
-        //     end_date
-        //     : 
-        //     null,
-        //     id
-        //     : 
-        //     133,
-        //     players
-        //     : 
-        //     ['Amazon', 'Flipkart', 'Meesho', 'Zepto', 'Swiggy Stores', 'Milk Basket', 'Supr Daily', 'BB Daily', 'BigBasket', 'JioMart', 'Amazon (Verticals)', 'Flipkart (Verticals)', 'DMart Ready', 'Pepperfry', 'Urban Ladder', 'Snapdeal', 'Meesho', 'Amazon', 'Flipkart', 'Meesho (Social Commerce)', 'Glowroad', 'Citymall', 'Dealshare'],
-        //     report_id
-        //     : 
-        //     3,
-        //     report_name
-        //     : 
-        //     "Online Retail",
-        //     start_date
-        //     : 
-        //     "2021-03-01"
-        // },
-        // {
-        //     client_id
-        //     : 
-        //     41,
-        //     end_date
-        //     : 
-        //     null,
-        //     id
-        //     : 
-        //     134,
-        //     players
-        //     : 
-        //     (2) ['Swiggy', 'Zomato'],
-        //     report_id
-        //     : 
-        //     5,
-        //     report_name
-        //     : 
-        //     "Food Aggregators",
-        //     start_date
-        //     : 
-        //     "2021-03-01"
-        // },
-        {
-          id: 2,
-          report_name: 'online_r'
-        },
-        {
-          id: 3,
-          report_name: 'food_aggre'
-        },
-        {
-          id: 4,
-          report_name: 'shortform'
-        }
-      ]
+  
     
     const item_data = [
       "Asparagus",
