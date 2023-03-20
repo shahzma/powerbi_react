@@ -131,17 +131,17 @@ const Searchpage = () => {
         <CompanyList>
             {subplayerData.map((val, i)=>
                 <SubCompanyBox>
-                   <img style = {{'height':'10px','width':'10px'}}src = {val.image===null?'http://0.0.0.0:8001/media/uploads/download.png':val.image.file} alt = {val} onError={({ currentTarget }) => {
+                   <img style = {{'height':'10px','width':'10px'}}src = {val.image===null?'/Images/ms_icon.png':val.image.file} alt = {val} onError={({ currentTarget }) => {
     currentTarget.onerror = null; // prevents looping
-    currentTarget.src="http://0.0.0.0:8001/media/uploads/download.png";
+    currentTarget.src="/Images/ms_icon.png";
   }}/> {val.player_name}  
                 </SubCompanyBox>
             )}
             {playerData.map((val, i)=>
                 <CompanyBox>
-                   <img style = {{'height':'10px','width':'10px'}}src = {val.image===null?'http://0.0.0.0:8001/media/uploads/download.png':val.image.file} alt = {val} onError={({ currentTarget }) => {
+                   <img style = {{'height':'10px','width':'10px'}}src = {val.image===null?'/Images/ms_icon.png':val.image.file} alt = {val} onError={({ currentTarget }) => {
     currentTarget.onerror = null; // prevents looping
-    currentTarget.src="http://0.0.0.0:8001/media/uploads/download.png";
+    currentTarget.src="/Images/ms_icon.png";
   }}/> {val.player_name}  
                 </CompanyBox>
             )}
