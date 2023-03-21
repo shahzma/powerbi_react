@@ -440,14 +440,21 @@ const NewReport = () => {
         .then(res=>res.json())
         .then(
           res=>{
-            console.log(reportname,res)
+            console.log(reportname,res, reportarr)
             for(let i = 0; i<reportarr.length; i++){
               if(key===-1){
-                    console.log('works')
                     let pages = reportarr[i].report_pages
-                    res = res.filter(value => pages.includes(value.id)); 
+                    // if amazon lies in report pages then setshowreport(true)
+                  if(reportarr[i].report_name===reportname){
                     setshowReport(true)
-                    break      
+                    break
+                  }
+                  else if(pages.includes(res[0].id)){
+                    setshowReport(true)
+                    break
+                  }else{
+                    setshowReport(false)
+                  }
               }else{
                 if(reportarr[i].report_name===reportname){
                   if(reportarr[i].report_pages.length===0){
@@ -517,7 +524,7 @@ const NewReport = () => {
       }
       const DEFAULT_PADDING = 16;
       const ICON_SIZE = 3;
-      const LEVEL_SPACE = 15
+      const LEVEL_SPACE = 10
 
       const ToggleIcon = ({ on }) => <span style={{ marginRight: 8 }}>{on ? <IoIosArrowDown/> : <IoIosArrowForward/>}</span>;
       // listitem is functional component
@@ -1371,8 +1378,8 @@ const NewReport = () => {
                   return (
                   <div style={{paddingLeft:'10px'}}>
                     {/* <Input onChange={(e) => handleSearch(e)} placeholder="Type and search"/> */}
-                    <Input style = {{'padding':'5px', 'width':'14vw'}}onChange={e => search(e.target.value)} placeholder="Type and search" />
-                    <button style={{'marginLeft':'10px', 'height':'42px', 'borderRadius':'8px', 'width':'50px', 'backgroundColor':'white'}} onClick = {handleTreeMenuCollapse}><GiHamburgerMenu/></button>
+                    {/* <Input style = {{'padding':'5px', 'width':'14vw'}}onChange={e => search(e.target.value)} placeholder="Type and search" /> */}
+                    <button style={{'marginLeft':'14vw', 'height':'42px', 'borderRadius':'8px', 'width':'50px', 'backgroundColor':'white'}} onClick = {handleTreeMenuCollapse}><GiHamburgerMenu/></button>
                     <ListGroup>
                       {items.map(props => (
                         //  listitem is functional component. this is same as when you create a seprate react file which 
@@ -1710,7 +1717,7 @@ const NewReport = () => {
                         window.reports=[]
                       }
                       window.reports.push(embeddedReport);
-                      console.log(window.reports)
+                      // console.log(window.reports)
                     }
               
                   }
