@@ -39,6 +39,8 @@ import SelectSearch from 'react-select-search';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog, faFilter } from '@fortawesome/free-solid-svg-icons'
 import MyDropdown from '../components/DropDown/dropdown';
+import { useLocation } from 'react-router-dom';
+
 // import 'react-select-search/style.css'
 
 
@@ -191,6 +193,32 @@ const NewReport = () => {
         'eLogistics':<FaTruck/>
       })
       const [selectedOption, setSelectedOption] = useState(null);
+
+      const search = useLocation().search;
+      const client_id = new URLSearchParams(search).get('client_id')
+      const backend_token = new URLSearchParams(search).get('backend_token')
+      const pseudo_email = new URLSearchParams(search).get('pseudo_email')
+      const email = new URLSearchParams(search).get('email')
+
+  useEffect(()=>{
+    if (client_id){
+      console.log('backend_client_id=', client_id)
+      window.localStorage.setItem("clientID", client_id);
+      window.localStorage.setItem('loginStatus','true')
+    }
+    if (backend_token){
+      console.log('backend_token=', backend_token)
+      window.localStorage.setItem("token", backend_token);
+    }
+    if (pseudo_email){
+      console.log(pseudo_email)
+      window.localStorage.setItem("pseudo_email", pseudo_email);
+    }
+    if (email){
+      console.log(email)
+      window.localStorage.setItem("email", email);
+    }
+  },[client_id, backend_token, pseudo_email, email])
 
       const onOptionSelect = (option) => {
         if(selectedOption!==null){
@@ -1379,7 +1407,8 @@ const NewReport = () => {
                   <div style={{paddingLeft:'10px'}}>
                     {/* <Input onChange={(e) => handleSearch(e)} placeholder="Type and search"/> */}
                     {/* <Input style = {{'padding':'5px', 'width':'14vw'}}onChange={e => search(e.target.value)} placeholder="Type and search" /> */}
-                    <button style={{'marginLeft':'14vw', 'height':'42px', 'borderRadius':'8px', 'width':'50px', 'backgroundColor':'white'}} onClick = {handleTreeMenuCollapse}><GiHamburgerMenu/></button>
+                    <ToggleButton display = {treemenucollapse?'block':'none'} onClick = {handleTreeMenuCollapse}><GiHamburgerMenu/></ToggleButton>
+                    {/* <button style={{'marginLeft':'16vw', 'height':'40px', 'borderRadius':'50%', 'width':'40px', 'backgroundColor':'white'}} onClick = {handleTreeMenuCollapse}><GiHamburgerMenu/></button> */}
                     <ListGroup>
                       {items.map(props => (
                         //  listitem is functional component. this is same as when you create a seprate react file which 
@@ -1396,7 +1425,7 @@ const NewReport = () => {
               {showLoader===false?<PowerbiContainer>
                   <BreadCrumbTop>
                     <div style={treemenucollapse?{'marginLeft':'2.9vw', 'display':'flex', 'alignItems':'center'}:{'marginLeft':'3.8vw', 'display':'flex', 'alignItems':'center'}}>
-                      {treemenucollapse?<></>:<button  style={{'height':'42px', 'borderRadius':'8px', 'width':'50px', 'backgroundColor':'white', }} onClick={handleTreeMenuCollapse}><GiHamburgerMenu/></button>}
+                      {treemenucollapse?<></>:<button  style={{'height':'40px', 'borderRadius':'50%', 'width':'40px', 'backgroundColor':'#2323C8', 'color':'white', 'border':'0px' }} onClick={handleTreeMenuCollapse}><GiHamburgerMenu/></button>}
                       <span style = {{ 'marginLeft':'5px', 'marginRight':'15px','fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}>{selectedpage}</span>
                     </div>
                     <div  style={treemenucollapse?{'marginLeft':'3.3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.8vw' ,'marginBottom':'10px'}}>
@@ -1956,4 +1985,19 @@ margin-bottom:25px;
 `
 const CommentTextInput = styled.textarea`
 width:43vw;
+`
+
+const ToggleButton = styled.button`
+display:${props => props.display};
+height:40px; 
+width:40px; 
+background-color:#2323C8;
+border-radius:50%;
+color:white;
+border:0px solid black;
+outline: none !important;
+z-index:100;
+position:absolute;
+left:17.7vw;
+top:10vh;
 `

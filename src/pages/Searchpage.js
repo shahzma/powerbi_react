@@ -2,13 +2,18 @@ import React, { useEffect, useState } from 'react'
 import Head from '../components/Head/Head'
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 import styled from 'styled-components'
+import TableFilter from "react-table-filter";
+import "react-table-filter/lib/styles.css";
+
 
 
 const Searchpage = () => {
     const [playerData, setPlayerData] = useState([]);
     const [savedPlayerData, setSavedPlayerData] = useState([]) 
     const [subplayerData, setSubPlayerData] = useState([]);
-    const [savedsubPlayerData, setSavedSubPlayerData] = useState([]) 
+    const [savedsubPlayerData, setSavedSubPlayerData] = useState([]) ;
+    const [audit, setAudit] = useState([1,2,3]);
+
     useEffect(()=>{
         let client_id = window.localStorage.getItem('client_id')
         if(client_id===null){
@@ -23,6 +28,7 @@ const Searchpage = () => {
           .then(res=>res.json())
           .then(
             res=>{
+                console.log('players=',res)
               setPlayerData(res)
               setSavedPlayerData(res)
 
@@ -36,7 +42,11 @@ const Searchpage = () => {
           })
           .then(res=>res.json())
           .then(
-            res=>{
+            res=>{                
+            for(let i= 0; i<res.length;i++){
+                res[i]['sub'] = true
+            }
+            console.log('subplayer=',res)
               setSubPlayerData(res)
               setSavedSubPlayerData(res)
             }
@@ -66,9 +76,47 @@ const Searchpage = () => {
         }
       ]
 
-    //   const onError = () => {
-    //     setImageSrc(fallbackSrc);
-    //   };
+      const handleLogoClick = (item)=>{
+        console.log('hello = ', item)
+      }
+
+      const elementsHtml = subplayerData.map((item, index) => {
+        return (
+          <tr key={"row_" + index}>
+            <ComplianceColumnLogo onClick={()=>handleLogoClick(item)}>
+                <img style = {{'height':'10px','width':'10px'}}src = {item.image===null?'/Images/ms_icon.png':item.image.file} alt = {item.player_name} onError={({ currentTarget }) => {
+                    currentTarget.onerror = null; // prevents looping
+                    currentTarget.src="/Images/ms_icon.png";
+                  }}/>
+            </ComplianceColumnLogo>
+            <ComplianceColumn>{item.industry_name}</ComplianceColumn>
+            <ComplianceColumn>{item.player_name}</ComplianceColumn>
+            <ComplianceColumn>{item.status}</ComplianceColumn>
+            <ComplianceColumn>{item.stage}</ComplianceColumn>
+            <ComplianceColumn>{item.last_valuations}</ComplianceColumn>
+          </tr>
+        );
+      });
+
+      const elementsHtml1 = playerData.map((item, index) => {
+        return (
+          <tr key={"row_" + index}>
+            <ComplianceColumnLogo>
+                <img style = {{'height':'10px','width':'10px'}}src = {item.image===null?'/Images/ms_icon.png':item.image.file} alt = {item.player_name} onError={({ currentTarget }) => {
+                    currentTarget.onerror = null; // prevents looping
+                    currentTarget.src="/Images/ms_icon.png";
+                  }}/>
+            </ComplianceColumnLogo>
+            <ComplianceColumn>{item.industry_name}</ComplianceColumn>
+            <ComplianceColumn>{item.player_name}</ComplianceColumn>
+            <ComplianceColumn>{item.status}</ComplianceColumn>
+            <ComplianceColumn>{item.stage}</ComplianceColumn>
+            <ComplianceColumn>{item.last_valuations}</ComplianceColumn>
+          </tr>
+        );
+      });
+    
+
       const handleOnSearch = (string, results) => {
         // onSearch will have as the first callback parameter
         // the string searched and for the second the results.
@@ -128,7 +176,7 @@ const Searchpage = () => {
                 Type in search box for available companies
             </TextBox>
         </SearchArea>
-        <CompanyList>
+        {/* <CompanyList>
             {subplayerData.map((val, i)=>
                 <SubCompanyBox>
                    <img style = {{'height':'10px','width':'10px'}}src = {val.image===null?'/Images/ms_icon.png':val.image.file} alt = {val} onError={({ currentTarget }) => {
@@ -145,7 +193,44 @@ const Searchpage = () => {
   }}/> {val.player_name}  
                 </CompanyBox>
             )}
-        </CompanyList>
+        </CompanyList> */}
+        <ComplianceTable>
+                <thead>
+                    <ComplianceHeaderCompany>
+                        Company
+                    </ComplianceHeaderCompany>
+                    <ComplianceHeader>Industry</ComplianceHeader>
+                    <ComplianceHeader>Leadership</ComplianceHeader>
+                    <ComplianceHeader>Status</ComplianceHeader>
+                    <ComplianceHeader>Stage</ComplianceHeader>
+                    <ComplianceHeader>Last valuation</ComplianceHeader>
+                </thead>
+                {/* <tbody>
+                {modalData.map((item, i)=>(
+                    <ComplianceRow key={i}>
+                        <ComplianceColumn>
+                            {item.user}
+                        </ComplianceColumn>
+                        <ComplianceColumn>
+                            {item.user_level}
+                        </ComplianceColumn>
+                        <ComplianceColumn>
+                            {item.form_date}
+                        </ComplianceColumn>
+                        <ComplianceColumn>
+                            {item.form_name}
+                        </ComplianceColumn>
+                        <ComplianceColumn>
+                            {item.action?'Submitted':'Declined'}
+                        </ComplianceColumn>
+                    </ComplianceRow>
+                ))}
+                </tbody> */}
+                <tbody>{elementsHtml}</tbody>
+                <tbody>{elementsHtml1}</tbody>
+            </ComplianceTable>
+
+
     </div>
   )
 }
@@ -156,7 +241,7 @@ const SearchArea = styled.div`
 display:flex;
 align-items:center;
 justify-content:center;
-min-height:40vh;
+min-height:30vh;
 flex-direction:column;
 gap:30px;
 `
@@ -186,4 +271,49 @@ border:1px solid black;
 margin:5px;
 padding:5px;
 max-height:40px;
+`
+const ComplianceTable = styled.table`
+ /* font-family: arial, sans-serif; */
+  /* border-collapse: collapse; */
+  margin:30px;
+  margin-top:5px;
+`
+
+const ComplianceHeaderCompany = styled.th`
+ border: 0px solid #dddddd;
+ border-bottom:2px solid black;
+ font-size:30px;
+ padding:8px;
+ /* text-align:center; */
+ height:80px;
+ /* background-color:blue; */
+ /* color:white; */
+ min-width:160px;
+`
+
+const ComplianceHeader = styled.th`
+ border: 0px solid #dddddd;
+ border-bottom:2px solid black;
+ padding:8px;
+ font-weight:normal;
+ text-align:center;
+ height:80px;
+ /* background-color:blue; */
+ /* color:white; */
+ min-width:225px;
+`
+
+const ComplianceColumnLogo = styled.td`
+  border: 1px solid black;
+  border-left:0px;
+  text-align: center;
+  padding: 8px;
+  height:250px;
+`
+const ComplianceColumn = styled.td`
+  border: 0px solid #dddddd;
+  border-bottom:1px solid black;
+  text-align: center;
+  padding: 8px;
+  height:250px;
 `
