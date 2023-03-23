@@ -9,7 +9,7 @@ import { ImProfile } from "react-icons/im";
 import {SiCoveralls, SiSimpleanalytics,SiFlipkart, SiPaytm, SiTata} from "react-icons/si"
 import {FiUsers} from "react-icons/fi"
 import {AiOutlineFileSearch, AiOutlineMobile , AiTwotoneVideoCamera} from 'react-icons/ai'
-import { GiBreakingChain, GiConsoleController, GiEvilFork, GiHealthNormal, GiCarWheel, GiClothes,GiMedicines,GiFruitBowl, GiVideoConference, GiHamburgerMenu } from "react-icons/gi";
+import { GiBreakingChain, GiConsoleController, GiEvilFork, GiHealthNormal, GiCarWheel, GiClothes,GiMedicines,GiFruitBowl, GiVideoConference, GiHamburgerMenu, GiZigArrow } from "react-icons/gi";
 import { RiMoneyDollarBoxFill } from "react-icons/ri";
 import {GoFileSymlinkDirectory} from 'react-icons/go'
 import { BiCategory, BiBookContent, BiCartAlt, BiFridge } from "react-icons/bi";
@@ -40,7 +40,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog, faFilter } from '@fortawesome/free-solid-svg-icons'
 import MyDropdown from '../components/DropDown/dropdown';
 import { useLocation } from 'react-router-dom';
-
+// import Meesho from '../../public/Images/meesho.jpeg'
 // import 'react-select-search/style.css'
 
 
@@ -184,13 +184,14 @@ const NewReport = () => {
         'Fashion (WIP)':<GiClothes/>,
         'Electronics & Large/Small appliances (WIP)':<BiFridge/>,
         'Epharma (WIP)':<GiMedicines/>,
-        'Grocery (WIP)':<GiFruitBowl/>,
+        // 'Grocery (WIP)':<GiFruitBowl/>,
         'Shortform Video (WIP)':<GiVideoConference/>,
         'OTT_Video (WIP)':<AiTwotoneVideoCamera/>,
         'OTT Audio (WIP)':<FaRegFileAudio/>,
         'Content S&M (WIP)':<BiBookContent/>,
         'Digital Content (WIP)':<MdOutlinePersonalVideo/>,
-        'eLogistics':<FaTruck/>
+        'eLogistics':<FaTruck/>,
+        'Meesho':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/meesho.jpeg'/>
       })
       const [selectedOption, setSelectedOption] = useState(null);
 
@@ -414,8 +415,11 @@ const NewReport = () => {
       }
 
       let handleClickTree = (reportname, key, node_type, index = -1)=>{
+        if(index===treearr.length-1 & key===-2){
+          return
+        }
         setshowLoader(true)
-        console.log('node_type', node_type)
+        console.log('key=', key)
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/nodechildren/?key=${key}`, {
           method:'GET',
           headers:{
@@ -425,7 +429,10 @@ const NewReport = () => {
         .then(res=>res.json())
         .then(
           res =>{
-            if (res.length>1){
+            if(reportname === 'Online Retail (WIP)'){
+              setShowDropDown(false)
+            }
+            else if (res.length>1){
               setShowDropDown(true)
               for(let i=0; i<res.length; i++){
                 if(iconDict[res[i].label]){
@@ -453,12 +460,23 @@ const NewReport = () => {
           setSelectedPage(reportname)
           setSelectedOption(null)
           setfilterarr(['1'])
-          console.log('index = ', index)
-          for(let i = 0; i<index-1; i++){
-            treearr.pop()
+          if(['Online Retail (WIP)','Consumer Internet', 'Digital Content (WIP)', 'Online Education (WIP)', 'eHealth (WIP)', 'eB2B (WIP)'].includes(reportname)){
+            setShowDropDown(false)
+          }else{
+            setShowDropDown(true)
+          }
+          console.log('index = ', index,treearr.length)
+          if(true){
+            let arr = treearr
+            for(let i = treearr.length-1; i>index; i--){
+              arr.pop()
+            }
+            console.log('arr = ', arr)
+            setTreearr(arr)
           }
         }
         console.log('reportarr=', reportarr)
+        console.log('reportname= ', reportname)
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep=${reportname}`, {
           method:'GET',
           headers:{
@@ -483,8 +501,14 @@ const NewReport = () => {
                   }else{
                     setshowReport(false)
                   }
+              }else if (key===-2){
+                console.log('reportname=', reportname)
+                if(reportname === 'Consumer Internet'){
+                  setshowReport(false)
+                  break
+                }
               }else{
-                if(reportarr[i].report_name===reportname){
+                 if(reportarr[i].report_name===reportname){
                   if(reportarr[i].report_pages.length===0){
                     console.log('show_all_pages')
                     setshowReport(true)
@@ -593,14 +617,13 @@ const NewReport = () => {
               // this onclick conflicts with oclick defined below
               // make your get parents function here
             window.reports = []
-            let parent_arr = getParents(props)
-            parent_arr.push(label)
+            // let parent_arr = getParents(props)
+            // parent_arr.push(label)
             setSelectedOption(null)
             setLabelSelected(label)
-            setTreearr(parent_arr)
+            // setTreearr(parent_arr)
             if(hasNodes===false){
               window.localStorage.setItem('report', label)
-              console.log('clickprops = ', props)
               if(props.finalized){
                 setshowCurrencyBar(true)
                 window.localStorage.setItem('finalized', 'true')
@@ -608,6 +631,7 @@ const NewReport = () => {
                 setshowCurrencyBar(false)
                 window.localStorage.setItem('finalized', 'false')
               }
+              console.log('props for filter=',props )
               if(props.filter!==null && props.filter!==''){
                 setfilterarr(props.filter.split(','))
                 window.localStorage.setItem('filterval', props.filter_value)
@@ -618,7 +642,7 @@ const NewReport = () => {
                 setFilterVal(null)
               }
               setSelectedPage(label)
-              setTreearr(parent_arr)
+              // setTreearr(parent_arr)
               let arr = currencyarr
               let currency_type = window.localStorage.getItem('currency')
               if(currency_type==='USD'){
@@ -646,11 +670,17 @@ const NewReport = () => {
               // console.log(label, props.key_val, props.node_type)
               if(label==='Online Retail (WIP)'){
                 setSelectedPage(label)
+                let parent_arr = getParents(props)
+                parent_arr.push(label)
+                setTreearr(parent_arr)
                 handleClickTree(label, props.key_val, props.node_type)
                 window.localStorage.setItem('finalized', 'false')
               }
               }
             }else{
+              let parent_arr = getParents(props)
+              parent_arr.push(label)
+              setTreearr(parent_arr)
               handleClickTree(label, props.key_val, props.node_type)
             }
             e.stopPropagation();
@@ -1023,6 +1053,16 @@ const NewReport = () => {
       target:{table:"ss_content_data parameter",column:"Group_Categories"},
       operator:"In",values:[filterVal]};
 
+      const industryfilter = {
+        $schema: "http://powerbi.com/product/schema#basic",
+    target: {
+        table: "content_data industry",
+        column: "industry_name"
+    },
+    operator: "In",
+    values: [filterVal]
+      }
+
       let filter_arr = [datefilter]
       for(let i=0; i<filterarr.length;i++){
         console.log('val = ',filterarr[i])
@@ -1031,6 +1071,9 @@ const NewReport = () => {
         }else if(filterarr[i]==='categories'){
           console.log('categories filter')
           filter_arr.push(categoryfilter)
+        } else if(filterarr[i]==='industry'){
+          console.log('industry filter')
+          filter_arr.push(industryfilter)
         }
       }
 
