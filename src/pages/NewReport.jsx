@@ -132,7 +132,7 @@ const NewReport = () => {
         'Mobility':<GiCarWheel/>,
         'D2C Omni':<GoFileSymlinkDirectory/>,
         'Eb2b':<FaBusinessTime/>,
-        'Consumer Internet':<ImConnection/>,
+        // 'Consumer Internet':<ImConnection/>,
         // 'Baby Care':<FaBabyCarriage/>,
         // 'Mobile':<AiOutlineMobile/>,
         // 'Fashion':<GiClothes/>,
@@ -178,7 +178,7 @@ const NewReport = () => {
         'Ride Hailing (WIP)':<GiCarWheel/>,
         'D2C Omni (WIP)':<GoFileSymlinkDirectory/>,
         'eB2B (WIP)':<FaBusinessTime/>,
-        'Consumer Internet (WIP)':<ImConnection/>,
+        // 'Consumer Internet (WIP)':<ImConnection/>,
         'Baby Care (WIP)':<FaBabyCarriage/>,
         'Mobile (WIP)':<AiOutlineMobile/>,
         'Fashion (WIP)':<GiClothes/>,
@@ -575,15 +575,16 @@ const NewReport = () => {
           {...props}
           style={{
             paddingLeft:  ICON_SIZE + level * LEVEL_SPACE,
-            cursor: 'pointer',
+            cursor: level!==0?'pointer':'auto',
             boxShadow: focused ? '0px 0px 5px 0px #222' : 'none',
             zIndex: focused ? 999 : 'unset',
             position: 'relative',
-            backgroundColor:labelSelected===label?'blue':'#18183E',
+            backgroundColor:labelSelected===label & level !== 0?'#2323C8':'#18183E',
             color:subscribed?'white':'grey',
             fontWeight:subscribed?'bold':'normal',
             border:'none',
             zIndex:10,
+            fontSize:level===0?20:17,
             // '&:hover':{    does not work. Onhover does not work inline styling
             //   backgroundColor:'red'
             // }
@@ -637,12 +638,17 @@ const NewReport = () => {
             // let available = true
 
             if(hasNodes && toggleNode){
-              toggleNode()
+              if(level===0){
+                console.log('toggle diabled')
+              }else{
+                toggleNode()
+
               // console.log(label, props.key_val, props.node_type)
               if(label==='Online Retail (WIP)'){
                 setSelectedPage(label)
                 handleClickTree(label, props.key_val, props.node_type)
                 window.localStorage.setItem('finalized', 'false')
+              }
               }
             }else{
               handleClickTree(label, props.key_val, props.node_type)
@@ -663,7 +669,7 @@ const NewReport = () => {
                 //   e.stopPropagation();
                 // }}
               >
-                <ToggleIcon on={isOpen} />
+                {level!==0?<ToggleIcon on={isOpen} />:<ToggleButton  display = {treemenucollapse?'block':'none'} onClick = {handleTreeMenuCollapse}><GiHamburgerMenu/></ToggleButton>}
               </div>
             )}
           </div>
@@ -1404,10 +1410,10 @@ const NewReport = () => {
                 {({ search, items, searchTerm }) => {
                   // const nodesForRender = getNodesForRender(items, searchTerm);
                   return (
-                  <div style={{paddingLeft:'10px'}}>
+                  <div style={{paddingLeft:'10px', marginTop:'5px'}}>
                     {/* <Input onChange={(e) => handleSearch(e)} placeholder="Type and search"/> */}
                     {/* <Input style = {{'padding':'5px', 'width':'14vw'}}onChange={e => search(e.target.value)} placeholder="Type and search" /> */}
-                    <ToggleButton display = {treemenucollapse?'block':'none'} onClick = {handleTreeMenuCollapse}><GiHamburgerMenu/></ToggleButton>
+                    {/* <ToggleButton display = {treemenucollapse?'block':'none'} onClick = {handleTreeMenuCollapse}><GiHamburgerMenu/></ToggleButton> */}
                     {/* <button style={{'marginLeft':'16vw', 'height':'40px', 'borderRadius':'50%', 'width':'40px', 'backgroundColor':'white'}} onClick = {handleTreeMenuCollapse}><GiHamburgerMenu/></button> */}
                     <ListGroup>
                       {items.map(props => (
@@ -1424,9 +1430,9 @@ const NewReport = () => {
             {/* // Use any third-party UI framework */}
               {showLoader===false?<PowerbiContainer>
                   <BreadCrumbTop>
-                    <div style={treemenucollapse?{'marginLeft':'2.9vw', 'display':'flex', 'alignItems':'center'}:{'marginLeft':'3.8vw', 'display':'flex', 'alignItems':'center'}}>
-                      {treemenucollapse?<></>:<button  style={{'height':'40px', 'borderRadius':'50%', 'width':'40px', 'backgroundColor':'#2323C8', 'color':'white', 'border':'0px' }} onClick={handleTreeMenuCollapse}><GiHamburgerMenu/></button>}
-                      <span style = {{ 'marginLeft':'5px', 'marginRight':'15px','fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}>{selectedpage}</span>
+                    <div style={treemenucollapse?{'marginLeft':'2.9vw', 'display':'flex', 'alignItems':'center'}:{'marginLeft':'3.8vw', 'display':'flex', 'alignItems':'center', 'marginTop':'10px'}}>
+                      {treemenucollapse?<></>:<button  style={{'height':'40px', 'borderRadius':'50%', 'width':'40px', 'backgroundColor':'#18183E', 'color':'white', 'border':'0px' }} onClick={handleTreeMenuCollapse}><GiHamburgerMenu/></button>}
+                      <span style = {{ 'marginLeft':'5px', 'marginRight':'15px','fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui', 'marginTop':'5px'}}>{selectedpage}</span>
                     </div>
                     <div  style={treemenucollapse?{'marginLeft':'3.3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.8vw' ,'marginBottom':'10px'}}>
                     {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
@@ -1989,15 +1995,17 @@ width:43vw;
 
 const ToggleButton = styled.button`
 display:${props => props.display};
-height:40px; 
-width:40px; 
-background-color:#2323C8;
+height:35px; 
+width:35px; 
+display:flex;
+align-items:center;
+justify-content:center;
+background-color:#18183E;
 border-radius:50%;
 color:white;
 border:0px solid black;
 outline: none !important;
-z-index:100;
-position:absolute;
-left:17.7vw;
-top:10vh;
+/* position:absolute; */
+/* left:17.7vw;
+top:13.5vh; */
 `

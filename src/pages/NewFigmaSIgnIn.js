@@ -200,7 +200,7 @@ const NewFigmaSIgnIn = () => {
     };
     
     const urlParams = new URLSearchParams(params).toString();
-    
+    window.localStorage.setItem('loginStatus', 'true')
     window.location = `${googleAuthUrl}?${urlParams}`;
     }, []);
 
