@@ -4,7 +4,10 @@ import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 import styled from 'styled-components'
 import TableFilter from "react-table-filter";
 import "react-table-filter/lib/styles.css";
-
+import {PowerBIEmbed} from 'powerbi-client-react';
+import {models} from 'powerbi-client';
+import {Link, Navigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 const Searchpage = () => {
@@ -12,7 +15,12 @@ const Searchpage = () => {
     const [savedPlayerData, setSavedPlayerData] = useState([]) 
     const [subplayerData, setSubPlayerData] = useState([]);
     const [savedsubPlayerData, setSavedSubPlayerData] = useState([]) ;
+    const [newReportPages, setnewReportPages] = useState([])
     const [audit, setAudit] = useState([1,2,3]);
+    const [showLoader, setshowLoader] = useState(false);
+    //  report page is true view
+    const [toggleView, settoggleView] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(()=>{
         let client_id = window.localStorage.getItem('client_id')
@@ -78,6 +86,26 @@ const Searchpage = () => {
 
       const handleLogoClick = (item)=>{
         console.log('hello = ', item)
+        let reportname = item.player_name
+        // settoggleView(true)
+        window.localStorage.setItem('searchcompany', reportname)
+        navigate('/powerbicompany')
+        // fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep=${reportname}`, {
+        //   method:'GET',
+        //   headers:{
+        //     'Content-Type': 'application/json',
+        //   },
+        // })
+        // .then(res=>res.json())
+        // .then(
+        //   res=>{
+        //     console.log(reportname,res)
+        //     setnewReportPages(res)
+        //     setshowLoader(false)
+        //     // console.log('res=', res)
+            
+        //   }
+        // )
       }
 
       const elementsHtml = subplayerData.map((item, index) => {
@@ -148,10 +176,14 @@ const Searchpage = () => {
           </>
         )
       }
-
+      if(window.localStorage.getItem('loginStatus')!=='true'){
+        return <Navigate to = "/"/>
+      }
   return (
-    <div>
+    <div style={{'background':'#F5F8FC'}}>
         <Head/>
+        <div style={{'paddingLeft':'5.8vw', 'fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui', 'paddingTop':'5px'}}>Search Companies</div>
+        <div style = {{'paddingLeft':'6vw'}}>Products / Search Companies</div>
         <SearchArea>
             <SearchBox>
             <div style={{ width: 800 }}>
@@ -176,24 +208,6 @@ const Searchpage = () => {
                 Type in search box for available companies
             </TextBox>
         </SearchArea>
-        {/* <CompanyList>
-            {subplayerData.map((val, i)=>
-                <SubCompanyBox>
-                   <img style = {{'height':'10px','width':'10px'}}src = {val.image===null?'/Images/ms_icon.png':val.image.file} alt = {val} onError={({ currentTarget }) => {
-    currentTarget.onerror = null; // prevents looping
-    currentTarget.src="/Images/ms_icon.png";
-  }}/> {val.player_name}  
-                </SubCompanyBox>
-            )}
-            {playerData.map((val, i)=>
-                <CompanyBox>
-                   <img style = {{'height':'10px','width':'10px'}}src = {val.image===null?'/Images/ms_icon.png':val.image.file} alt = {val} onError={({ currentTarget }) => {
-    currentTarget.onerror = null; // prevents looping
-    currentTarget.src="/Images/ms_icon.png";
-  }}/> {val.player_name}  
-                </CompanyBox>
-            )}
-        </CompanyList> */}
         <ComplianceTable>
                 <thead>
                     <ComplianceHeaderCompany>
@@ -205,30 +219,9 @@ const Searchpage = () => {
                     <ComplianceHeader>Stage</ComplianceHeader>
                     <ComplianceHeader>Last valuation</ComplianceHeader>
                 </thead>
-                {/* <tbody>
-                {modalData.map((item, i)=>(
-                    <ComplianceRow key={i}>
-                        <ComplianceColumn>
-                            {item.user}
-                        </ComplianceColumn>
-                        <ComplianceColumn>
-                            {item.user_level}
-                        </ComplianceColumn>
-                        <ComplianceColumn>
-                            {item.form_date}
-                        </ComplianceColumn>
-                        <ComplianceColumn>
-                            {item.form_name}
-                        </ComplianceColumn>
-                        <ComplianceColumn>
-                            {item.action?'Submitted':'Declined'}
-                        </ComplianceColumn>
-                    </ComplianceRow>
-                ))}
-                </tbody> */}
                 <tbody>{elementsHtml}</tbody>
                 <tbody>{elementsHtml1}</tbody>
-            </ComplianceTable>
+        </ComplianceTable>
 
 
     </div>
@@ -239,11 +232,13 @@ export default Searchpage
 
 const SearchArea = styled.div`
 display:flex;
-align-items:center;
+/* align-items:center; */
+padding-left:6vw;
 justify-content:center;
-min-height:30vh;
+min-height:20vh;
 flex-direction:column;
 gap:30px;
+background-color:#F5F8FC;
 `
 
 const SearchBox = styled.div`
@@ -275,7 +270,8 @@ max-height:40px;
 const ComplianceTable = styled.table`
  /* font-family: arial, sans-serif; */
   /* border-collapse: collapse; */
-  margin:30px;
+  background-color:#F5F8FC;
+  margin:6vw;
   margin-top:5px;
 `
 
@@ -300,7 +296,7 @@ const ComplianceHeader = styled.th`
  height:80px;
  /* background-color:blue; */
  /* color:white; */
- min-width:225px;
+ min-width:203px;
 `
 
 const ComplianceColumnLogo = styled.td`
@@ -308,12 +304,12 @@ const ComplianceColumnLogo = styled.td`
   border-left:0px;
   text-align: center;
   padding: 8px;
-  height:250px;
+  height:150px;
 `
 const ComplianceColumn = styled.td`
   border: 0px solid #dddddd;
   border-bottom:1px solid black;
   text-align: center;
   padding: 8px;
-  height:250px;
+  height:150px;
 `

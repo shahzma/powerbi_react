@@ -3,14 +3,17 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom';
 import { BsTag, BsFillCloudArrowDownFill } from "react-icons/bs";
 import { MdHouseSiding , MdOutlineCasino} from "react-icons/md";
-import { AiOutlineShoppingCart } from "react-icons/ai";
+import { AiOutlineShoppingCart, AiOutlineSearch } from "react-icons/ai";
 import { GiHealthNormal } from "react-icons/gi";
 import { TbBooks } from "react-icons/tb";
 import{ImConnection} from 'react-icons/im'
-import { RiMoneyDollarBoxFill } from "react-icons/ri";
+import { RiMoneyDollarBoxFill, RiArrowDropDownLine } from "react-icons/ri";
 import { get } from 'jquery';
+import { useState } from 'react';
 
 const Head = () => {
+    const [showDropDn, setShowDropDn] = useState(false)
+
     let today = new Date();
     let hour = today.getHours();
     const navigate = useNavigate();
@@ -122,8 +125,8 @@ const Head = () => {
                             <h6><BsTag style={{'color':'#15BEBE'}}/>Traditional Brands</h6>
                             <div className='Browse'>Consumer brands in grocery, fashion and everything else</div>
                         </Company>
-                        {/* <OnlineRetail onClick={()=>{navigate('/newmainpage/?tag=Online Retail 2.0')}}><h6> <AiOutlineShoppingCart style={{'color':'#15BEBE'}}/>SaaS</h6>
-                            <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div></OnlineRetail> */}
+                        <OnlineRetail onClick={()=>{navigate('/search')}}><h6> <AiOutlineSearch style={{'color':'#15BEBE'}}/>Search Companies</h6>
+                            <div className='Browse'>Look up all companies data</div></OnlineRetail>
                         {/* <EdTech onClick={()=>{navigate('/newmainpage/?tag=Mobility 2.0')}}>
                             <h6><TbBooks style={{'color':'#15BEBE'}}/> Mobility</h6>
                             <div className='Browse'>Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem Ipsum</div>
@@ -134,8 +137,10 @@ const Head = () => {
                 </ProductDiv>
                 <div>Articles</div>
                 <Man>
-                <img src = "/Images/user.png" alt = "" style={{width: '3vw', borderRadius:'40px'}}/>{hour<15?'Good Morning ':'Good Evening '}{window.localStorage.getItem('user_name')!==undefined?window.localStorage.getItem('user_name'):window.localStorage.getItem('email').split('@')[0]}
-                    <SignOut onClick={handleSignOut}>
+                <img src = "/Images/user.png" alt = "" style={{width: '3vw', borderRadius:'40px'}}/>
+                {hour<15?'Good Morning ':'Good Evening '}{window.localStorage.getItem('user_name')!==undefined?window.localStorage.getItem('user_name'):window.localStorage.getItem('email').split('@')[0]}
+                <Dropbutton onClick = {()=>{setShowDropDn(!showDropDn)}}><RiArrowDropDownLine/></Dropbutton>
+                    <SignOut display = {showDropDn?'flex':'none'} onClick={handleSignOut}>
                         <a>Sign Out</a>
                     </SignOut>
                 </Man>
@@ -157,13 +162,17 @@ gap:19vw;
 
 `
 const SignOut = styled.div`
-display:none;
-position:absolute;
-top:8.8vh;
-right:200px;
+display: ${props => props.display};;
+position:relative;
+/* top:8.8vh; */
+right:-110px;
+align-items:center;
+justify-content:center;
 background:#F6F6F6;
-border:1px solid black;
-border-radius: 0 0 5px 5px;
+/* border:1px solid black; */
+border-radius: 5px;
+box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.5);
+
 width:90px;
 height: 40px;
 font-size:16px;
@@ -173,16 +182,26 @@ text-align:center;
   background-color: #ddd;
 }
 `
+
+const Dropbutton = styled.button`
+border-radius:50%;
+border:0px;
+background-color:white;
+outline:none !important;
+&:hover{
+    background-color:#EFEFEF;
+}
+`
 const Man = styled.div`
 height:10vh;
 padding-top:3vh;
-&:hover{
+/* &:hover{
     ${SignOut}{
         align-items:center;
         display:flex;
         justify-content:center;
     }
-  }
+  } */
 `
 
 

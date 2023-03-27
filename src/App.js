@@ -18,6 +18,7 @@ import Frontpage from './pages/Frontpage';
 import Article from './pages/Article';
 import ArticleDetail from './pages/ArticleDetail';
 import Searchpage from './pages/Searchpage';
+import PowerbiCompany from './pages/PowerbiCompany';
 
 function App() {
 
@@ -91,6 +92,7 @@ function App() {
         <Route path = '/search' element = {<Searchpage/>}></Route>
         <Route path = '/article' element = {<Article/>}></Route>
         <Route path='/articled' element = {<ArticleDetail/>}></Route>
+        <Route path = '/powerbicompany' element = {<PowerbiCompany/>}></Route>
       </Routes>
     </Router>
 
