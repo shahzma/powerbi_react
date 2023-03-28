@@ -10,11 +10,24 @@ import {Link, Navigate} from 'react-router-dom';
 const PowerbiCompany = () => {
     const [newReportPages, setnewReportPages] = useState([])
     const [showLoader, setshowLoader] = useState(false);
-
+    const [filterArr, setFilterArr] = useState([
+        {
+            $schema: "http://powerbi.com/product/schema#basic",
+            target: {
+              table: "content_data main_data",
+              column: "Players"
+            },
+            operator: "In",
+            values: [], // initialize with an empty array
+            filterType: models.FilterType.BasicFilter
+          }
+    ])
     useEffect(()=>{
         setshowLoader(true)
         let reportname = window.localStorage.getItem('searchcompany')
-        fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep=${reportname}`, {
+        let reportid = window.localStorage.getItem('searchreportid')
+        reportid = parseInt(reportid)
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep_id=${reportid}`, {
             method:'GET',
             headers:{
               'Content-Type': 'application/json',
@@ -27,10 +40,38 @@ const PowerbiCompany = () => {
               setnewReportPages(res)
               setshowLoader(false)
               // console.log('res=', res)
+            //   const basicFilter = {
+            //     $schema: "http://powerbi.com/product/schema#basic",
+            //     target: {
+            //       table: "content_data main_data",
+            //     "column": "Players"},
               
+            //     operator: "In",
+            //     values: [newReportPages[0].filter_value],
+            //     filterType: models.FilterType.BasicFilter
+            //   };
+            // let filter_arr = [basicFilter]
+            // setFilterArr(filter_arr)
             }
           )
     }, [])
+
+    // useEffect(() => {
+    //     if (newReportPages.length > 0) {
+    //       const basicFilter = {
+    //         $schema: "http://powerbi.com/product/schema#basic",
+    //         target: {
+    //           table: "content_data main_data",
+    //           column: "Players"
+    //         },
+    //         operator: "In",
+    //         values: [newReportPages[0].filter_value],
+    //         filterType: models.FilterType.BasicFilter
+    //       };
+    //       setFilterArr([basicFilter]);
+    //     }
+    //   }, [newReportPages]);
+    
     const basicFilter = {
         $schema: "http://powerbi.com/product/schema#basic",
         target: {
@@ -38,10 +79,11 @@ const PowerbiCompany = () => {
         "column": "Players"},
       
         operator: "In",
-        values: [window.localStorage.getItem('searchcompany')],
+        values: [window.localStorage.getItem('searchfilterval')],
         filterType: models.FilterType.BasicFilter
       };
-    let filter_arr = [basicFilter]
+      let filter_arr = [basicFilter]
+
     if(window.localStorage.getItem('loginStatus')!=='true'){
         return <Navigate to = "/"/>
       }
@@ -53,7 +95,7 @@ const PowerbiCompany = () => {
             <div style={{'fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}>{window.localStorage.getItem('searchcompany')}</div>
             </Header>
             <BreadCrumbs>
-            Home/ <a href="/search" style={{'color':'black'}}>Search Companies</a>/ {window.localStorage.getItem('searchcompany')}
+            Products / <a href="/search" style={{'color':'black'}}>Search Companies</a> / {window.localStorage.getItem('searchcompany')}
             </BreadCrumbs>
         </div>
         {showLoader===false?<PowerBiDiv>
@@ -199,7 +241,7 @@ const PowerbiCompany = () => {
                                 console.log('rep_finalized = ', window.localStorage.getItem('finalized'))
                                 document.getElementsByClassName('report-style-class-search'+i)[0].style.position = 'relative';
                                 document.getElementsByClassName('report-style-class-search'+i)[0].style.zIndex = -1;
-                                if(window.localStorage.getItem('finalized')==='false'){
+                                if(true){
                                   document.getElementsByClassName('report-style-class-search'+i)[0].style.marginTop = '-13vh';
                                 }
                               }
@@ -303,4 +345,6 @@ padding-top:5px;
 const BreadCrumbs= styled.div`
 padding-left:6.8vw;
 font-size:16px;
+font-weight:500;
+font-family:'Fira-Sans', sans-serif
 `

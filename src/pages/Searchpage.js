@@ -87,25 +87,13 @@ const Searchpage = () => {
       const handleLogoClick = (item)=>{
         console.log('hello = ', item)
         let reportname = item.player_name
+        let report_id = item.newreport.id
+        let filter_value = item.newreport.filter_value
         // settoggleView(true)
         window.localStorage.setItem('searchcompany', reportname)
+        window.localStorage.setItem('searchreportid', report_id)
+        window.localStorage.setItem('searchfilterval', filter_value)
         navigate('/powerbicompany')
-        // fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep=${reportname}`, {
-        //   method:'GET',
-        //   headers:{
-        //     'Content-Type': 'application/json',
-        //   },
-        // })
-        // .then(res=>res.json())
-        // .then(
-        //   res=>{
-        //     console.log(reportname,res)
-        //     setnewReportPages(res)
-        //     setshowLoader(false)
-        //     // console.log('res=', res)
-            
-        //   }
-        // )
       }
 
       const elementsHtml = subplayerData.map((item, index) => {
@@ -183,7 +171,7 @@ const Searchpage = () => {
     <div style={{'background':'#F5F8FC'}}>
         <Head/>
         <div style={{'paddingLeft':'5.8vw', 'fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui', 'paddingTop':'5px'}}>Search Companies</div>
-        <div style = {{'paddingLeft':'6vw'}}>Products / Search Companies</div>
+        <div style = {{'paddingLeft':'6vw','fontWeight':'500', 'fontFamily':'Fira Sans'}}>Products / Search Companies</div>
         <SearchArea>
             <SearchBox>
             <div style={{ width: 800 }}>

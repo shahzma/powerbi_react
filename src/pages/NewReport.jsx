@@ -191,7 +191,21 @@ const NewReport = () => {
         'Content S&M (WIP)':<BiBookContent/>,
         'Digital Content (WIP)':<MdOutlinePersonalVideo/>,
         'eLogistics':<FaTruck/>,
-        'Meesho':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/meesho.jpeg'/>
+        'Meesho':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/meesho.jpeg'/>,
+        'Tatacliq':<img  style = {{'width':'15px', 'height':'10px'}}src = '/Images/tatacliq.jpeg'/>,
+        'Snapdeal':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/snapdeal.jpeg'/>,
+        'Ajio':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/a.jpeg'/>,
+        'Clubfactory':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/clubfactory.jpeg'/>,
+        'Jabong':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/jabong.jpeg'/>,
+        'Koovs':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/koovs.jpeg'/>,
+        'LimeRoad':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/limeroad.jpeg'/>,
+        'Myntra':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/myntra.jpeg'/>,
+        'Nykaa Fashion':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/nykaa.jpeg'/>,
+        'Shein':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/shein.jpeg'/>,
+        'Nykaa':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/nykaa.jpeg'/>,
+        'Purplle':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/purplle.jpeg'/>,
+        'Pepperfry':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/pepperfry.jpeg'/>,
+        'Urban Ladder':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/urbanladder.jpeg'/>,
       })
       const [selectedOption, setSelectedOption] = useState(null);
 
@@ -222,6 +236,8 @@ const NewReport = () => {
   },[client_id, backend_token, pseudo_email, email])
 
       const onOptionSelect = (option) => {
+        console.log('opt=',option)
+        setFilterVal(option.filter_value)
         if(selectedOption!==null){
           treearr.pop()
           treearr.push(option.label)
@@ -230,7 +246,6 @@ const NewReport = () => {
         }
         setSelectedOption(option.label);
         handleClickTree(option.label, -1 , '-1')
-        console.log(option)
       };
 
       let subtitle
@@ -416,6 +431,7 @@ const NewReport = () => {
 
       let handleClickTree = (reportname, key, node_type, index = -1)=>{
         if(index===treearr.length-1 & key===-2){
+          // disable last click
           return
         }
         setshowLoader(true)
@@ -429,7 +445,8 @@ const NewReport = () => {
         .then(res=>res.json())
         .then(
           res =>{
-            if(reportname === 'Online Retail (WIP)'){
+            // key=25 fro onlien retail
+            if(key === 25){
               setShowDropDown(false)
             }
             else if (res.length>1){
@@ -460,11 +477,24 @@ const NewReport = () => {
           setSelectedPage(reportname)
           setSelectedOption(null)
           setfilterarr(['1'])
-          if(['Online Retail (WIP)','Consumer Internet', 'Digital Content (WIP)', 'Online Education (WIP)', 'eHealth (WIP)', 'eB2B (WIP)'].includes(reportname)){
-            setShowDropDown(false)
-          }else{
-            setShowDropDown(true)
+          // check where the clicked report lies in array if it lies in range we show dropdown
+          for(let i= 0; i<treearr.length; i++){
+            if(treearr[i]===reportname){
+              if(i>1){
+                setShowDropDown(true)
+                break
+              }else{
+                setShowDropDown(false)
+                break
+              }
+            }
           }
+
+          // if(['Online Retail (WIP)','Consumer Internet', 'Digital Content (WIP)', 'Online Education (WIP)', 'eHealth (WIP)', 'eB2B (WIP)'].includes(reportname)){
+          //   setShowDropDown(false)
+          // }else{
+          //   setShowDropDown(true)
+          // }
           console.log('index = ', index,treearr.length)
           if(true){
             let arr = treearr
@@ -668,7 +698,7 @@ const NewReport = () => {
                 toggleNode()
 
               // console.log(label, props.key_val, props.node_type)
-              if(label==='Online Retail (WIP)'){
+              if(props.key_val===25){
                 setSelectedPage(label)
                 let parent_arr = getParents(props)
                 parent_arr.push(label)
@@ -1045,7 +1075,8 @@ const NewReport = () => {
         "column": "Players"},
       
         operator: "In",
-        values: [window.localStorage.getItem('report')],
+        values:[filterVal],
+        // values: [window.localStorage.getItem('report')],
         filterType: models.FilterType.BasicFilter
       };
       
@@ -1470,7 +1501,6 @@ const NewReport = () => {
             </TreeMenu>
             </SideMenuContainer>
             
-            {/* // Use any third-party UI framework */}
               {showLoader===false?<PowerbiContainer>
                   <BreadCrumbTop>
                     <div style={treemenucollapse?{'marginLeft':'2.9vw', 'display':'flex', 'alignItems':'center'}:{'marginLeft':'3.8vw', 'display':'flex', 'alignItems':'center', 'marginTop':'10px'}}>
@@ -1478,7 +1508,6 @@ const NewReport = () => {
                       <span style = {{ 'marginLeft':'5px', 'marginRight':'15px','fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui', 'marginTop':'5px'}}>{selectedpage}</span>
                     </div>
                     <div  style={treemenucollapse?{'marginLeft':'3.3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.8vw' ,'marginBottom':'10px'}}>
-                    {/* <a href='/newmainpage'>Home</a> / {window.localStorage.getItem("ReportName")} / {pagenameVerbose} */}
                     {/* Products/ {treearr.length>0?<>{treearr.join(" / ")}</>:<>Consumer Internet</>} */}
                     Products/ {treearr.length>0?<>{treearr.map(( val, i)=><BreadCrumbSpan onClick={(e)=>{handleClickTree(val, -2 , '-1', i)}}>{val} / </BreadCrumbSpan>)}</>:<>Consumer Internet</>}
                     </div>
