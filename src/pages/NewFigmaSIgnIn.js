@@ -103,11 +103,13 @@ const NewFigmaSIgnIn = () => {
                               }).then(data => data.json())
                               .then( data => {
                                 if (data.token){
+                                  console.log('data=', data)
                                     window.localStorage.setItem('loginStatus', 'true')
                                     window.localStorage.setItem("token", data.token)
                                     window.localStorage.setItem("pseudo_email", data.pseudo_email)
                                     window.localStorage.setItem("clientID", data.client_id)
                                     window.localStorage.setItem("email", email)
+                                    window.localStorage.setItem('user_name', data.user_name)
                                     window.location.href='/newreport'
                                 }
                                 else{

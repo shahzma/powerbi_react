@@ -6,6 +6,10 @@
 
 }
 
+.front{
+    margin-left:40px;
+}
+
 .report-style-class iframe{
     border:0px;
 }

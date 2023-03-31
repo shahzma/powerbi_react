@@ -93,6 +93,7 @@ function App() {
         <Route path = '/article' element = {<Article/>}></Route>
         <Route path='/articled' element = {<ArticleDetail/>}></Route>
         <Route path = '/powerbicompany' element = {<PowerbiCompany/>}></Route>
+
       </Routes>
     </Router>
 

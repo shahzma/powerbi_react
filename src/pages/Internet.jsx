@@ -19,7 +19,7 @@ import img from './top_left.png'
 import Popup from 'reactjs-popup';
 import Head from '../components/Head/Head';
 
-const Frontpage = () => {
+const Internet = () => {
 
     const navigate = useNavigate();
     const options = [
@@ -123,14 +123,12 @@ const Frontpage = () => {
 
   return (
     
-    width>768 ?(
-    <div className='front'>
-        {/* <div>Hello</div> */}
+    width>768 ?(<div className='front'>
+        {/* <Head/> */}
         <FirstPage>
-            <NewAge>
-            <h2>New age <span style={{'color':'blue'}}>alternative data</span><br></br>platform of choice</h2> 
-            We track 150+ business relevant KPIs of top 500 consumer internet businesses and brands in India by crunching billions of data points every day to provide accurate, granular insights. Over 200 investment funds and innovative companies rely on us to help them make better business decisions.
+            <NewAge><h2>New age <span style={{'color':'blue'}}>alternative data</span><br></br>platform of choice</h2> We track 150+ business relevant KPIs of top 500 consumer internet businesses and brands in India by crunching billions of data points every day to provide accurate, granular insights. Over 200 investment funds and innovative companies rely on us to help them make better business decisions.
             <br></br><br></br>
+            {/* <button onClick={()=>{navigate('/newmainpage')}}> Get Demo</button> */}
             <Popup trigger={<button className="button"> Get Demo </button>} modal>
                 <FormDiv>
                 <SideImg>
@@ -205,7 +203,7 @@ const Frontpage = () => {
                         }}/>
             </NewAge>
             <Article>
-                <img src = '/Images/Swiggy.png' style = {{'width':'33vw', 'cursor':'pointer'}}  onClick= {()=>{window.location.href= 'https://redseer.com/newsletters/a-cup-full-of-food/'}}/>
+                <img src = '/Images/Swiggy.png' style = {{'width':'44vw', 'cursor':'pointer'}}  onClick= {()=>{window.location.href= 'https://redseer.com/newsletters/a-cup-full-of-food/'}}/>
                 <VerticalArticles>
                     <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/700-mn-indian-digital-consumer-funnel/'}}   > 
                         <div>
@@ -253,27 +251,32 @@ const Frontpage = () => {
                         <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/40kCrore.png'/></div>
                     </VerticalArticleDiv1>
                 </VerticalArticles>
-                {/* <Premium>
+                {/* <img style = {{'width':'43.2vw'}}src ='/Images/Premium.png'/> */}
+                <Premium>
                     <div style={{'color':'white', 'width':'24vw', 'font':'Libre Franklin 14px'}}>Bringing the right kind of market intelligence and insights to clients. Get your premium access now.</div>
                     <div style={{'width':'10vw','paddingTop':'10px'}}><button style={{'border':'none','backgroundColor':'#55E4E4', 'width':'10vw','height':'45px'}}> Get Premium</button></div>
-                </Premium> */}
+                </Premium>
             </Article>
         </FirstPage>
-        
-        <Carousel showThumbs = {false} width="75vw">
-        <div>
-            <img src="/Images/Carousal1.png"  />
-        </div>
-        <div>
-            <img src="/Images/Carousal2.png" />
-        </div>
-        <div>
-            <img src="/Images/Carousal3.png" />
-        </div>
-        <div>
-            <img src="/Images/Carousal4.png" style={{'height':'55vh'}}/>
-        </div>
-        </Carousel>
+        {/* <div style={{'textAlign':'center', 'fontSize':'25px', 'fontWeight':'bold', "backgroundColor":'#1A1A58' , 'color':'white', 'height':'50px' , 'paddingTop':'15px'}}>Meaningful and granular Insights</div> */}
+                <Carousel showThumbs = {false}>
+                <div>
+                    <img src="/Images/Carousal1.png" />
+                </div>
+                <div>
+                    <img src="/Images/Carousal2.png" />
+                </div>
+                <div>
+                    <img src="/Images/Carousal3.png" />
+                </div>
+                <div>
+                    <img src="/Images/Carousal4.png" style={{'height':'73vh'}}/>
+                </div>
+                </Carousel>
+        {/* <div style = {{'display':'flex', 'alignItems': 'center', 'justifyContent':'center', 'height':'25vh', 'fontWeight':'bold', 'flexDirection':'column', 'gap':'5vh'}}>
+            Trusted by the best and brightest digital brands
+            <img src = '/Images/brands.png'/>
+        </div> */}
         <ProductGridContainer>
             <ArticleProduct>
             <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= 'https://redseer.com/newsletters/online-festive-sales-the-biggest-gmv-churner-of-e-tailing-industry/'}}   > 
@@ -307,7 +310,6 @@ const Frontpage = () => {
                     </div>
                         <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/e_grocery.png'/></div>
                     </VerticalArticleDiv>
-                    <br/>
                     <VerticalArticleDiv style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/whats-cooking-in-foodtech-part-1-delivery/'}}>
                     <div>
                         <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Retail and Consumer Goods</div> <div style={{'fontWeight':'bold'}}>What's cooking in FoodTech: Part 1 - Delivery</div> 
@@ -315,6 +317,13 @@ const Frontpage = () => {
                     </div>
                         <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/food_tech.png'/></div>
                     </VerticalArticleDiv>
+                    <VerticalArticleDiv1 style={{'marginLeft':'5px', 'cursor':'pointer'}} onClick={()=>{window.location.href= ' https://redseer.com/newsletters/inside-story-of-40000-crore-festive-season-2022/'}}>
+                    <div>
+                        <div style={{'color':'#25B0B0', 'fontSize':'13px'}}>Emerging Tech</div> <div style={{'fontWeight':'bold'}}>Unlocking the Digital Potential of Traditional Brands</div>
+                        <div style={{'fontSize':'13px', 'color':'#797979', 'paddingTop':'10px'}}>Article . January 20, 2023</div>
+                    </div>
+                        <div><img  style = {{'height':'105px', 'width':'190px', 'padding':'10px' , 'borderRadius':'16px'}} src = '/Images/EmergingTech.png'/></div>
+                    </VerticalArticleDiv1>
             </ArticleProduct>
             <Graph>
             <span><img src = '/Images/graph.png'/> <span style={{'fontSize':'18px'}}>Brands We Cover</span></span>
@@ -362,57 +371,196 @@ const Frontpage = () => {
                       />
             </Graph>
         </ProductGridContainer>
+        <div><img src = '/Images/Stay_updated.png'/></div>
+        {/* <div style = {{'display':'flex', 'alignItems': 'center', 'justifyContent':'center', 'height':'10vh', 'fontWeight':'bold'}}>
+        <img src = '/Images/brands.png'/>
+        </div> */}
+        <Footer>
+            {/* <img src = '/Images/benchmark_logo.png'/> */}
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div><img src = '/Images/benchmark_logo.png'/>
+            <label></label>
+            <FooterTextBox>Bringing the right kind of market intelligence and insights to their clients that are tailored for smart business decision</FooterTextBox>
+            </div>
+            <div></div>
+            <MiniMenu>
+                <div>About</div> 
+                <div>Product</div>
+                <div>Articles</div>
+                <Popup trigger={<div> Contact Us </div>} modal>
+                <FormDiv>
+                <SideImg>
+                    <img src = '/Images/handshake.png' alt = '' style={{'width':'20vw', 'min-height':'50vh'}}/>
+                 </SideImg>
+                 <InputDiv>
+                 {notsubmitted?<form onSubmit={(e)=>login(e)}>
+                    <h6>Find out what Benchmarks can do for you</h6>
+                    <h6>To get started, fill out the form.</h6>
+                    <div className="form-group" style={{"width":'26vw'}}>
+                        <label></label>
+                        <input type = 'text' name = 'fullname' id='fullname' placeholder='Full Name' className="form-control" value={name} onChange={(e) => {setName(e.target.value)}}/>
+                        <label></label>
+                        <input type = 'text' name = 'phone' id='phone' placeholder='Phone' className="form-control" value={phone} onChange={(e) => {setPhone(e.target.value)}} />
+                        <label></label>
+                        <input type = 'text' name = 'email' id='email' placeholder='Email' className="form-control" value={email} onChange={(e) => {setEmail(e.target.value)}}/>
+                        <label></label>
+                        <textarea style={{'width':'26vw', 'marginTop':'10px', 'padding':'2%'}} placeholder = '  Message' onChange={(e) => {setMsg(e.target.value)}}/>
+                    </div>
+                    <button type="submit" className="btn btn-primary btn-block" style={{backgroundColor:'#55E4E3' , border:'None', 'color':'black'}} >Submit</button>
+                </form>:<div style={{'marginTop':'140px'}}>
+                    <h6>Thank you for contacting us.</h6>
+                    <h6>Our experts will get back to you shortly.</h6>
+                </div>}
+                 </InputDiv>
+                </FormDiv>
+            </Popup>
+            </MiniMenu>
+            <div></div>
+            <Socal>
+                <div>Terms and Conditions</div>
+                <div>Privacy Policy</div>
+                <div></div>
+            </Socal>
+            <div></div>
+            <div></div>
+        </Footer>
     </div>):(
-    <div className='front'>
-    {/* <PageHeader>
-            <div><img src = '/Images/benchmark_logo.png' alt = ''/></div> <div>Products</div><div>Articles</div><SignInDiv><div>Log In</div> <button>Register</button></SignInDiv>
-    </PageHeader> */}
-    <FirstPage>
-        <NewAge><h2>New Age <span style={{'color':'blue'}}>Market Intelligence</span><br></br>Platform of choice</h2> Benchmarks is an on - demand business intelligence platform that tracks 150+
-                    business relevant KPIs, monthly across 1000+ companies, providing vast
-                    market insights and competitive edge in a fraction of time.<br></br><br></br><button> Get Started</button>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <img src = '/Images/graph.png'/>
-        </NewAge>
-        <Article>
-            {/* <div><img src = '/Images/top_left.png'/></div> */}
-            <img src = '/Images/top_left.png' style = {{'width':'100vw'}}  />
-            <VerticalArticles>
-                <div> 
+        <div className='front'>
+        {/* <PageHeader>
+                <div><img src = '/Images/benchmark_logo.png' alt = ''/></div> <div>Products</div><div>Articles</div><SignInDiv><div>Log In</div> <button>Register</button></SignInDiv>
+        </PageHeader> */}
+        <FirstPage>
+            <NewAge><h2>New Age <span style={{'color':'blue'}}>Market Intelligence</span><br></br>Platform of choice</h2> Benchmarks is an on - demand business intelligence platform that tracks 150+
+                        business relevant KPIs, monthly across 1000+ companies, providing vast
+                        market insights and competitive edge in a fraction of time.<br></br><br></br><button> Get Started</button>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <img src = '/Images/graph.png'/>
+            </NewAge>
+            <Article>
+                {/* <div><img src = '/Images/top_left.png'/></div> */}
+                <img src = '/Images/top_left.png' style = {{'width':'100vw'}}  />
+                <VerticalArticles>
+                    <div> 
+                        <div>B2B Service<br/> It is our pleasure to release our report The Most<br/> Inclusive Football Tournament</div>
+                        <div><img src = '/Images/sidebar_demo.png'/></div>
+                    </div>
+                    <div>
                     <div>B2B Service<br/> It is our pleasure to release our report The Most<br/> Inclusive Football Tournament</div>
-                    <div><img src = '/Images/sidebar_demo.png'/></div>
-                </div>
-                <div>
-                <div>B2B Service<br/> It is our pleasure to release our report The Most<br/> Inclusive Football Tournament</div>
-                    <div><img src = '/Images/sidebar_demo.png'/></div>
-                </div>
-                <div>
-                <div>B2B Service<br/> It is our pleasure to release our report The Most<br/> Inclusive Football Tournament</div>
-                    <div><img src = '/Images/sidebar_demo.png'/></div>
-                </div>
-                <div>
-                <div>B2B Service<br/> It is our pleasure to release our report The Most<br/> Inclusive Football Tournament</div>
-                    <div><img src = '/Images/sidebar_demo.png'/></div>
-                </div>
-            </VerticalArticles>
-        </Article>
-    </FirstPage>
-    <img src = '/Images/top_company.png' style = {{'width':'100vw'}}/>
-    <div style = {{'display':'flex', 'alignItems': 'center', 'justifyContent':'center', 'height':'25vh', 'fontWeight':'bold', 'flexDirection':'column', 'gap':'5vh'}}>
-        Trusted by the best and brightest digital brands
-        <img src = '/Images/brands.png' style = {{'width':'100vw'}}/>
-    </div>
-    <img src='/Images/base.png' style = {{'width':'100vw'}}/>
-    <img src = '/Images/get_started.png' style = {{'width':'100vw'}}/>
-    </div>
+                        <div><img src = '/Images/sidebar_demo.png'/></div>
+                    </div>
+                    <div>
+                    <div>B2B Service<br/> It is our pleasure to release our report The Most<br/> Inclusive Football Tournament</div>
+                        <div><img src = '/Images/sidebar_demo.png'/></div>
+                    </div>
+                    <div>
+                    <div>B2B Service<br/> It is our pleasure to release our report The Most<br/> Inclusive Football Tournament</div>
+                        <div><img src = '/Images/sidebar_demo.png'/></div>
+                    </div>
+                </VerticalArticles>
+            </Article>
+        </FirstPage>
+        <img src = '/Images/top_company.png' style = {{'width':'100vw'}}/>
+        <div style = {{'display':'flex', 'alignItems': 'center', 'justifyContent':'center', 'height':'25vh', 'fontWeight':'bold', 'flexDirection':'column', 'gap':'5vh'}}>
+            Trusted by the best and brightest digital brands
+            <img src = '/Images/brands.png' style = {{'width':'100vw'}}/>
+        </div>
+        <img src='/Images/base.png' style = {{'width':'100vw'}}/>
+        <img src = '/Images/get_started.png' style = {{'width':'100vw'}}/>
+        </div>
     )
   )
 }
 
-export default Frontpage
+export default Internet
 
+const PageHeader = styled.div`
+height:10vh;
+background-color:#F9FAFB;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:20vw;
+/* div{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10vw;
+    button {
+        border:1px solid blue;
+        color:blue;
+        padding:10px 40px;
+        background-color:#F9FAFB;
+    }
+
+@media (max-width:768px){
+}
+} */
+`
+
+const SignInDiv = styled.div`
+color:blue;
+`
+
+const DropDiv = styled.div`
+display:none;
+/* display: grid !important;
+        grid-auto-rows: 1fr; 
+        grid-template-columns: 0.25fr 1.05fr 2.45fr 0.25fr; 
+        grid-template-rows: 0.2fr 2.6fr 0.2fr; 
+        gap: 0px 0px; 
+        grid-template-areas: 
+            ". . . ."
+            ". Products Types ."
+            ". . . View";  */
+position:absolute;
+top:10vh;
+right:1px;
+left:1px;
+background-color:#FFFFFF;
+border:1px solid aquamarine;
+border-radius: 0 0 5px 5px;
+width:100vw;
+height: 32.5vh;
+font-size:16px;
+/* transition-duration:160ms; */
+/* text-align:center; */
+&:hover{
+  background-color: #ddd;
+}
+`
+
+const OverViewDiv = styled.div`
+grid-area: Products;
+background-color:#EBF1F4;
+border-radius:10px;
+padding:30px;
+`
+const TypesDiv = styled.div`
+grid-area:Types;
+margin-left:30px;
+display: grid; 
+grid-auto-rows: 1fr; 
+grid-template-columns: 1fr 1fr 1fr; 
+grid-template-rows: 1fr 1fr; 
+gap: 10px 10px; 
+grid-template-areas: 
+"Brands Sector HealthCare"
+"Company OnlineRetail EdTech"; 
+`
+const ViewDiv = styled.div`
+grid-area:View;
+text-align:right;
+font-size:12px;
+`
 
 const FormDiv = styled.div`
 background-color:#F9FAFB;
@@ -431,12 +579,48 @@ padding-bottom:5%;
 padding-top:5%;
 `
 
+const Brands = styled.div`
+`
+const Sector = styled.div``
+const HealthCare = styled.div``
+const Company = styled.div``
+const OnlineRetail = styled.div``
+const EdTech = styled.div``
+
+const ProductDiv = styled.div`
+height:10vh;
+padding-top:3.5vh;
+cursor:pointer;
+
+&:hover{
+    text-decoration:underline;
+    text-decoration-color: #0000FF;
+    text-underline-offset: 8px;
+    ${DropDiv}{
+        display: grid !important;
+        grid-auto-rows: 1fr; 
+        grid-template-columns: 0.25fr 1.05fr 2.45fr 0.25fr; 
+        grid-template-rows: 0.2fr 2.6fr 0.2fr; 
+        gap: 0px 0px; 
+        grid-template-areas: 
+            ". . . ."
+            ". Products Types ."
+            ". . View ."; 
+        background-color:#FFFFFF;
+    }
+    /* ${OverViewDiv}{
+        grid-area: Products;
+    }
+    ${TypesDiv}{
+        grid-area:Types;
+    } */
+  }
+`
 const ProductGridContainer = styled.div`
 margin-top:4vh;
-width:75vw;
 display: grid; 
   grid-auto-rows: 1fr; 
-  grid-template-columns: 0.01fr 3.58fr 0.01fr 1.49fr 0.01fr; 
+  grid-template-columns: 0.5fr 2.5fr 0.1fr 1.4fr 0.5fr; 
   grid-template-rows: 0.3fr 2.4fr 0.3fr; 
   gap: 0px 0px; 
   grid-template-areas: 
@@ -457,37 +641,30 @@ grid-area: Graph;
 
 `
 
-// const FirstPage = styled.div`
-// min-height:90vh;
-// display:grid;
-// grid-template-columns: repeat(16, 1fr);
-// /* grid-template-rows: 0.23fr, 2.58fr, 0.19fr; -> causes invisible lines */
-// grid-template-rows: 0.3fr 2.4fr 0fr;
-// grid-template-areas:
-// '. . . . . . . . . . . . . . . . '
-// '. NewAge NewAge NewAge NewAge NewAge NewAge NewAge Article Article Article Article Article Article Article  .'
-// '. . . . . . . . . . . . . . . . ';
-
-
-// @media (max-width:768px){
-//     display:block;
-//     width:100vw;
-//     min-height:205vh;
-// }
-// `
-
 const FirstPage = styled.div`
-display:flex;
-width:75vw;
+min-height:90vh;
+display:grid;
+grid-template-columns: repeat(16, 1fr);
+/* grid-template-rows: 0.23fr, 2.58fr, 0.19fr; -> causes invisible lines */
+grid-template-rows: 0.3fr 2.4fr 0fr;
+grid-template-areas:
+'. . . . . . . . . . . . . . . . '
+'. NewAge NewAge NewAge NewAge NewAge NewAge NewAge Article Article Article Article Article Article Article  .'
+'. . . . . . . . . . . . . . . . ';
+
+
+@media (max-width:768px){
+    display:block;
+    width:100vw;
+    min-height:205vh;
+}
 `
 // const TopRight = styled.div`
 // background-image:url(${img});
 // `
 
 const NewAge = styled.div`
-padding-left:10px;
-width:55%;
-padding-top:12px;
+padding-top:40px;
 grid-area:NewAge;
 button{
     background-color:#55E4E4;
@@ -509,7 +686,6 @@ button{
 
 const Article  = styled.div`
 grid-area: Article;
-width:45%;
 /* display:grid;
 grid-template-rows: repeat(1, 1fr);
 gap:5px 0px; */

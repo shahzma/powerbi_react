@@ -1483,7 +1483,6 @@ const NewReport = () => {
 
             <SideMenuContainer width={treemenucollapse ? '25vw' : '10px'}>
               <TreeMenu
-              style = {{width:'25vw'}}
               data={myPages}
               initialOpenNodes = {['9']}
               onClickItem={({ key, label, ...props }) => {
@@ -1492,7 +1491,7 @@ const NewReport = () => {
                 {({ search, items, searchTerm }) => {
                   // const nodesForRender = getNodesForRender(items, searchTerm);
                   return (
-                  <div style={{paddingLeft:'10px', marginTop:'5px'}}>
+                  <div style={{paddingLeft:'10px', marginTop:'5px', width:'23.3vw'}}>
                     {/* <Input onChange={(e) => handleSearch(e)} placeholder="Type and search"/> */}
                     {/* <Input style = {{'padding':'5px', 'width':'14vw'}}onChange={e => search(e.target.value)} placeholder="Type and search" /> */}
                     {/* <ToggleButton display = {treemenucollapse?'block':'none'} onClick = {handleTreeMenuCollapse}><GiHamburgerMenu/></ToggleButton> */}
@@ -1805,9 +1804,10 @@ const NewReport = () => {
                   </div>
                 )})}
                   </PowerBiDiv>:<>
-                 {window.localStorage.getItem('report')===null?treemenucollapse?<Frontpage/>:<Internet/>:window.localStorage.getItem('report')==='Consumer Internet'?treemenucollapse?<Frontpage/>:<Internet/>:<Subscription>
+                 {/* <Subscription>
                     Subscribe for report
-                 </Subscription>}
+                 </Subscription> */}
+                 {treemenucollapse?<Frontpage/>:<Internet/>}
                   </>}
               </PowerbiContainer>:<TailSpin
   height="80"
@@ -1848,8 +1848,9 @@ const SidebarContainer = styled.div`
     
 `
 const PowerbiContainer = styled.div`
-    width:110%;
+    /* width:110%; */
     /* overflow-y:hidden; */
+    width:75vw;
     display:flex;
     flex-direction:column;
     min-height:90vh;
@@ -1978,7 +1979,7 @@ const SideMenuContainer = styled.div`
   width:${props=>props.width};
   background-color:#18183E;
   color:white;
-  z-index:10;
+  /* z-index:10; */
 `
 
 

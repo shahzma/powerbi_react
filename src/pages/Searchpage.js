@@ -23,7 +23,7 @@ const Searchpage = () => {
     const navigate = useNavigate();
 
     useEffect(()=>{
-        let client_id = window.localStorage.getItem('client_id')
+        let client_id = window.localStorage.getItem('clientID')
         if(client_id===null){
             client_id = 1
         }
@@ -100,7 +100,7 @@ const Searchpage = () => {
         return (
           <tr key={"row_" + index}>
             <ComplianceColumnLogo onClick={()=>handleLogoClick(item)}>
-                <img style = {{'height':'10px','width':'10px'}}src = {item.image===null?'/Images/ms_icon.png':item.image.file} alt = {item.player_name} onError={({ currentTarget }) => {
+                <img style = {{'height':'30px','width':'30px'}}src = {item.image===null?'/Images/ms_icon.png':item.image.file} alt = {item.player_name} onError={({ currentTarget }) => {
                     currentTarget.onerror = null; // prevents looping
                     currentTarget.src="/Images/ms_icon.png";
                   }}/>
@@ -118,7 +118,7 @@ const Searchpage = () => {
         return (
           <tr key={"row_" + index}>
             <ComplianceColumnLogo>
-                <img style = {{'height':'10px','width':'10px'}}src = {item.image===null?'/Images/ms_icon.png':item.image.file} alt = {item.player_name} onError={({ currentTarget }) => {
+                <img style = {{'height':'30px','width':'30px'}}src = {item.image===null?'/Images/ms_icon.png':item.image.file} alt = {item.player_name} onError={({ currentTarget }) => {
                     currentTarget.onerror = null; // prevents looping
                     currentTarget.src="/Images/ms_icon.png";
                   }}/>
