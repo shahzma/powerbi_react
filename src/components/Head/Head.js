@@ -137,7 +137,8 @@ const Head = () => {
                 </ProductDiv>
                 <div>Articles</div>
                 <Man>
-                <img src = "/Images/user.png" alt = "" style={{width: '3vw', borderRadius:'40px'}}/>
+                {console.log('user_men=', window.localStorage.getItem('user_male'))}
+                {window.localStorage.getItem('gender_male')==='false'?<img src = "/Images/userWomen.png" alt = "" style={{width: '3vw', borderRadius:'40px'}}/>:<img src = "/Images/userMen.png" alt = "" style={{width: '3vw', borderRadius:'40px'}}/>}
                 {hour<15?'Good Morning ':'Good Evening '}{window.localStorage.getItem('user_name')!==undefined?window.localStorage.getItem('user_name'):window.localStorage.getItem('email').split('@')[0]}
                 <Dropbutton onClick = {()=>{setShowDropDn(!showDropDn)}}><RiArrowDropDownLine/></Dropbutton>
                     <SignOut display = {showDropDn?'flex':'none'} onClick={handleSignOut}>

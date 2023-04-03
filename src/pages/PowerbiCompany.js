@@ -345,6 +345,6 @@ padding-top:5px;
 const BreadCrumbs= styled.div`
 padding-left:6.8vw;
 font-size:16px;
-font-weight:500;
+font-weight:600;
 font-family:'Fira-Sans', sans-serif
 `

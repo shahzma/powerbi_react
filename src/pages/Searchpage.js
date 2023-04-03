@@ -105,8 +105,8 @@ const Searchpage = () => {
                     currentTarget.src="/Images/ms_icon.png";
                   }}/>
             </ComplianceColumnLogo>
-            <ComplianceColumn>{item.industry_name}</ComplianceColumn>
             <ComplianceColumn>{item.player_name}</ComplianceColumn>
+            <ComplianceColumn>{item.leadership}</ComplianceColumn>
             <ComplianceColumn>{item.status}</ComplianceColumn>
             <ComplianceColumn>{item.stage}</ComplianceColumn>
             <ComplianceColumn>{item.last_valuations}</ComplianceColumn>
@@ -123,8 +123,8 @@ const Searchpage = () => {
                     currentTarget.src="/Images/ms_icon.png";
                   }}/>
             </ComplianceColumnLogo>
-            <ComplianceColumn>{item.industry_name}</ComplianceColumn>
             <ComplianceColumn>{item.player_name}</ComplianceColumn>
+            <ComplianceColumn>{item.leadership}</ComplianceColumn>
             <ComplianceColumn>{item.status}</ComplianceColumn>
             <ComplianceColumn>{item.stage}</ComplianceColumn>
             <ComplianceColumn>{item.last_valuations}</ComplianceColumn>
@@ -201,7 +201,7 @@ const Searchpage = () => {
                     <ComplianceHeaderCompany>
                         Company
                     </ComplianceHeaderCompany>
-                    <ComplianceHeader>Industry</ComplianceHeader>
+                    <ComplianceHeader>Name</ComplianceHeader>
                     <ComplianceHeader>Leadership</ComplianceHeader>
                     <ComplianceHeader>Status</ComplianceHeader>
                     <ComplianceHeader>Stage</ComplianceHeader>

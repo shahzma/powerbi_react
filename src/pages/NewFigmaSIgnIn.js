@@ -60,7 +60,12 @@ const NewFigmaSIgnIn = () => {
             window.localStorage.setItem("clientID", data['client_id'])
             window.localStorage.setItem('unregistered',data['unregistered'])
             window.localStorage.setItem('user_name', data['user_name'])
-            console.log('name = ', window.localStorage.getItem('user_name'))
+            if(data['gender_male']!==true){
+              window.localStorage.setItem('gender_male' , 'false')
+            }else{
+              window.localStorage.setItem('gender_male' , 'true')
+            }
+            console.log('gender_male = ', window.localStorage.getItem('gender_male'))
           }else{
             alert('You need to sign in with microsoft or gmail')
           }
@@ -110,6 +115,11 @@ const NewFigmaSIgnIn = () => {
                                     window.localStorage.setItem("clientID", data.client_id)
                                     window.localStorage.setItem("email", email)
                                     window.localStorage.setItem('user_name', data.user_name)
+                                    if(data['gender_male']!==true){
+                                      window.localStorage.setItem('gender_male' , 'false')
+                                    }else{
+                                      window.localStorage.setItem('gender_male' , 'true')
+                                    }
                                     window.location.href='/newreport'
                                 }
                                 else{
