@@ -171,7 +171,7 @@ const Searchpage = () => {
     <div style={{'background':'#F5F8FC'}}>
         <Head/>
         <div style={{'paddingLeft':'5.8vw', 'fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui', 'paddingTop':'5px'}}>Search Companies</div>
-        <div style = {{'paddingLeft':'6vw','fontWeight':'500', 'fontFamily':'Fira Sans'}}>Products / Search Companies</div>
+        <div  className='breadcrumbs' style = {{'paddingLeft':'6vw'}}>Products / Search Companies</div>
         <SearchArea>
             <SearchBox>
             <div style={{ width: 800 }}>

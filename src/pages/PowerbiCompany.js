@@ -94,9 +94,9 @@ const PowerbiCompany = () => {
             <Header>
             <div style={{'fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui'}}>{window.localStorage.getItem('searchcompany')}</div>
             </Header>
-            <BreadCrumbs>
+            <div className='breadcrumbs' style={{paddingLeft:'6.8vw'}}>
             Products / <a href="/search" style={{'color':'black'}}>Search Companies</a> / {window.localStorage.getItem('searchcompany')}
-            </BreadCrumbs>
+            </div>
         </div>
         {showLoader===false?<PowerBiDiv>
                 {newReportPages.map((index,i) => {

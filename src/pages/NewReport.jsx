@@ -217,6 +217,10 @@ const NewReport = () => {
       const backend_token = new URLSearchParams(search).get('backend_token')
       const pseudo_email = new URLSearchParams(search).get('pseudo_email')
       const email = new URLSearchParams(search).get('email')
+      const user_name = new URLSearchParams(search).get('name')
+      if(user_name){
+        window.localStorage.setItem('user_name', user_name)
+      }
 
   useEffect(()=>{
     if (client_id){
@@ -241,6 +245,7 @@ const NewReport = () => {
       const onOptionSelect = (option) => {
         console.log('opt=',option)
         setFilterVal(option.filter_value)
+        // setFinalized(option.finalized)
         if(selectedOption!==null){
           treearr.pop()
           treearr.push(option.label)
@@ -248,7 +253,7 @@ const NewReport = () => {
           treearr.push(option.label)
         }
         setSelectedOption(option.label);
-        handleClickTree(option.label, -1 , '-1')
+        handleClickTree(option.label, -1 , option.finalized)
       };
 
       let subtitle
@@ -435,7 +440,7 @@ const NewReport = () => {
         //console.log('Loop finished');
       }
 
-      let handleClickTree = (reportname, key, node_type, index = -1)=>{
+      let handleClickTree = (reportname, key, finalized, index = -1)=>{
         if(index===treearr.length-1 & key===-2){
           // disable last click
           return
@@ -476,7 +481,11 @@ const NewReport = () => {
           setSelectedPage(reportname)
           setfilterarr(['1'])
           setShowDropDown(true)
-          window.localStorage.setItem('finalized', 'false')
+          if (finalized===true){
+            window.localStorage.setItem('finalized', 'true')
+          }else{
+            window.localStorage.setItem('finalized', 'false')
+          }
         }
         if (key === -2){
           window.localStorage.setItem('report' , reportname)
@@ -1516,7 +1525,7 @@ const NewReport = () => {
                       <span style = {{ 'marginLeft':'5px', 'marginRight':'15px','fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui', 'marginTop':'5px'}}>{selectedpage}</span>
                     </div>
                     <div  style={treemenucollapse?{'marginLeft':'3.3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.8vw' ,'marginBottom':'10px'}}>
-                    Products/ {treearr.length>0?<>{treearr.map(( val, i)=><BreadCrumbSpan onClick={(e)=>{handleClickTree(val, -2 , '-1', i)}}>{val} / </BreadCrumbSpan>)}</>:<>Consumer Internet</>}
+                    <span className='breadcrumbs'>Products /</span>{treearr.length>0?<>{treearr.map(( val, i)=><BreadCrumbSpan onClick={(e)=>{handleClickTree(val, -2 , '-1', i)}}>{val} / </BreadCrumbSpan>)}</>:<span className='breadcrumbs'>Consumer Internet</span>}
                     </div>
                     {showcurrencybar?<Currency marginLeft = {treemenucollapse?'3.3vw':'3.8vw'}columns={treemenucollapse?'0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 2.95fr 1.2fr 0.3fr':'0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 3.95fr 1.2fr 0.3fr'}>
                       <Descurr>Currency</Descurr>
@@ -1703,8 +1712,9 @@ const NewReport = () => {
                               let active_width = activePage.defaultSize.width
                               let width = document.getElementsByClassName('report-style-class-newreport'+i)[0].offsetWidth;
                               let ht = ((active_ht/active_width)*width)
-                              console.log('i= ', i)
+
                               if(i==0){
+                                console.log('activepage=',i, width, ht)
                                 console.log('rep_finalized = ', window.localStorage.getItem('finalized'))
                                 if(window.localStorage.getItem('finalized')==='false'){
                                   document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-12vh';
