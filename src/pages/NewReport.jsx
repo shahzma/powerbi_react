@@ -77,6 +77,7 @@ const NewReport = () => {
     const [reportarr, setNewReportArr] = useState([])
     const [searchVal , setsearchVal] = useState(null);
     const [treearr, setTreearr] = useState([])
+    const [treeliarr, setTreeliarr] = useState([])
     const [filterarr, setfilterarr] = useState([])
     const [activeIndex, setActiveIndex] = useState(0);
     const [yearIndex, setyearIndex] = useState(0);
@@ -209,6 +210,10 @@ const NewReport = () => {
         'Purplle':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/purplle.jpeg'/>,
         'Pepperfry':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/pepperfry.jpeg'/>,
         'Urban Ladder':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/urbanladder.jpeg'/>,
+        'Delhivery':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/delhivery.png'/>,
+        'Ecom Express':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/ecomexpress.png'/>,
+        'Shadowfax':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/shadowfax.png'/>,
+        'Xpressbees':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/xpressbee.png'/>,
       })
       const [selectedOption, setSelectedOption] = useState(null);
 
@@ -223,6 +228,7 @@ const NewReport = () => {
       }
 
   useEffect(()=>{
+    window.localStorage.setItem('report', 'Consumer Internet')
     if (client_id){
       console.log('backend_client_id=', client_id)
       window.localStorage.setItem("clientID", client_id);
@@ -442,9 +448,12 @@ const NewReport = () => {
 
       let handleClickTree = (reportname, key, finalized, index = -1)=>{
         if(index===treearr.length-1 & key===-2){
-          // disable last click
+          // disable last click. also disable clicks on non links
+          return
+        }if (key===-2 & ['Online Retail (WIP)','Consumer Internet', 'Digital Content (WIP)', 'Online Education (WIP)', 'eHealth (WIP)', 'eB2B (WIP)'].includes(reportname)){
           return
         }
+
         setshowLoader(true)
         console.log('key=', key)
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/nodechildren/?key=${key}`, {
@@ -522,53 +531,63 @@ const NewReport = () => {
         }
         console.log('reportarr=', reportarr)
         console.log('reportname= ', reportname)
+        let prop_token = window.localStorage.getItem('token')
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep=${reportname}`, {
           method:'GET',
           headers:{
             'Content-Type': 'application/json',
-          },
+            Authorization: `Token ${prop_token}`
+          }
         })
         .then(res=>res.json())
         .then(
           res=>{
-            console.log(reportname,res, reportarr)
-            for(let i = 0; i<reportarr.length; i++){
-              if(key===-1){
-                    let pages = reportarr[i].report_pages
-                    // if amazon lies in report pages then setshowreport(true)
-                    // report arr is list of all reports which client has access
-                  if(reportarr[i].report_name===reportname){
-                    setshowReport(true)
-                    break
-                  }
-                  else if(pages.includes(res[0].id)){
-                    setshowReport(true)
-                    break
-                  }else{
-                    setshowReport(false)
-                  }
-              }else if (key===-2){
-                console.log('reportname=', reportname)
-                if(reportname === 'Consumer Internet'){
-                  setshowReport(false)
-                  break
-                }
-              }else{
-                 if(reportarr[i].report_name===reportname){
-                  if(reportarr[i].report_pages.length===0){
-                    console.log('show_all_pages')
-                    setshowReport(true)
-                  }else{
-                    let pages = reportarr[i].report_pages
-                    res = res.filter(value => pages.includes(value.id)); 
-                    setshowReport(true)         
-                  }
-                  break
-                }else{
-                  setshowReport(false)
-                }
-              }
+            if(res.length<1){
+              // if (key===-2){
+              //   setshowLoader(false)
+              //   return
+              // }
+              setshowReport(false)
+            }else{
+              setshowReport(true)
             }
+            // for(let i = 0; i<reportarr.length; i++){
+            //   if(key===-1){
+            //         let pages = reportarr[i].report_pages
+            //         // if amazon lies in report pages then setshowreport(true)
+            //         // report arr is list of all reports which client has access
+            //       if(reportarr[i].report_name===reportname){
+            //         setshowReport(true)
+            //         break
+            //       }
+            //       else if(pages.includes(res[0].id)){
+            //         setshowReport(true)
+            //         break
+            //       }else{
+            //         setshowReport(false)
+            //       }
+            //   }else if (key===-2){
+            //     console.log('reportname=', reportname)
+            //     if(reportname === 'Consumer Internet'){
+            //       setshowReport(false)
+            //       break
+            //     }
+            //   }else{
+            //      if(reportarr[i].report_name===reportname){
+            //       if(reportarr[i].report_pages.length===0){
+            //         console.log('show_all_pages')
+            //         setshowReport(true)
+            //       }else{
+            //         let pages = reportarr[i].report_pages
+            //         res = res.filter(value => pages.includes(value.id)); 
+            //         setshowReport(true)         
+            //       }
+            //       break
+            //     }else{
+            //       setshowReport(false)
+            //     }
+            //   }
+            // }
             setnewReportPages(res)
             setshowLoader(false)
             // console.log('res=', res)
