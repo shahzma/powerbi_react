@@ -78,6 +78,7 @@ const NewReport = () => {
     const [searchVal , setsearchVal] = useState(null);
     const [treearr, setTreearr] = useState([])
     const [treeliarr, setTreeliarr] = useState([])
+    const [dummynodes, setDummyNodes]  = useState([])
     const [filterarr, setfilterarr] = useState([])
     const [activeIndex, setActiveIndex] = useState(0);
     const [yearIndex, setyearIndex] = useState(0);
@@ -251,7 +252,7 @@ const NewReport = () => {
       const onOptionSelect = (option) => {
         console.log('opt=',option)
         setFilterVal(option.filter_value)
-        // setFinalized(option.finalized)
+        // when we are selecting from drop down we need to remove last element of breadcrumb and add new selected in its place
         if(selectedOption!==null){
           treearr.pop()
           treearr.push(option.label)
@@ -292,6 +293,19 @@ const NewReport = () => {
         .then(
           res=>{
             setNewReportArr(res)
+          }
+        )
+
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/dummynodes/`,{
+          method:'GET',
+          headers:{
+            'Content-Type': 'application/json',
+          },
+        }).then(res=>res.json())
+        .then(
+          res=>{
+            console.log('dummy=', res)
+            setDummyNodes(res)
           }
         )
     },[]);
@@ -450,7 +464,7 @@ const NewReport = () => {
         if(index===treearr.length-1 & key===-2){
           // disable last click. also disable clicks on non links
           return
-        }if (key===-2 & ['Online Retail (WIP)','Consumer Internet', 'Digital Content (WIP)', 'Online Education (WIP)', 'eHealth (WIP)', 'eB2B (WIP)'].includes(reportname)){
+        }if (key===-2 & dummynodes.includes(reportname)){
           return
         }
 
@@ -1733,8 +1747,6 @@ const NewReport = () => {
                               let ht = ((active_ht/active_width)*width)
 
                               if(i==0){
-                                console.log('activepage=',i, width, ht)
-                                console.log('rep_finalized = ', window.localStorage.getItem('finalized'))
                                 if(window.localStorage.getItem('finalized')==='false'){
                                   document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-12vh';
                                 }

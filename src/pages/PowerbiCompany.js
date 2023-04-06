@@ -27,11 +27,13 @@ const PowerbiCompany = () => {
         let reportname = window.localStorage.getItem('searchcompany')
         let reportid = window.localStorage.getItem('searchreportid')
         reportid = parseInt(reportid)
+        let prop_token = window.localStorage.getItem('token')
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep_id=${reportid}`, {
             method:'GET',
             headers:{
               'Content-Type': 'application/json',
-            },
+              Authorization: `Token ${prop_token}`
+            }
           })
           .then(res=>res.json())
           .then(
