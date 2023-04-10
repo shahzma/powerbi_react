@@ -304,7 +304,6 @@ const NewReport = () => {
         }).then(res=>res.json())
         .then(
           res=>{
-            console.log('dummy=', res)
             setDummyNodes(res)
           }
         )
@@ -747,7 +746,7 @@ const NewReport = () => {
                 toggleNode()
 
               // console.log(label, props.key_val, props.node_type)
-              if(props.key_val===25){
+              if([25,67].includes(props.key_val)){
                 setSelectedPage(label)
                 let parent_arr = getParents(props)
                 parent_arr.push(label)
@@ -1143,6 +1142,17 @@ const NewReport = () => {
     values: [filterVal]
       }
 
+      const sectorfilter = {
+        $schema: "http://powerbi.com/product/schema#basic",
+        target: {
+            table: "Grocery_Sector_Table",
+            column: "Sector"
+        },
+        operator: "In",
+        values: [filterVal]
+      }
+
+
       let filter_arr = [datefilter]
       for(let i=0; i<filterarr.length;i++){
         console.log('val = ',filterarr[i])
@@ -1154,6 +1164,10 @@ const NewReport = () => {
         } else if(filterarr[i]==='industry'){
           console.log('industry filter')
           filter_arr.push(industryfilter)
+        } else if (filterarr[i]==='sector'){
+          console.log('sector filter')
+          console.log('filterVal = ', filterVal)
+          filter_arr.push(sectorfilter)
         }
       }
 
