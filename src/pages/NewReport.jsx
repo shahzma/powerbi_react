@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, Suspense } from 'react'
 import styled from 'styled-components';
 import { ProSidebarProvider } from 'react-pro-sidebar';
 import {Menu, MenuItem } from 'react-pro-sidebar';
@@ -42,6 +42,8 @@ import MyDropdown from '../components/DropDown/dropdown';
 import { useLocation } from 'react-router-dom';
 import Frontpage from './Frontpage';
 import Internet from './Internet';
+import DjangoEmbed from './DjangoEmbed';
+import DynamicComponent from './DynamicComponent'
 // import myHTMLfile from './myHTMLfile.html';
 // import 'react-select-search/style.css'
 
@@ -54,9 +56,7 @@ const NewReport = () => {
     const [ toggle, setToggle ] = useState(false);
     const [treemenucollapse, settreeMenuColapse] = useState(true);
     const [showcurrencybar, setshowCurrencyBar] = useState(false);
-    const [ reportId, setReportId ] = useState('');
     const [ newUrl, setNewUrl ] = useState('');
-    const [ EmbedToken, setEmbedToken ] = useState('');
     const [bdata, setBdata] = useState({});
     let [ formId, setFormId ] = useState('851');
     let [ quesId, setQuesId ] = useState(108);
@@ -67,17 +67,11 @@ const NewReport = () => {
     const [currencyarr, setCurrencyArr] = useState([])
     const [comments, setComments] = useState({});
     const [comment, setComment] = useState("Hello");
-    const [ AccessToken, setAccessToken ] = useState('');
-    const [ reportUrl, setReportUrl ] = useState('');
-    const [ pages, setPages ] = useState([]);
-    const [pagename, setPageName] = useState([]);
-    const [pagenameVerbose, setPageNameVerbose] = useState('');
     const [commentsOpen, setCommentsOpen] = useState(false);
     const [newReportPages, setnewReportPages] = useState([]);
     const [reportarr, setNewReportArr] = useState([])
     const [searchVal , setsearchVal] = useState(null);
     const [treearr, setTreearr] = useState([])
-    const [treeliarr, setTreeliarr] = useState([])
     const [dummynodes, setDummyNodes]  = useState([])
     const [filterarr, setfilterarr] = useState([])
     const [activeIndex, setActiveIndex] = useState(0);
@@ -89,7 +83,6 @@ const NewReport = () => {
     const [dropDownData, setDropDownData] = useState([])
     const [filterVal, setFilterVal] = useState(null)
     const [labelSelected, setLabelSelected] = useState(null);
-    const [Content, setContent] = useState();
     const [commentsData, setCommentsData] = useState({
       currentQuestion: 1,
       currentQuestionId: "",
@@ -144,7 +137,6 @@ const NewReport = () => {
         'Electronics & Large/Small appliances':<BiFridge/>,
         'Epharma':<GiMedicines/>,
         // 'Grocery':<GiFruitBowl/>,
-        'Shortform Video':<GiVideoConference/>,
         'OTT_Video':<AiTwotoneVideoCamera/>,
         'OTT Audio':<FaRegFileAudio/>,
         'Content S&M':<BiBookContent/>,
@@ -312,51 +304,6 @@ const NewReport = () => {
     const isMount = useIsMount();
 
 
-    // useEffect(()=>{
-    //   if (isMount){
-    //     //console.log('First Render')
-    //   }else{
-    //     //console.log('selected_month=',selectedMonth)
-    //     let month = selectedMonth
-    //     var months = ['Zero',"January","February","March","April","May","June","July","August","September","October","November","December"];
-    //     for(var i in months){
-    //       if(months[i] === month){
-    //           month = ++i;
-    //       }
-    //     }
-    //     let firstDate = '1/'+month+'/22'
-    //     let lastDate = '30/'+month+'/22'
-    //     //console.log('firstDate=', firstDate)
-    //     const uploadData = new FormData();
-    //     uploadData.append('company_name', 'Swiggy');
-    //     uploadData.append('question_name', "Business Metrics");
-    //     uploadData.append('start_date', firstDate);
-    //     uploadData.append('end_date', lastDate);
-    //     fetch(`https://coeus.redseerconsulting.com/formID/`, {
-    //       method: 'POST',
-    //       body: uploadData
-    //     }).then(data => data.json())
-    //     .then((data) => {
-    //       //console.log('data=',data)
-    //       setBdata(data)
-    //       // setFormId(data.report_version_id,()=>{//console.log(form_id)})
-    //       setIsOpen(true);
-    //       let ques_id = data.question_id
-    //       let form_id = data.report_version_id
-    //       //console.log('ques_id=', ques_id)
-    //       //console.log('new_form_id=', form_id)
-    //       onClickComments(1, ques_id,form_id);
-    //       })
-    //     .catch(error => {
-    //       // setSignIn(false);
-    //       alert('System Error.Contact Admin')
-    //       //console.log(error)
-    //     })
-    //   }
-    // }
-    // ,[selectedMonth])
-
-
     let handleSignOut = ()=>{
       console.log('signout')
       let prop_email = window.localStorage.getItem("email")
@@ -418,15 +365,6 @@ const NewReport = () => {
       }, 1000*60*5);
     },[])
 
-      let gotoMainPage = ()=>{
-        window.location.href='/mainpage'
-      }
-      let handleClick = (Name, NameVerbose)=>{
-        setPageName(Name)
-        setPageNameVerbose(NameVerbose)
-        //console.log('name=',Name)
-        setNewUrl(reportUrl+'&pageName='+Name)
-      }
 
       async function executeAfterLoop(res,arr) {
         await new Promise(resolve => {
@@ -468,7 +406,7 @@ const NewReport = () => {
         }
 
         setshowLoader(true)
-        console.log('key=', key)
+        // console.log('key=', key)
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/nodechildren/?key=${key}`, {
           method:'GET',
           headers:{
@@ -538,12 +476,9 @@ const NewReport = () => {
             for(let i = treearr.length-1; i>index; i--){
               arr.pop()
             }
-            console.log('arr = ', arr)
             setTreearr(arr)
           }
         }
-        console.log('reportarr=', reportarr)
-        console.log('reportname= ', reportname)
         let prop_token = window.localStorage.getItem('token')
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep=${reportname}`, {
           method:'GET',
@@ -725,14 +660,18 @@ const NewReport = () => {
               let currency_type = window.localStorage.getItem('currency')
               if(currency_type==='USD'){
                 setActiveIndex(1)
+                window.localStorage.setItem('currency', 'USD')
               }else{
                 setActiveIndex(0)
+                window.localStorage.setItem('currency', 'INR')
               }
               let year_type = window.localStorage.getItem('year')
               if(year_type==='CY'){
                 setyearIndex(0)
+                window.localStorage.setItem('year', 'CY')
               }else{
                 setyearIndex(1)
+                window.localStorage.setItem('year', 'FY')
               }
             }            
 
@@ -805,61 +744,7 @@ const NewReport = () => {
           </div>
         );
       };
-      const postComment = async(comment, formId, instanceId, questionId)=>{
-        //console.log('comment=', comment)
-        if (comment?.length){
-          // let { author, author_email, author_display_picture, message } = comment;
-          let author_display_picture = "https://lh3.googleusercontent.com/a/AATXAJx2Vaf3laKf8D7hz6W6c9YgjOK8rEqLsZEk9mzS=s96-c"
-          // let author_email = 'shahzmaalif@gmail.com'
-          let author_email = window.localStorage.getItem("email")
-          let author = author_email.split('@')[0]
-          //console.log('author=', author)
-          const commentObj = {
-              id: `RC_${uuid()?.replace(/-/g, "_")}`,
-              author,
-              author_email,
-              author_display_picture,
-              created_at: new Date().toUTCString(),
-              comment: comment,
-              replies: [],
-          };
       
-        // //console.log('comentObj=',{ commentObj });
-      
-        const commentsRef = database.ref(
-            `comments/${formId}/${instanceId}/${questionId}`
-        );
-          // //console.log('commentref=', commentsRef)
-          //console.log('com_form_id=',comments[formId])
-          //console.log('com_ques_id=',comments[formId][questionId])
-        if (comments[formId] && comments[formId][questionId]){
-          //console.log('works')
-          commentsRef.set([...comments[formId][questionId], commentObj]);
-        }else{
-          //console.log('skip')
-        }
-      
-        }
-        else
-        {
-          throw new Error("Invalid comment!");
-        }
-      };
-      
-
-      const addComment = (e) => {
-        e.preventDefault();
-        let form_curr_instance_id = 851
-        let curr_ques_id = 107
-        //console.log('sub_form_id=', bdata.report_version_id)
-        //console.log('sub_ques_id=', bdata.question_id)
-        postComment(
-          comment,
-          bdata.report_version_id,
-          bdata.report_version_id,
-          bdata.question_id
-        );
-      };
 
       const getFormQuestionComments = async (
         formId,
@@ -999,22 +884,6 @@ const NewReport = () => {
         setComment(e.target.value);
       }
 
-      let setDropDownValueMonth = (e)=>{
-        //console.log('value=', e.value)
-        let val  = e.value
-        // setselectedMonth(val, ()=>{
-        //   //console.log(selectedMonth)
-        // })
-        setselectedMonth(val)
-        //console.log('month=', selectedMonth)
-        //console.log('bdata=', bdata)
-      }
-
-      let applyPlayer = (e)=>{
-        let val = e.label
-        console.log('player=', val)
-
-      }
       function lastSiXMonths(){
         var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var today = new Date();
@@ -1155,18 +1024,13 @@ const NewReport = () => {
 
       let filter_arr = [datefilter]
       for(let i=0; i<filterarr.length;i++){
-        console.log('val = ',filterarr[i])
         if(filterarr[i]==1){
           filter_arr.push(basicFilter)
         }else if(filterarr[i]==='categories'){
-          console.log('categories filter')
           filter_arr.push(categoryfilter)
         } else if(filterarr[i]==='industry'){
-          console.log('industry filter')
           filter_arr.push(industryfilter)
         } else if (filterarr[i]==='sector'){
-          console.log('sector filter')
-          console.log('filterVal = ', filterVal)
           filter_arr.push(sectorfilter)
         }
       }
@@ -1630,235 +1494,250 @@ const NewReport = () => {
                   </BreadCrumbTop>
                 {showReport?<PowerBiDiv>
                 {newReportPages.map((index,i) => {
-                  return(
-                  <div key={index.id}>
-                    <PowerBIEmbed
-                     embedConfig = {{
-                      type: 'report',   // Supported types: report, dashboard, tile, visual and qna
-                      id: index['powerbi_report_id'],
-                      //get from props
-                      embedUrl:index['url'],
-                      accessToken: index['embed'],
-                      tokenType: models.TokenType.Embed,
-                      filters: filter_arr,
-                      settings: {
-                        // background:models.BackgroundType.Transparent,
-                        layoutType:models.LayoutType.Custom,
-                        customLayout:{
-                          displayOption:models.DisplayOption.FitToPage
-                        },
-                        panes: {
-                          filters: {
-                            expanded: false,
-                            visible: false,
-                          },
-                        },
-                        navContentPaneEnabled:false
-                      }
-                    }}
-                    eventHandlers = {
-                      new Map([
-                        ['loaded', async function (event, report) {
-                          //console.log('Report loaded');
-                          if(true){
-                            const filter = {
-                              $schema: "http://powerbi.com/product/schema#advanced",
-                              target: {
-                                  table: "content_data player",
-                                  column: "player_name"
-                              },
-                              filterType: models.FilterType.Advanced,
-                              logicalOperator: "Is",
-                              conditions: [
-                                  {
-                                      operator: "Is",
-                                      value: window.localStorage.getItem("player_name")
-                                  }
-                              ]
-                          };
-                          // filter if there is a player in dropdown menu instead of page
-                          const filter_player_dropdown = {
-                            $schema: "http://powerbi.com/product/schema#advanced",
-                              target: {
-                                  table: "content_data main_data",
-                                  column: "Players"
-                              },
-                              filterType: models.FilterType.Advanced,
-                              logicalOperator: "Is",
-                              conditions: [
-                                  {
-                                      operator: "Is",
-                                      value: window.localStorage.getItem('drop_dn_player_name')
-                                  }
-                              ]
-                          }
-                          const money_converter = {
-                            $schema: "http://powerbi.com/product/schema#advanced",
-                            target: {
-                                table: "Currency Table",
-                                column: "Currency"
-                            },
-                            filterType: models.FilterType.Advanced,
-                            logicalOperator: "Is",
-                            conditions: [
-                                {
-                                    operator: "Is",
-                                    value: window.localStorage.getItem('currency')
-                                }
-                            ]
-                          }
-                          const year_converter = {
-                            $schema: "http://powerbi.com/product/schema#advanced",
-                            target: {
-                                table: "Date Parameter",
-                                column: "Year_Type"
-                            },
-                            filterType: models.FilterType.Advanced,
-                            logicalOperator: "Is",
-                            conditions: [
-                                {
-                                    operator: "Is",
-                                    value: window.localStorage.getItem('year')
-                                }
-                            ]
-                          }
-                          const currency_valuation = {
-                            $schema: "http://powerbi.com/product/schema#advanced",
-                            target: {
-                                table: "Currency input",
-                                column: "Currency input"
-                            },
-                            filterType: models.FilterType.Advanced,
-                            logicalOperator: "Is",
-                            conditions: [
-                                {
-                                    operator: "Is",
-                                    value: 71
-                                }
-                            ]
-                          }
-                          const usd_selector  = {
-                            $schema: "http://powerbi.com/product/schema#advanced",
-                            target: {
-                                table: "Currency_USD_Type",
-                                column: "Type"
-                            },
-                            filterType: models.FilterType.Advanced,
-                            logicalOperator: "Is",
-                            conditions: [
-                                {
-                                    operator: "Is",
-                                    value: 'Custom'
-                                }
-                            ]
-                          }
-              
-                          report.getActivePage().then(
-                            (activePage=>{
-                              let active_ht = activePage.defaultSize.height
-                              let active_width = activePage.defaultSize.width
-                              let width = document.getElementsByClassName('report-style-class-newreport'+i)[0].offsetWidth;
-                              let ht = ((active_ht/active_width)*width)
+                  
+                  if (index.has_address===true){
+                    const Component = DynamicComponent(index.address);
+                    return (
+                      <Suspense key={index} fallback={<div>Loading...</div>}>
+                        <Component val = {'shahzma'}/>
+                      </Suspense>
+                    );
+                  }else{
 
-                              if(i==0){
-                                if(window.localStorage.getItem('finalized')==='false'){
-                                  document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-12vh';
-                                }
-                              }
-                              document.getElementsByClassName('report-style-class-newreport'+i)[0].style.height = ht+'px';
-                              document.getElementsByClassName('report-style-class-newreport'+i)[0].style.backgroundColor = '#F5F8FC'
-                              document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0].style.border = '0px';
-                              document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0].style.backgroundColor = '#F5F8FC';
-                              // document.getElementsByClassName('report-style-class-newreport'+i)[0].style.width = activePage.defaultSize.width+'px';
-                              activePage.getVisuals().then(
-                                (visuals=>{
-                                  // //console.log('visuals=',visuals)
-                                  let slicers = visuals.filter(function (visual) {
-                                    return visual.type === "slicer";
-                                }
-                                );
-                                  slicers.forEach(async (slicer) => {
-                                    const state = await slicer.getSlicerState();
-                                    //console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
-                                    if(state.targets[0].column==="player_name"){
-                                      //console.log('slicer_name=',slicer)
-                                      let target_slicer = visuals.filter(function (visual) {
-                                        return visual.type === "slicer" && visual.name === slicer.name;
-                                    })[0];
-                                      await target_slicer.setSlicerState({ filters: [filter] });
-                                    }
-                                    //not using state as it will change on page load.page laod code for 1st
-                                    if(state.targets[0].column==='Players' && window.localStorage.getItem('filter_on_company')==='true'){
-                                      let target_slicer = visuals.filter(function (visual) {
-                                        return visual.type === "slicer" && visual.name === slicer.name;
-                                    })[0];
-                                      await target_slicer.setSlicerState({ filters: [filter_player_dropdown] });
-                                    }
-                                    if(state.targets[0].column==='Currency'){
-                                      let target_slicer = visuals.filter(function (visual) {
-                                        return visual.type === "slicer" && visual.name === slicer.name;
-                                    })[0];
-                                      await target_slicer.setSlicerState({ filters: [money_converter] });
-                                    }
-                                    if(state.targets[0].column==='Year_Type'){
-                                      let target_slicer = visuals.filter(function (visual) {
-                                        return visual.type === "slicer" && visual.name === slicer.name;
-                                    })[0];
-                                      await target_slicer.setSlicerState({ filters: [year_converter] });
-                                    }
-                              })
-                                  // //console.log('slicer=', slicers)
-                                })
-                              )
-                            })
-                          )
+                    return(
+                      <div key={index.id}>
+                        {/* {index.has_address===true &&(<><DjangoEmbed address={index.address}/></>)} */}
+                        {index.has_address===false && (<><PowerBIEmbed
+                         embedConfig = {{
+                          type: 'report',   // Supported types: report, dashboard, tile, visual and qna
+                          id: index['powerbi_report_id'],
+                          //get from props
+                          embedUrl:index['url'],
+                          accessToken: index['embed'],
+                          tokenType: models.TokenType.Embed,
+                          filters: filter_arr,
+                          settings: {
+                            // background:models.BackgroundType.Transparent,
+                            layoutType:models.LayoutType.Custom,
+                            customLayout:{
+                              displayOption:models.DisplayOption.FitToPage
+                            },
+                            panes: {
+                              filters: {
+                                expanded: false,
+                                visible: false,
+                              },
+                            },
+                            navContentPaneEnabled:false
                           }
-                        }],
-                        ['rendered', function () {
-                        }],
-                        ['buttonClicked', function(event, report){
-                          let ques_name = event.detail['title']
-                          let company_name = ''
-                          window.report.getActivePage().then(
-                            (activePage=>{
-                              activePage.getVisuals().then(
-                                (visuals=>{
-                                  let slicers = visuals.filter(function (visual) {
-                                    return visual.type === "slicer";
-                                });
-                                  slicers.forEach(async (slicer) => {
-                                  const state = await slicer.getSlicerState();
-                                  // //console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
-                                  if(state.targets[0].column==="player_name"){
-                                    company_name=state.filters[0].values[0]
-                                    // company_name=window.sessionStorage.getItem("player_name")
-                                    openModal(company_name, ques_name)
+                        }}
+                        eventHandlers = {
+                          new Map([
+                            ['loaded', async function (event, report) {
+                              //console.log('Report loaded');
+                              if(true){
+                                const filter = {
+                                  $schema: "http://powerbi.com/product/schema#advanced",
+                                  target: {
+                                      table: "content_data player",
+                                      column: "player_name"
+                                  },
+                                  filterType: models.FilterType.Advanced,
+                                  logicalOperator: "Is",
+                                  conditions: [
+                                      {
+                                          operator: "Is",
+                                          value: window.localStorage.getItem("player_name")
+                                      }
+                                  ]
+                              };
+                              // filter if there is a player in dropdown menu instead of page
+                              const filter_player_dropdown = {
+                                $schema: "http://powerbi.com/product/schema#advanced",
+                                  target: {
+                                      table: "content_data main_data",
+                                      column: "Players"
+                                  },
+                                  filterType: models.FilterType.Advanced,
+                                  logicalOperator: "Is",
+                                  conditions: [
+                                      {
+                                          operator: "Is",
+                                          value: window.localStorage.getItem('drop_dn_player_name')
+                                      }
+                                  ]
+                              }
+                              const money_converter = {
+                                $schema: "http://powerbi.com/product/schema#advanced",
+                                target: {
+                                    table: "Currency Table",
+                                    column: "Currency"
+                                },
+                                filterType: models.FilterType.Advanced,
+                                logicalOperator: "Is",
+                                conditions: [
+                                    {
+                                        operator: "Is",
+                                        value: window.localStorage.getItem('currency')
+                                    }
+                                ]
+                              }
+                              const year_converter = {
+                                $schema: "http://powerbi.com/product/schema#advanced",
+                                target: {
+                                    table: "Date Parameter",
+                                    column: "Year_Type"
+                                },
+                                filterType: models.FilterType.Advanced,
+                                logicalOperator: "Is",
+                                conditions: [
+                                    {
+                                        operator: "Is",
+                                        value: window.localStorage.getItem('year')
+                                    }
+                                ]
+                              }
+                              const currency_valuation = {
+                                $schema: "http://powerbi.com/product/schema#advanced",
+                                target: {
+                                    table: "Currency input",
+                                    column: "Currency input"
+                                },
+                                filterType: models.FilterType.Advanced,
+                                logicalOperator: "Is",
+                                conditions: [
+                                    {
+                                        operator: "Is",
+                                        value: 71
+                                    }
+                                ]
+                              }
+                              const usd_selector  = {
+                                $schema: "http://powerbi.com/product/schema#advanced",
+                                target: {
+                                    table: "Currency_USD_Type",
+                                    column: "Type"
+                                },
+                                filterType: models.FilterType.Advanced,
+                                logicalOperator: "Is",
+                                conditions: [
+                                    {
+                                        operator: "Is",
+                                        value: 'Custom'
+                                    }
+                                ]
+                              }
+                  
+                              report.getActivePage().then(
+                                (activePage=>{
+                                  let active_ht = activePage.defaultSize.height
+                                  let active_width = activePage.defaultSize.width
+                                  let width = document.getElementsByClassName('report-style-class-newreport'+i)[0].offsetWidth;
+                                  let ht = ((active_ht/active_width)*width)
+    
+                                  if(i==0){
+                                    if(window.localStorage.getItem('finalized')==='false'){
+                                      document.getElementsByClassName('report-style-class-newreport'+i)[0].style.marginTop = '-12vh';
+                                    }
                                   }
-              
-                              })
-                                  // //console.log('slicer=', slicers)
+                                  document.getElementsByClassName('report-style-class-newreport'+i)[0].style.height = ht+'px';
+                                  document.getElementsByClassName('report-style-class-newreport'+i)[0].style.backgroundColor = '#F5F8FC'
+                                  document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0].style.border = '0px';
+                                  document.getElementsByClassName('report-style-class-newreport'+i)[0].children[0].style.backgroundColor = '#F5F8FC';
+                                  // document.getElementsByClassName('report-style-class-newreport'+i)[0].style.width = activePage.defaultSize.width+'px';
+                                  activePage.getVisuals().then(
+                                    (visuals=>{
+                                      // //console.log('visuals=',visuals)
+                                      let slicers = visuals.filter(function (visual) {
+                                        return visual.type === "slicer";
+                                    }
+                                    );
+                                      slicers.forEach(async (slicer) => {
+                                        const state = await slicer.getSlicerState();
+                                        //console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+                                        if(state.targets[0].column==="player_name"){
+                                          //console.log('slicer_name=',slicer)
+                                          let target_slicer = visuals.filter(function (visual) {
+                                            return visual.type === "slicer" && visual.name === slicer.name;
+                                        })[0];
+                                          await target_slicer.setSlicerState({ filters: [filter] });
+                                        }
+                                        //not using state as it will change on page load.page laod code for 1st
+                                        if(state.targets[0].column==='Players' && window.localStorage.getItem('filter_on_company')==='true'){
+                                          let target_slicer = visuals.filter(function (visual) {
+                                            return visual.type === "slicer" && visual.name === slicer.name;
+                                        })[0];
+                                          await target_slicer.setSlicerState({ filters: [filter_player_dropdown] });
+                                        }
+                                        if(state.targets[0].column==='Currency'){
+                                          let target_slicer = visuals.filter(function (visual) {
+                                            return visual.type === "slicer" && visual.name === slicer.name;
+                                        })[0];
+                                          await target_slicer.setSlicerState({ filters: [money_converter] });
+                                        }
+                                        if(state.targets[0].column==='Year_Type'){
+                                          let target_slicer = visuals.filter(function (visual) {
+                                            return visual.type === "slicer" && visual.name === slicer.name;
+                                        })[0];
+                                          await target_slicer.setSlicerState({ filters: [year_converter] });
+                                        }
+                                  })
+                                      // //console.log('slicer=', slicers)
+                                    })
+                                  )
                                 })
                               )
-                            })
-                          )
-                        }],
-                        ['error', function (event) {console.log('powerbi_error=',event.detail);}]
-                      ])
-                    }
-              
-                    cssClassName = { "report-style-class-newreport"+i}
-                    getEmbeddedComponent = {async(embeddedReport) => {
-                      if(window.reports === undefined) {
-                        window.reports=[]
+                              }
+                            }],
+                            ['rendered', function () {
+                            }],
+                            ['buttonClicked', function(event, report){
+                              let ques_name = event.detail['title']
+                              let company_name = ''
+                              window.report.getActivePage().then(
+                                (activePage=>{
+                                  activePage.getVisuals().then(
+                                    (visuals=>{
+                                      let slicers = visuals.filter(function (visual) {
+                                        return visual.type === "slicer";
+                                    });
+                                      slicers.forEach(async (slicer) => {
+                                      const state = await slicer.getSlicerState();
+                                      // //console.log("Slicer name: \"" + slicer.name + "\"\nSlicer state:\n", state);
+                                      if(state.targets[0].column==="player_name"){
+                                        company_name=state.filters[0].values[0]
+                                        // company_name=window.sessionStorage.getItem("player_name")
+                                        openModal(company_name, ques_name)
+                                      }
+                  
+                                  })
+                                      // //console.log('slicer=', slicers)
+                                    })
+                                  )
+                                })
+                              )
+                            }],
+                            ['error', function (event) {console.log('powerbi_error=',event.detail);}]
+                          ])
+                        }
+                  
+                        cssClassName = { "report-style-class-newreport"+i}
+                        getEmbeddedComponent = {async(embeddedReport) => {
+                          if(window.reports === undefined) {
+                            window.reports=[]
+                          }
+                          window.reports.push(embeddedReport);
+                          // console.log(window.reports)
+                        }
+                  
                       }
-                      window.reports.push(embeddedReport);
-                      // console.log(window.reports)
-                    }
-              
+                       /></>)}
+    
+                      </div>
+                    )
+
                   }
-                   />
-                  </div>
-                )})}
+                })}
                   </PowerBiDiv>:<>
                  {window.localStorage.getItem('report')===null?treemenucollapse?<Frontpage/>:<Internet/>:window.localStorage.getItem('report')==='Consumer Internet'?treemenucollapse?<Frontpage/>:<Internet/>:<Subscription>
                     Subscribe for report

@@ -243,9 +243,9 @@ const PowerbiCompany = () => {
                                 console.log('rep_finalized = ', window.localStorage.getItem('finalized'))
                                 document.getElementsByClassName('report-style-class-search'+i)[0].style.position = 'relative';
                                 document.getElementsByClassName('report-style-class-search'+i)[0].style.zIndex = -1;
-                                if(true){
-                                  document.getElementsByClassName('report-style-class-search'+i)[0].style.marginTop = '-13vh';
-                                }
+                                // if(true){
+                                //   document.getElementsByClassName('report-style-class-search'+i)[0].style.marginTop = '-13vh';
+                                // }
                               }
                               document.getElementsByClassName('report-style-class-search'+i)[0].style.height = ht+'px';
                               document.getElementsByClassName('report-style-class-search'+i)[0].style.backgroundColor = '#F5F8FC'

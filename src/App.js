@@ -19,6 +19,7 @@ import Article from './pages/Article';
 import ArticleDetail from './pages/ArticleDetail';
 import Searchpage from './pages/Searchpage';
 import PowerbiCompany from './pages/PowerbiCompany';
+import DjangoEmbed from './pages/DjangoEmbed';
 
 function App() {
 
@@ -93,7 +94,7 @@ function App() {
         <Route path = '/article' element = {<Article/>}></Route>
         <Route path='/articled' element = {<ArticleDetail/>}></Route>
         <Route path = '/powerbicompany' element = {<PowerbiCompany/>}></Route>
-
+        <Route path = '/djangoembed' element = {<DjangoEmbed/>}></Route>
       </Routes>
     </Router>
 
