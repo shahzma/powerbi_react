@@ -1495,19 +1495,23 @@ const NewReport = () => {
                 {showReport?<PowerBiDiv>
                 {newReportPages.map((index,i) => {
                   
-                  if (index.has_address===true){
+                  if (index.page_type==='component'){
                     const Component = DynamicComponent(index.address);
                     return (
                       <Suspense key={index} fallback={<div>Loading...</div>}>
-                        <Component val = {'shahzma'}/>
+                        <Component val = {index.component_variable}/>
                       </Suspense>
                     );
+                  }else if(index.page_type==='httpAddress'){
+                    return(
+                      <><DjangoEmbed address={index.address}/></>
+                    )
                   }else{
 
                     return(
                       <div key={index.id}>
                         {/* {index.has_address===true &&(<><DjangoEmbed address={index.address}/></>)} */}
-                        {index.has_address===false && (<><PowerBIEmbed
+                        {true && (<><PowerBIEmbed
                          embedConfig = {{
                           type: 'report',   // Supported types: report, dashboard, tile, visual and qna
                           id: index['powerbi_report_id'],
