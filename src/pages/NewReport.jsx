@@ -691,7 +691,11 @@ const NewReport = () => {
                 parent_arr.push(label)
                 setTreearr(parent_arr)
                 handleClickTree(label, props.key_val, props.node_type)
-                window.localStorage.setItem('finalized', 'false')
+                if(key===25){
+                  window.localStorage.setItem('finalized', 'false')
+                }else{
+                  window.localStorage.setItem('finalized', 'true')
+                }
               }
               }
             }else{
