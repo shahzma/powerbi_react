@@ -20,6 +20,7 @@ import ArticleDetail from './pages/ArticleDetail';
 import Searchpage from './pages/Searchpage';
 import PowerbiCompany from './pages/PowerbiCompany';
 import DjangoEmbed from './pages/DjangoEmbed';
+import Internet from './pages/Internet';
 
 function App() {
 
@@ -64,15 +65,25 @@ function App() {
     setClientID(clientID)
   }
 
-  const TRACKING_ID = 'UA-241888110-1'
-  const tagManagerArgs = {
-    gtmId: 'GTM-MXCJ6SF'
-}
-// const tagManagerArgs = {
-//   gtmId: 'GTM-P3W82CC'
+  // prod  tracking id ga
+  // const TRACKING_ID = 'UA-241888110-1'
+
+// local tracking id
+  const TRACKING_ID = 'UA-241614253-1'
+
+  // prod args
+//   const tagManagerArgs = {
+//     gtmId: 'GTM-MXCJ6SF'
 // }
+
+// testting args
+const tagManagerArgs = {
+  gtmId: 'GTM-P3W82CC'
+}
   TagManager.initialize(tagManagerArgs)
-  ReactGA.initialize(TRACKING_ID)
+
+  // react ga prod
+  // ReactGA.initialize(TRACKING_ID)
 
   return (
     <Router>
@@ -82,7 +93,7 @@ function App() {
         <Route path = '/login' element = {<NewFigmaLogin/>}></Route>
         <Route path = '/' element={<NewFigmaSIgnIn/>}  ></Route>
         <Route path = '/otp' element = {<NewFigmaOTP/>}></Route>
-        <Route path = '/frontpage' element = {<Frontpage/>}></Route>
+        <Route path = '/frontpage' element = {<Internet/>}></Route>
         {/* <Route path = "/otp" element = {<Otp Token={Token} getReportName={getReportName}/>}/> */}
         <Route path = "/FigmaOtp" element = {<FigmaOtp email = {RealEmail} IsLoggedIn={IsLoggedIn} SignedInStatus={SignedInStatus} setTokenVal = {setTokenVal}/>}/>
         {/* <Route path = "/mainpage" element = {<Mainpage Email = {'maruti@redseerconsulting.com'} Token={Token} Reportname={Reportname} IsAdmin = {IsAdmin} getReportVersionID = {getReportVersionID}/>}/> */}

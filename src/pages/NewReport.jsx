@@ -156,6 +156,7 @@ const NewReport = () => {
         'Sector Insights (WIP)':<MdInsights/>,
         'Online Education (WIP)':<BiBookContent/>,
         'Top Line Estimates (WIP)':<FaDeezer/>,
+        
         'Fulfilment Metrics (WIP)':<FaAlignLeft/>,
         'Unit Economics (WIP)':<MdMonetizationOn/>,
         'Keyboard (WIP)':<FaKeyboard/>,
@@ -397,6 +398,21 @@ const NewReport = () => {
         //console.log('Loop finished');
       }
 
+      let getNodeDetails = (nodes = myPages, nodename) =>{
+        // let nodes = myPages
+        for (let node of nodes) {
+          if (node.label === nodename) {
+            return node;
+          } else if (node.nodes && node.nodes.length > 0) {
+            const foundNode = getNodeDetails(node.nodes, nodename);
+            if (foundNode) {
+              return foundNode;
+            }
+          }
+        }
+        return null;
+      }
+
       let handleClickTree = (reportname, key, finalized, index = -1)=>{
         if(index===treearr.length-1 & key===-2){
           // disable last click. also disable clicks on non links
@@ -404,7 +420,21 @@ const NewReport = () => {
         }if (key===-2 & dummynodes.includes(reportname)){
           return
         }
-
+        let found = false
+        for (let i =0; i<reportarr.length;i++){
+          if(reportarr[i].report_name===reportname){
+            window.localStorage.setItem('start_date',reportarr[i].start_date)
+            window.localStorage.setItem('end_date', reportarr[i].end_date)
+            console.log('start_date=',  window.localStorage.getItem("start_date"))
+            console.log('end_date', window.localStorage.getItem("end_date"))
+            found = true
+            break
+          }
+        }
+        if (found===false){
+          window.localStorage.setItem('start_date', null)
+          window.localStorage.setItem('end_date', null)
+        }
         setshowLoader(true)
         // console.log('key=', key)
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/nodechildren/?key=${key}`, {
@@ -456,6 +486,7 @@ const NewReport = () => {
           for(let i= 0; i<treearr.length; i++){
             if(treearr[i]===reportname){
               if(i>1){
+                // breadcrumbs will be of type consumer inter/OR/hori/somthing. we only want ot show dirpp down for after 2nd breadcrumb
                 setShowDropDown(true)
                 break
               }else{
@@ -465,12 +496,8 @@ const NewReport = () => {
             }
           }
 
-          // if(['Online Retail (WIP)','Consumer Internet', 'Digital Content (WIP)', 'Online Education (WIP)', 'eHealth (WIP)', 'eB2B (WIP)'].includes(reportname)){
-          //   setShowDropDown(false)
-          // }else{
-          //   setShowDropDown(true)
-          // }
           console.log('index = ', index,treearr.length)
+          // console.log('foundnode = ', getNodeDetails(myPages,reportname))
           if(true){
             let arr = treearr
             for(let i = treearr.length-1; i>index; i--){
@@ -499,43 +526,6 @@ const NewReport = () => {
             }else{
               setshowReport(true)
             }
-            // for(let i = 0; i<reportarr.length; i++){
-            //   if(key===-1){
-            //         let pages = reportarr[i].report_pages
-            //         // if amazon lies in report pages then setshowreport(true)
-            //         // report arr is list of all reports which client has access
-            //       if(reportarr[i].report_name===reportname){
-            //         setshowReport(true)
-            //         break
-            //       }
-            //       else if(pages.includes(res[0].id)){
-            //         setshowReport(true)
-            //         break
-            //       }else{
-            //         setshowReport(false)
-            //       }
-            //   }else if (key===-2){
-            //     console.log('reportname=', reportname)
-            //     if(reportname === 'Consumer Internet'){
-            //       setshowReport(false)
-            //       break
-            //     }
-            //   }else{
-            //      if(reportarr[i].report_name===reportname){
-            //       if(reportarr[i].report_pages.length===0){
-            //         console.log('show_all_pages')
-            //         setshowReport(true)
-            //       }else{
-            //         let pages = reportarr[i].report_pages
-            //         res = res.filter(value => pages.includes(value.id)); 
-            //         setshowReport(true)         
-            //       }
-            //       break
-            //     }else{
-            //       setshowReport(false)
-            //     }
-            //   }
-            // }
             setnewReportPages(res)
             setshowLoader(false)
             // console.log('res=', res)
@@ -587,6 +577,7 @@ const NewReport = () => {
         }
         return parents
       }
+
       const DEFAULT_PADDING = 16;
       const ICON_SIZE = 3;
       const LEVEL_SPACE = 10
@@ -658,12 +649,12 @@ const NewReport = () => {
               // setTreearr(parent_arr)
               let arr = currencyarr
               let currency_type = window.localStorage.getItem('currency')
-              if(currency_type==='USD'){
-                setActiveIndex(1)
-                window.localStorage.setItem('currency', 'USD')
-              }else{
+              if(currency_type==='INR'){
                 setActiveIndex(0)
                 window.localStorage.setItem('currency', 'INR')
+              }else{
+                setActiveIndex(1)
+                window.localStorage.setItem('currency', 'USD')
               }
               let year_type = window.localStorage.getItem('year')
               if(year_type==='CY'){
@@ -691,7 +682,7 @@ const NewReport = () => {
                 parent_arr.push(label)
                 setTreearr(parent_arr)
                 handleClickTree(label, props.key_val, props.node_type)
-                if(key===25){
+                if(props.key_val===25){
                   window.localStorage.setItem('finalized', 'false')
                 }else{
                   window.localStorage.setItem('finalized', 'true')
@@ -924,13 +915,7 @@ const NewReport = () => {
       const defaultPlatformOption = platform_option[0];
 
       const datefilter = {
-
-
-
         $schema: "http://powerbi.com/product/schema#basic",
-      
-      
-      
       target: {
       
       
@@ -987,6 +972,25 @@ const NewReport = () => {
       
       
       };
+      const datefilter_max = {
+        $schema: "http://powerbi.com/product/schema#basic",
+      target: {
+            table: "db_date_table",
+            column: "DB_Date"
+        },
+        filterType: models.FilterType.Advanced,
+        logicalOperator: "And",
+        conditions: [
+            {
+              operator:"GreaterThanOrEqual",
+              value: window.localStorage.getItem("start_date")+"T22:00:00.000Z"
+            },
+            {
+                operator: "LessThan",
+                value: window.localStorage.getItem("end_date")+"T22:00:00.000Z"
+            }
+        ]
+      };
       const currencyFilter = {$schema:"http://powerbi.com/product/schema#basic",target:{table:"CurrencyTable", "column":"Currency"},operator:"In",values:["INR"],filterType:models.FilterType.BasicFilter};
       
       const basicFilter = {
@@ -1025,8 +1029,14 @@ const NewReport = () => {
         values: [filterVal]
       }
 
+      const medicalCategoryFilter = {
+        $schema:"http://powerbi.com/product/schema#basic",
+        target:{table:"ss_content_data parameter",column:"Group_Categories"},
+        operator:"In",values:[filterVal]
+      } 
 
-      let filter_arr = [datefilter]
+
+      let filter_arr = [datefilter, datefilter_max]
       for(let i=0; i<filterarr.length;i++){
         if(filterarr[i]==1){
           filter_arr.push(basicFilter)
@@ -1035,7 +1045,11 @@ const NewReport = () => {
         } else if(filterarr[i]==='industry'){
           filter_arr.push(industryfilter)
         } else if (filterarr[i]==='sector'){
+          console.log('sectorfilter')
           filter_arr.push(sectorfilter)
+        } else if (filterarr[i]==='medical'){
+          console.log('medicalfilter')
+          filter_arr.push(medicalCategoryFilter)
         }
       }
 
