@@ -224,9 +224,20 @@ const NewReport = () => {
 
     // browsee.init({ apiKey: '85f0c40347dbca8eb48246405714a09756a874643bcae332' });
     // if(email){
-    //   browsee.addData({userEmail: email});
+    //   console.log('browseeemail= ', email)
+    //   browsee.identify(email,
+    //      {
+    //       email: email,
+    //       })
+    //   // browsee.addData({userEmail: email});
     // }else{
-    //   browsee.addData({userEmail: window.localStorage.getItem('email')});
+    //   console.log('browseeemail= ', window.localStorage.getItem('email'))
+    //   browsee.identify( window.localStorage.getItem('email'),
+    //      {
+    //       email: window.localStorage.getItem('email'),
+    //       })
+
+    //   // browsee.addData({userEmail: window.localStorage.getItem('email')});
     // }
       
 
