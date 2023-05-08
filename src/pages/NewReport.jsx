@@ -43,6 +43,7 @@ import { useLocation } from 'react-router-dom';
 import Frontpage from './Frontpage';
 import Internet from './Internet';
 import DjangoEmbed from './DjangoEmbed';
+import browsee from '@browsee/web-sdk';
 import DynamicComponent from './DynamicComponent'
 // import myHTMLfile from './myHTMLfile.html';
 // import 'react-select-search/style.css'
@@ -173,7 +174,7 @@ const NewReport = () => {
         'Real Money Gaming (WIP)':<RiMoneyDollarBoxFill/>,
         'EdTech (WIP)':<BiBookContent/>,
         'eHealth (WIP)':<GiHealthNormal/>,
-        'Ride Hailing (WIP)':<GiCarWheel/>,
+        'Ride Hailing':<GiCarWheel/>,
         'D2C Omni (WIP)':<GoFileSymlinkDirectory/>,
         'eB2B (WIP)':<FaBusinessTime/>,
         // 'Consumer Internet (WIP)':<ImConnection/>,
@@ -220,6 +221,14 @@ const NewReport = () => {
       if(user_name){
         window.localStorage.setItem('user_name', user_name)
       }
+
+    // browsee.init({ apiKey: '85f0c40347dbca8eb48246405714a09756a874643bcae332' });
+    // if(email){
+    //   browsee.addData({userEmail: email});
+    // }else{
+    //   browsee.addData({userEmail: window.localStorage.getItem('email')});
+    // }
+      
 
   useEffect(()=>{
     window.localStorage.setItem('report', 'Consumer Internet')

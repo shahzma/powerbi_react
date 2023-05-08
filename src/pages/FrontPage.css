@@ -8,6 +8,11 @@
 
 .front{
     margin-left:40px;
+    background-color: #F5F8FC;
+}
+
+.frontMain{
+    background-color: #F5F8FC;
 }
 
 .report-style-class iframe{

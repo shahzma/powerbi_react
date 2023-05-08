@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import browsee from '@browsee/web-sdk';
+
+// browsee.init({ apiKey: '85f0c40347dbca8eb48246405714a09756a874643bcae332' });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

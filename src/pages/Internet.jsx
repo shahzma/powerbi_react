@@ -123,7 +123,7 @@ const Internet = () => {
 
   return (
     
-    width>768 ?(<div className='front'>
+    width>768 ?(<div className='frontMain'>
         {/* <Head/> */}
         <FirstPage>
             <NewAge><h2>New age <span style={{'color':'blue'}}>alternative data</span><br></br>platform of choice</h2> We track 150+ business relevant KPIs of top 500 consumer internet businesses and brands in India by crunching billions of data points every day to provide accurate, granular insights. Over 200 investment funds and innovative companies rely on us to help them make better business decisions.

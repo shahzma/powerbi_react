@@ -21,6 +21,7 @@ import Searchpage from './pages/Searchpage';
 import PowerbiCompany from './pages/PowerbiCompany';
 import DjangoEmbed from './pages/DjangoEmbed';
 import Internet from './pages/Internet';
+import Front from './pages/Front';
 
 function App() {
 
@@ -93,7 +94,7 @@ const tagManagerArgs = {
         <Route path = '/login' element = {<NewFigmaLogin/>}></Route>
         <Route path = '/' element={<NewFigmaSIgnIn/>}  ></Route>
         <Route path = '/otp' element = {<NewFigmaOTP/>}></Route>
-        <Route path = '/frontpage' element = {<Internet/>}></Route>
+        <Route path = '/frontpage' element = {<Front/>}></Route>
         {/* <Route path = "/otp" element = {<Otp Token={Token} getReportName={getReportName}/>}/> */}
         <Route path = "/FigmaOtp" element = {<FigmaOtp email = {RealEmail} IsLoggedIn={IsLoggedIn} SignedInStatus={SignedInStatus} setTokenVal = {setTokenVal}/>}/>
         {/* <Route path = "/mainpage" element = {<Mainpage Email = {'maruti@redseerconsulting.com'} Token={Token} Reportname={Reportname} IsAdmin = {IsAdmin} getReportVersionID = {getReportVersionID}/>}/> */}
