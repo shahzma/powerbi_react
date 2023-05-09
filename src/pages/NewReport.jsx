@@ -221,24 +221,24 @@ const NewReport = () => {
       if(user_name){
         window.localStorage.setItem('user_name', user_name)
       }
+      browsee.init({ apiKey: `${process.env.REACT_APP_API_BROWSEE_KEY}` });
+    if(email){
 
-    // browsee.init({ apiKey: '85f0c40347dbca8eb48246405714a09756a874643bcae332' });
-    // if(email){
-    //   console.log('browseeemail= ', email)
-    //   browsee.identify(email,
-    //      {
-    //       email: email,
-    //       })
-    //   // browsee.addData({userEmail: email});
-    // }else{
-    //   console.log('browseeemail= ', window.localStorage.getItem('email'))
-    //   browsee.identify( window.localStorage.getItem('email'),
-    //      {
-    //       email: window.localStorage.getItem('email'),
-    //       })
+      console.log('browseeemailm1= ', email)
+      browsee.identify(email,
+         {
+          email: email,
+          })
+      // browsee.addData({userEmail: email});
+    }else{
+      console.log('browseeemailm2= ', window.localStorage.getItem('email'))
+      browsee.identify( window.localStorage.getItem('email'),
+         {
+          email: window.localStorage.getItem('email'),
+          })
 
-    //   // browsee.addData({userEmail: window.localStorage.getItem('email')});
-    // }
+      // browsee.addData({userEmail: window.localStorage.getItem('email')});
+    }
       
 
   useEffect(()=>{
