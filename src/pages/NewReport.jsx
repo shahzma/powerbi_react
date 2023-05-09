@@ -166,12 +166,11 @@ const NewReport = () => {
         'Supply Chain Metrics (WIP)':<GiBreakingChain/>,
         'Revenue Metrics (WIP)':<RiMoneyDollarBoxFill/>,
         'Operational Metrics (WIP)':<BiCartAlt/>,
-        'Online Retail (WIP)':<BiCartAlt/>,
-        'Online Retail (WIP) (WIP)':<BiCartAlt/>,
+        'Online Retail ':<BiCartAlt/>,
         'Social Commerce Specific (WIP)':<MdMonetizationOn/>,
         'Food Tech (WIP)':<IoFastFood/>,
         'Used Cars (WIP)':<FaCarAlt/>,
-        'Real Money Gaming (WIP)':<RiMoneyDollarBoxFill/>,
+        'Real Money Gaming ':<RiMoneyDollarBoxFill/>,
         'EdTech (WIP)':<BiBookContent/>,
         'eHealth (WIP)':<GiHealthNormal/>,
         'Ride Hailing':<GiCarWheel/>,
@@ -188,7 +187,7 @@ const NewReport = () => {
         'OTT_Video (WIP)':<AiTwotoneVideoCamera/>,
         'OTT Audio (WIP)':<FaRegFileAudio/>,
         'Content S&M (WIP)':<BiBookContent/>,
-        'Digital Content (WIP)':<MdOutlinePersonalVideo/>,
+        'Digital Content':<MdOutlinePersonalVideo/>,
         'eLogistics':<FaTruck/>,
         'Meesho':<img  style = {{'width':'10px', 'height':'10px'}}src = '/Images/meesho.jpeg'/>,
         'Tatacliq':<img  style = {{'width':'15px', 'height':'10px'}}src = '/Images/tatacliq.jpeg'/>,
@@ -221,24 +220,24 @@ const NewReport = () => {
       if(user_name){
         window.localStorage.setItem('user_name', user_name)
       }
-      browsee.init({ apiKey: `${process.env.REACT_APP_API_BROWSEE_KEY}` });
-    if(email){
+    //   browsee.init({ apiKey: `${process.env.REACT_APP_API_BROWSEE_KEY}` });
+    // if(email){
 
-      console.log('browseeemailm1= ', email)
-      browsee.identify(email,
-         {
-          email: email,
-          })
-      // browsee.addData({userEmail: email});
-    }else{
-      console.log('browseeemailm2= ', window.localStorage.getItem('email'))
-      browsee.identify( window.localStorage.getItem('email'),
-         {
-          email: window.localStorage.getItem('email'),
-          })
+    //   console.log('browseeemailm1= ', email)
+    //   browsee.identify(email,
+    //      {
+    //       email: email,
+    //       })
+    //   // browsee.addData({userEmail: email});
+    // }else{
+    //   console.log('browseeemailm2= ', window.localStorage.getItem('email'))
+    //   browsee.identify( window.localStorage.getItem('email'),
+    //      {
+    //       email: window.localStorage.getItem('email'),
+    //       })
 
-      // browsee.addData({userEmail: window.localStorage.getItem('email')});
-    }
+    //   // browsee.addData({userEmail: window.localStorage.getItem('email')});
+    // }
       
 
   useEffect(()=>{
