@@ -661,7 +661,7 @@ const PowerbiCompany = () => {
                               conditions: [
                                   {
                                       operator: "Is",
-                                      value: window.localStorage.getItem('currency')
+                                      value: typeof(window.localStorage.getItem('currency'))===String?window.localStorage.getItem('currency'):'INR'
                                   }
                               ]
                             }
