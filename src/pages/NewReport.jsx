@@ -93,7 +93,6 @@ const NewReport = () => {
     let [iconDict, setIconDict] = useState({
         'Sector Summary':<MdOutlineSummarize/>,
         'Sector Summary 2.0':<MdOutlineSummarize/>,
-        'Company Profile':<ImProfile />,
         'Overall':<SiCoveralls/>,
         'Traditional Brands':<BsTag/>,
         'SAAS':<BsFillCloudArrowDownFill/>,
@@ -115,7 +114,6 @@ const NewReport = () => {
         'Fulfilment Metrics':<FaAlignLeft/>,
         'Unit Economics':<MdMonetizationOn/>,
         'Keyboard':<FaKeyboard/>,
-        'Dashboard':<MdDashboard/>,
         'City Split':<FaCity/>,
         'Supply Chain Metrics':<GiBreakingChain/>,
         'Revenue Metrics':<RiMoneyDollarBoxFill/>,
