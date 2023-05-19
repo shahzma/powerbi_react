@@ -590,15 +590,15 @@ const PowerbiCompany = () => {
         <Head/>
 
         <BodyContainer>
-          <Sidebar treeData = {myPages}
+          {/* <Sidebar treeData = {myPages}
            initialOpenNodes = {['275']}
           handleTreeMenuCollapse = {handleTreeMenuCollapse}
            treemenucollapse = {treemenucollapse} 
            handlesetTreearr = {handlesetTreearr}
            handleClickTree = {handleClickTree}
            handleSetOnClickValues = {handleSetOnClickValues}
-           />
-          {/* <SideMenuContainer width={treemenucollapse ? '20vw' : '10px'}>
+           /> */}
+          <SideMenuContainer width={treemenucollapse ? '20vw' : '10px'}>
               <TreeMenu
               style = {{width:'25vw'}}
               data={myPages}
@@ -618,7 +618,7 @@ const PowerbiCompany = () => {
                   </div>
             )}}
             </TreeMenu>
-          </SideMenuContainer> */}
+          </SideMenuContainer>
 
           {showLoader===false?<PowerBiDiv width={treemenucollapse ? '80vw' : '99vw'}>
                   <div style={{'background':'#F5F8FC'}}>
