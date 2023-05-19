@@ -11,7 +11,6 @@ import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
 import {BsGear, BsArrowBarRight, BsArrowBarLeft, BsFillCloudArrowDownFill, BsTag} from 'react-icons/bs'
 import { GiBreakingChain, GiConsoleController, GiEvilFork, GiHealthNormal, GiCarWheel, GiClothes,GiMedicines,GiFruitBowl, GiVideoConference, GiHamburgerMenu, GiZigArrow } from "react-icons/gi";
 import Modal from 'react-modal';
-import Sidebar from '../components/Sidebar/Sidebar';
 
 
 const PowerbiCompany = () => {
@@ -119,14 +118,6 @@ const PowerbiCompany = () => {
         }
       }
       return parents
-    }
-
-    let handleClickTree = (label, key_val, node_type)=>{
-      console.log('lkn=',label, key_val, node_type)
-    }
-
-    let handleSetOnClickValues = (selectedOption, showcurrencybar, filterarr, filterVal,activeIndex, yearIndex)=>{
-      console.log('handlesetonclick=',selectedOption, showcurrencybar, filterarr, filterVal,activeIndex, yearIndex)
     }
 
     const DEFAULT_PADDING = 16;
@@ -514,13 +505,6 @@ const PowerbiCompany = () => {
       }
       }
 
-    let handlesetTreearr = (arr)=>{
-      setTreearr(arr)
-      console.log('treearr = ', arr)
-    }
-
-
-
     const basicFilter = {
         $schema: "http://powerbi.com/product/schema#basic",
         target: {
@@ -590,15 +574,7 @@ const PowerbiCompany = () => {
         <Head/>
 
         <BodyContainer>
-          <Sidebar treeData = {myPages}
-           initialOpenNodes = {['275']}
-          handleTreeMenuCollapse = {handleTreeMenuCollapse}
-           treemenucollapse = {treemenucollapse} 
-           handlesetTreearr = {handlesetTreearr}
-           handleClickTree = {handleClickTree}
-           handleSetOnClickValues = {handleSetOnClickValues}
-           />
-          {/* <SideMenuContainer width={treemenucollapse ? '20vw' : '10px'}>
+          <SideMenuContainer width={treemenucollapse ? '20vw' : '10px'}>
               <TreeMenu
               style = {{width:'25vw'}}
               data={myPages}
@@ -618,8 +594,7 @@ const PowerbiCompany = () => {
                   </div>
             )}}
             </TreeMenu>
-          </SideMenuContainer> */}
-
+          </SideMenuContainer>
           {showLoader===false?<PowerBiDiv width={treemenucollapse ? '80vw' : '99vw'}>
                   <div style={{'background':'#F5F8FC'}}>
                     <Header>

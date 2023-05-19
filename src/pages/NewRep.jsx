@@ -45,8 +45,6 @@ import Internet from './Internet';
 import DjangoEmbed from './DjangoEmbed';
 import browsee from '@browsee/web-sdk';
 import DynamicComponent from './DynamicComponent'
-// import Subscription from '../components/Subscription/Subscription';
-import Subscription from './Subscription';
 // import myHTMLfile from './myHTMLfile.html';
 // import 'react-select-search/style.css'
 
@@ -1782,7 +1780,9 @@ const NewReport = () => {
                   }
                 })}
                   </PowerBiDiv>:<>
-                 {window.localStorage.getItem('report')===null?treemenucollapse?<Frontpage/>:<Internet/>:window.localStorage.getItem('report')==='Consumer Internet'?treemenucollapse?<Frontpage/>:<Internet/>:<Subscription/>}
+                 {window.localStorage.getItem('report')===null?treemenucollapse?<Frontpage/>:<Internet/>:window.localStorage.getItem('report')==='Consumer Internet'?treemenucollapse?<Frontpage/>:<Internet/>:<Subscription>
+                    Subscribe for report
+                 </Subscription>}
                   </>}
               </PowerbiContainer>:<TailSpin
   height="80"
@@ -1900,15 +1900,15 @@ const PowerBiDiv = styled.div`
 
 `
 
-// const Subscription = styled.div`
-//   display:flex;
-//   align-items:center;
-//   justify-content:center;
-//   color:black;
-//   font-family:system-ui;
-//   font-size:48px;
-//   min-height:70vh;
-// `
+const Subscription = styled.div`
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:black;
+  font-family:system-ui;
+  font-size:48px;
+  min-height:70vh;
+`
 
 const SideBarHeader = styled.div`
 padding-left:20px;
