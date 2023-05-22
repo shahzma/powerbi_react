@@ -30,6 +30,7 @@ const NewFigmaSIgnIn = () => {
       }
 
     useEffect(() => {
+      window.localStorage.setItem('report', 'Consumer Internet')
       window.addEventListener('resize', handleWindowSizeChange);
       return () => {
           window.removeEventListener('resize', handleWindowSizeChange);

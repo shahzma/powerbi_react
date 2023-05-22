@@ -9,7 +9,6 @@ const Subscription = () => {
         // Update the state by incrementing the count
         setshowSubscribeButton(false)
         let email = window.localStorage.getItem('email')
-        console.log('email = ', email)
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/sendmail/?email=${email}`, {
             method:'GET',
             headers:{
@@ -67,7 +66,7 @@ const SubscribeBox = styled.div`
     padding-top:20px;
     padding-left:20px;
     padding-bottom:20px;
-    width:075vw;
+    width:078vw;
     border-radius:10px;
 `
 const AltSubscribe = styled.div`

@@ -45,7 +45,6 @@ import Internet from './Internet';
 import DjangoEmbed from './DjangoEmbed';
 import browsee from '@browsee/web-sdk';
 import DynamicComponent from './DynamicComponent'
-// import Subscription from '../components/Subscription/Subscription';
 import Subscription from './Subscription';
 // import myHTMLfile from './myHTMLfile.html';
 // import 'react-select-search/style.css'
