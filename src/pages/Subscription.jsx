@@ -26,8 +26,7 @@ const Subscription = () => {
   return (
 
     <SubscribeBox>
-       {showSubscribeButton?<SubscribeButton onClick={handleClick}>Subscribe for data</SubscribeButton>:<AltSubscribe >Thank you for showing interest, our sales team will contact you soon</AltSubscribe>}
-       <SubscribeText>To access below data, please subscribe to our premium subscritpion</SubscribeText>
+       <Heading>To access below data, please subscribe to our premium subscritpion</Heading>
         <SubscribeText><AiFillCheckCircle/>  Platform metrics (includes Gross and Shipped: GMV, Items and ASP with a Category filter)</SubscribeText>
         <SubscribeText><AiFillCheckCircle/>Geographic view of - Platform wise performance of GMV & Leaders overall India</SubscribeText>
         <SubscribeText><AiFillCheckCircle/>Industry cancellation metrics</SubscribeText>
@@ -39,6 +38,7 @@ const Subscription = () => {
         <FeaturesText>1. Visual presentation of data on - Annually, Quarterly & Monthly view provided (Both CY & FY)</FeaturesText>
         <FeaturesText>2. Insights & definitions provided for graphs & graph parameters</FeaturesText>
         <FeaturesText>3. Conversion of currency from USD to INR or vice versa</FeaturesText>
+        {showSubscribeButton?<SubscribeButton onClick={handleClick}>Subscribe</SubscribeButton>:<AltSubscribe >Thank you for showing interest, our sales team will contact you soon</AltSubscribe>}
     </SubscribeBox>
     // <Subscribe>
     //     Subscribe for report
@@ -57,6 +57,12 @@ const Subscribe = styled.div`
   font-family:system-ui;
   font-size:48px;
   min-height:70vh;
+`
+const Heading = styled.div`
+
+    font-weight:600;
+    font-size:22px;
+    margin-top:10px;
 `
 
 const SubscribeBox = styled.div`
@@ -78,6 +84,7 @@ line-height:50px;
 const SubscribeButton = styled.button`
     background-color:#51E0DF;
     border:1px solid black;
+    margin-top:10px;
     height:50px;
     width:200px;
     /* border:None; */
