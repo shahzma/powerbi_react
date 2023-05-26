@@ -440,6 +440,7 @@ const NewReport = () => {
         }if (key===-2 & dummynodes.includes(reportname)){
           return
         }
+        setRenderComponentB(false)
         let found = false
         for (let i =0; i<reportarr.length;i++){
           if(reportarr[i].report_name===reportname){
@@ -710,7 +711,7 @@ const NewReport = () => {
               }
               }
             }else{
-              setRenderComponentB(false)
+              // setRenderComponentB(false)
               let parent_arr = getParents(props)
               parent_arr.push(label)
               setTreearr(parent_arr)

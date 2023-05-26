@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import Head from '../components/Head/Head'
-import {models} from 'powerbi-client';
-import {PowerBIEmbed} from 'powerbi-client-react';
-import { FallingLines, TailSpin } from  'react-loader-spinner'
-import {Link, Navigate} from 'react-router-dom';
+import React, { useState, useEffect, useRef, Suspense } from 'react'
 import TreeMenu from 'react-simple-tree-menu';
+import styled from 'styled-components';
+import { FallingLines, TailSpin } from  'react-loader-spinner'
 import { ListGroupItem, Input, ListGroup } from 'reactstrap';
-import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
 import {BsGear, BsArrowBarRight, BsArrowBarLeft, BsFillCloudArrowDownFill, BsTag} from 'react-icons/bs'
-import { GiBreakingChain, GiConsoleController, GiEvilFork, GiHealthNormal, GiCarWheel, GiClothes,GiMedicines,GiFruitBowl, GiVideoConference, GiHamburgerMenu, GiZigArrow } from "react-icons/gi";
 import Modal from 'react-modal';
-import Sidebar from '../components/Sidebar/Sidebar';
-import PowerBiFrame from '../components/PowerBiFrame/PowerBiFrame';
+import {PowerBIEmbed} from 'powerbi-client-react';
+import {models} from 'powerbi-client';
+import {Link, Navigate} from 'react-router-dom';
+import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
+import { GiBreakingChain, GiConsoleController, GiEvilFork, GiHealthNormal, GiCarWheel, GiClothes,GiMedicines,GiFruitBowl, GiVideoConference, GiHamburgerMenu, GiZigArrow } from "react-icons/gi";
 
 
-const PowerbiCompany = () => {
+
+const PowerBiFrame = (parent_props) => {
     const [newReportPages, setnewReportPages] = useState([])
     const [allNodes,setallNodes] = useState([])
     const [treearr, setTreearr] = useState([])
@@ -32,6 +30,18 @@ const PowerbiCompany = () => {
     const [moneymodalIsOpen, setMoneyModalIsOpen] = useState(false);
     const [showDropDown, setShowDropDown] = useState(false);
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [renderComponentB, setRenderComponentB] = useState(true);
+    const [dropDownData, setDropDownData] = useState([])
+    const [dummynodes, setDummyNodes]  = useState([])
+    const [filterarr, setfilterarr] = useState([])
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedpage, setSelectedPage] = useState('Consumer Internet')
+    const [reportarr, setNewReportArr] = useState([])
+    const [showReport, setshowReport] = useState(false);
+    const [FirstPage, setFirstPage] = useState([]);
+    const [showcurrencybar, setshowCurrencyBar] = useState(false);
+    const [filterVal, setFilterVal] = useState(null)
+    let [iconDict, setIconDict] = useState({})
 
     useEffect(()=>{
         setshowLoader(true)
@@ -70,7 +80,8 @@ const PowerbiCompany = () => {
     }, [])
     
     useEffect(()=>{
-      fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreports/?rep=Company Performance`, {
+        let root_rep = parent_props.root_rep
+      fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreports/?rep=${root_rep}`, {
         method:'GET',
         headers:{
           'Content-Type': 'application/json',
@@ -122,9 +133,128 @@ const PowerbiCompany = () => {
       return parents
     }
 
-    let handleClickTree = (label, key_val, node_type)=>{
-      console.log('lkn=',label, key_val, node_type)
-    }
+    let handleClickTree = (reportname, key, finalized, index = -1)=>{
+        if(index===treearr.length-1 & key===-2){
+          // disable last click. also disable clicks on non links
+          return
+        }if (key===-2 & dummynodes.includes(reportname)){
+          return
+        }
+        setRenderComponentB(false)
+        let found = false
+        for (let i =0; i<reportarr.length;i++){
+          if(reportarr[i].report_name===reportname){
+            window.localStorage.setItem('start_date',reportarr[i].start_date)
+            window.localStorage.setItem('end_date', reportarr[i].end_date)
+            console.log('start_date=',  window.localStorage.getItem("start_date"))
+            console.log('end_date', window.localStorage.getItem("end_date"))
+            found = true
+            break
+          }
+        }
+        if (found===false){
+          window.localStorage.setItem('start_date', null)
+          window.localStorage.setItem('end_date', null)
+        }
+        setshowLoader(true)
+        // console.log('key=', key)
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/nodechildren/?key=${key}`, {
+          method:'GET',
+          headers:{
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(res=>res.json())
+        .then(
+          res =>{
+            // key=25 fro onlien retail
+            if(key === 25){
+              setShowDropDown(false)
+            }
+            else if (res.length>1){
+              setShowDropDown(true)
+              for(let i=0; i<res.length; i++){
+                if(iconDict[res[i].label]){
+                  res[i].icon = iconDict[res[i].label]
+                }else {
+                  res[i].icon = <GiHamburgerMenu/>
+                }
+              } 
+              console.log('res = ', res )
+              setDropDownData(res)
+            }else{
+              setShowDropDown(false)
+            }
+          }
+        )
+        if (key === -1){
+          window.localStorage.setItem('report' , reportname)
+          setSelectedPage(reportname)
+          setfilterarr(['1'])
+          setShowDropDown(true)
+          if (finalized===true){
+            window.localStorage.setItem('finalized', 'true')
+          }else{
+            window.localStorage.setItem('finalized', 'false')
+          }
+        }
+        if (key === -2){
+          window.localStorage.setItem('report' , reportname)
+          setSelectedPage(reportname)
+          setSelectedOption(null)
+          setfilterarr(['1'])
+          // check where the clicked report lies in array if it lies in range we show dropdown
+          for(let i= 0; i<treearr.length; i++){
+            if(treearr[i]===reportname){
+              if(i>1){
+                // breadcrumbs will be of type consumer inter/OR/hori/somthing. we only want ot show dirpp down for after 2nd breadcrumb
+                setShowDropDown(true)
+                break
+              }else{
+                setShowDropDown(false)
+                break
+              }
+            }
+          }
+
+          console.log('index = ', index,treearr.length)
+          // console.log('foundnode = ', getNodeDetails(myPages,reportname))
+          if(true){
+            let arr = treearr
+            for(let i = treearr.length-1; i>index; i--){
+              arr.pop()
+            }
+            setTreearr(arr)
+          }
+        }
+        let prop_token = window.localStorage.getItem('token')
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/newreportpages/?rep=${reportname}`, {
+          method:'GET',
+          headers:{
+            'Content-Type': 'application/json',
+            Authorization: `Token ${prop_token}`
+          }
+        })
+        .then(res=>res.json())
+        .then(
+          res=>{
+            if(res.length<1){
+              setshowReport(false)
+              setshowCurrencyBar(false)
+            }else{
+              setshowReport(true)
+            }
+            let firstpage = res.shift()
+            let firstpage_arr = [firstpage]
+            setFirstPage(firstpage_arr)
+            setnewReportPages(res)
+            setshowLoader(false)
+            // console.log('res=', res)
+            
+          }
+        )
+        //console.log(reportname)
+      }
 
     let handleSetOnClickValues = (selectedOption, showcurrencybar, filterarr, filterVal,activeIndex, yearIndex)=>{
       console.log('handlesetonclick=',selectedOption, showcurrencybar, filterarr, filterVal,activeIndex, yearIndex)
@@ -165,7 +295,7 @@ const PowerbiCompany = () => {
           fontWeight:'bold',
           border:'none',
           // zIndex:10,
-          fontSize:20,
+          fontSize:level===0?20:17,
           // '&:hover':{    does not work. Onhover does not work inline styling
           //   backgroundColor:'red'
           // }
@@ -174,7 +304,50 @@ const PowerbiCompany = () => {
             // this onclick conflicts with oclick defined below
             // make your get parents function here
           window.reports = []
+          setSelectedOption(null)
           setLabelSelected(label)
+
+          if(hasNodes===false){
+            window.localStorage.setItem('report', label)
+            
+            if(props.finalized){
+              setshowCurrencyBar(true)
+              window.localStorage.setItem('finalized', 'true')
+            }else{
+              setshowCurrencyBar(false)
+              window.localStorage.setItem('finalized', 'false')
+            }
+            console.log('props for filter=',props )
+            if(props.filter!==null && props.filter!==''){
+              setfilterarr(props.filter.split(','))
+              window.localStorage.setItem('filterval', props.filter_value)
+              setFilterVal(props.filter_value)
+              console.log('filterval = ', props.filter_value)
+            }else{
+              setfilterarr([])
+              setFilterVal(null)
+            }
+            setSelectedPage(label)
+            // setTreearr(parent_arr)
+            let arr = currencyarr
+            let currency_type = window.localStorage.getItem('currency')
+            if(currency_type==='INR'){
+              setActiveIndex(0)
+              window.localStorage.setItem('currency', 'INR')
+            }else{
+              setActiveIndex(1)
+              window.localStorage.setItem('currency', 'USD')
+            }
+            let year_type = window.localStorage.getItem('year')
+            if(year_type==='CY'){
+              setyearIndex(0)
+              window.localStorage.setItem('year', 'CY')
+            }else{
+              setyearIndex(1)
+              window.localStorage.setItem('year', 'FY')
+            }
+          }
+
           if(hasNodes && toggleNode){
             if(level===0){
               console.log('toggle diabled')
@@ -588,7 +761,6 @@ const PowerbiCompany = () => {
 
   return (
     <div>
-        <Head/>
         <BodyContainer>
           {/* <Sidebar treeData = {myPages}
            initialOpenNodes = {['275']}
@@ -602,7 +774,7 @@ const PowerbiCompany = () => {
               <TreeMenu
               style = {{width:'25vw'}}
               data={myPages}
-              initialOpenNodes = {['275']}
+              initialOpenNodes = {parent_props.initialOpenNodes}
               onClickItem={({ key, label, ...props }) => {
               }}
               >
@@ -625,9 +797,21 @@ const PowerbiCompany = () => {
                     <Header>
                     {treemenucollapse?<></>:<button  style={{'height':'40px', 'borderRadius':'50%', 'width':'40px', 'backgroundColor':'#18183E', 'color':'white', 'border':'0px', 'verticalAlign':'middle' }} onClick={handleTreeMenuCollapse}><GiHamburgerMenu/></button>}<span style={{'fontSize':'33px', 'fontWeight':'bold', 'fontFamily':'system-ui', 'verticalAlign':'middle'}}>{window.localStorage.getItem('searchcompany')}</span>
                     </Header>
-                    <div className='breadcrumbs' style={treemenucollapse?{'marginLeft':'3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.5vw' ,'marginBottom':'10px'}}>
+
+                    {/* <div className='breadcrumbs' style={treemenucollapse?{'marginLeft':'3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.5vw' ,'marginBottom':'10px'}}>                       
                     Products / <a href="/search" style={{'color':'black'}}>Search Companies</a> / {window.localStorage.getItem('searchcompany')}
+                    </div> */}
+                    
+                    <div className='breadcrumbs' style={treemenucollapse?{'marginLeft':'3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.5vw' ,'marginBottom':'10px'}}>                       
+                    {/* Products / <a href="/search" style={{'color':'black'}}>Search Companies</a> / {window.localStorage.getItem('searchcompany')} */}
+                    {parent_props.headarr.length>0?<>{parent_props.headarr.map(( val, i)=><BreadCrumbSpan>{val} / </BreadCrumbSpan>)}</>:<span className='breadcrumbs'>Consumer Internet</span>}
                     </div>
+
+                    {/* <div  style={treemenucollapse?{'marginLeft':'3.3vw' ,'marginBottom':'10px'}:{'marginLeft':'3.8vw' ,'marginBottom':'10px'}}>
+                    <span className='breadcrumbs'>Products /</span>
+                    {treearr.length>0?<>{treearr.map(( val, i)=><BreadCrumbSpan onClick={(e)=>{handleClickTree(val, -2 , '-1', i)}}>{val} / </BreadCrumbSpan>)}</>:<span className='breadcrumbs'>Consumer Internet</span>}
+                    </div> */}
+
                     <Currency marginLeft = {treemenucollapse?'3vw':'3.5vw'}columns={treemenucollapse?'0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 2.95fr 1.2fr 0.3fr':'0.5fr 0.15fr 1fr 0fr 0.9fr 1fr 3.95fr 1.2fr 0.3fr'}>
                       <Descurr>Currency</Descurr>
                       <Inr>
@@ -910,15 +1094,10 @@ const PowerbiCompany = () => {
 
     </div>
           )
-        }
+}
 
-export default PowerbiCompany
+export default PowerBiFrame
 
-
-const PowerBiDiv = styled.div`
-width:${props => props.width};
-/* width:80vw; */
-`
 const BodyContainer = styled.div`
 display:flex;
 min-height:90vh;
@@ -932,8 +1111,9 @@ const SideMenuContainer = styled.div`
   width:${props => props.width};
   background-color:#18183E;
   color:white;
-
-
+`
+const PowerBiDiv = styled.div`
+width:${props => props.width};
 `
 
 const Header = styled.div`
@@ -941,12 +1121,6 @@ padding-left:3vw;
 padding-top:5px;
 `
 
-const BreadCrumbs= styled.div`
-padding-left:6.8vw;
-font-size:16px;
-font-weight:600;
-font-family:'Fira-Sans', sans-serif;
-`
 const Currency = styled.div`
   margin-left:${props => props.marginLeft};
   margin-bottom:10px;
@@ -959,6 +1133,7 @@ const Currency = styled.div`
   grid-template-areas: 
     "Descurr . Inr . Gear Cyfy . Dropdn .";
 `
+
 const Descurr = styled.div`
   grid-area:Descurr;
   line-height:34px;
@@ -997,7 +1172,21 @@ font-size:14px;
 outline: none !important;
 `
 
-const ToggleButton = styled.button`
+const customStyles = {
+    content: {
+      top: '50%',
+      left: '55%',
+      right: '45%',
+      bottom: 'auto',
+      height: 230,
+      width:400,
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      overflow:'scroll',
+    },
+  };
+
+  const ToggleButton = styled.button`
 display:${props => props.display};
 height:35px; 
 width:35px; 
@@ -1009,21 +1198,10 @@ border-radius:50%;
 color:white;
 border:0px solid black;
 outline: none !important;
-/* position:absolute; */
-/* left:17.7vw;
-top:13.5vh; */
 `
-
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '55%',
-    right: '45%',
-    bottom: 'auto',
-    height: 230,
-    width:400,
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    overflow:'scroll',
-  },
-};
+const BreadCrumbSpan = styled.span`
+  &:hover{
+    color:#2323C8;
+    cursor:pointer;
+}
+`
