@@ -21,7 +21,6 @@ import Modal from 'react-modal';
 import { firestore, database } from "../utils/auth/firebase";
 import { v4 as uuid } from "uuid";
 import { useParams, withRouter } from "react-router";
-import { Hidden } from '@material-ui/core';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import ReactGA from 'react-ga'
